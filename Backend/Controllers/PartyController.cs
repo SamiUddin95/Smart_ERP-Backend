@@ -21,12 +21,12 @@ namespace Backend.Controllers
         {
             return bMSContext.Area.ToList();
         }
-        [HttpGet]
-        [Route("/api/getAllCity")]
-        public IEnumerable<City> getAllCity()
-        {
-            return bMSContext.City.ToList();
-        }
+        //[HttpGet]
+        //[Route("/api/getAllCity")]
+        //public IEnumerable<City> getAllCity()
+        //{
+        //    return bMSContext.City.ToList();
+        //}
         [HttpGet]
         [Route("/api/getAllSubArea")]
         public IEnumerable<SubArea> getAllSubArea()
