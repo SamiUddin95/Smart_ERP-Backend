@@ -1,4 +1,21 @@
+<<<<<<< HEAD
 
 Backend/bin/Debug/net5.0/appsettings.json
 Backend/Models/ERPContext.cs
 Backend/Models/ERPContext.cs
+=======
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/.vs/ProjectEvaluation
+/.vs/Backend/DesignTimeBuild/.dtbcache.v2
+/.vs/Backend/FileContentIndex/605c96ef-9726-4b99-8c83-dff90e8915a4.vsidx
+/.vs/Backend/FileContentIndex/3451f1c6-99b7-4eab-9045-8d53a530f86a.vsidx
+/.vs/Backend/FileContentIndex/86630cd5-9ce0-49bd-8168-5e5d6ab18e9b.vsidx
+*.vsidx
+/.vs/Backend/FileContentIndex/f858ffee-09d9-4296-8020-018ef6f1635c.vsidx
+/.vs/Backend/v17/.suo
+/.vs/Backend/v17/.futdcache.v2
+/.vs/Backend/config/applicationhost.config
+>>>>>>> eaa8a8962858cfec5aecbd56568c6325ea43dbfd
