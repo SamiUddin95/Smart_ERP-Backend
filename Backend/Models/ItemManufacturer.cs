@@ -15,6 +15,7 @@ namespace Backend.Models
         public string Telephoneno { get; set; }
         public string Telephoneno2 { get; set; }
         public string Email { get; set; }
+        public string Address { get; set; }
 
         public ICollection<ItemItems> ItemItems { get; set; }
     }
