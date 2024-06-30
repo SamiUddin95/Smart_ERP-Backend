@@ -178,47 +178,47 @@ namespace Backend.Controllers
         {
             return bMSContext.AccGroupCategory.ToList();
         }
-        [HttpPost]
-        [Route("/api/createAccGroupCategory")]
-        public object createAccGroupCategory(AccGroupCategory accGrpCat)
-        {
+        //[HttpPost]
+        //[Route("/api/createAccGroupCategory")]
+        //public object createAccGroupCategory(AccGroupCategory accGrpCat)
+        //{
 
-            try
-            {
-                try
-                {
-                    var accGrpCatChk = bMSContext.AccGroupCategory.SingleOrDefault(u => u.Id == accGrpCat.Id);
-                    if (accGrpCatChk != null)
-                    {
+        //    try
+        //    {
+        //        try
+        //        {
+        //            var accGrpCatChk = bMSContext.AccGroupCategory.SingleOrDefault(u => u.Id == accGrpCat.Id);
+        //            if (accGrpCatChk != null)
+        //            {
 
-                        accGrpCatChk.Id = accGrpCat.Id; 
-                        accGrpCatChk.Name = accGrpCat.Name;
-                        bMSContext.AccGroupCategory.Update(accGrpCatChk);
-                        bMSContext.SaveChanges();
-                        return JsonConvert.SerializeObject(new { id = accGrpCatChk.Id });
-                    }
-                    else
-                    {
-                        AccGroupCategory accountGrpCat = new AccGroupCategory();
-                        accountGrpCat.Id = accGrpCat.Id;
-                        accountGrpCat.Name = accGrpCat.Name;
-                        bMSContext.AccGroupCategory.Add(accountGrpCat);
-                        bMSContext.SaveChanges();
-                        return JsonConvert.SerializeObject(new { id = accountGrpCat.Id });
-                    }
-                }
+        //                accGrpCatChk.Id = accGrpCat.Id; 
+        //                accGrpCatChk.Name = accGrpCat.Name;
+        //                bMSContext.AccGroupCategory.Update(accGrpCatChk);
+        //                bMSContext.SaveChanges();
+        //                return JsonConvert.SerializeObject(new { id = accGrpCatChk.Id });
+        //            }
+        //            else
+        //            {
+        //                AccGroupCategory accountGrpCat = new AccGroupCategory();
+        //                accountGrpCat.Id = accGrpCat.Id;
+        //                accountGrpCat.Name = accGrpCat.Name;
+        //                bMSContext.AccGroupCategory.Add(accountGrpCat);
+        //                bMSContext.SaveChanges();
+        //                return JsonConvert.SerializeObject(new { id = accountGrpCat.Id });
+        //            }
+        //        }
 
-                catch (Exception ex)
-                {
-                    JsonConvert.SerializeObject(new { msg = ex.Message });
-                }
-                return JsonConvert.SerializeObject(new { msg = "Message" });
-            }
-            catch (Exception ex)
-            {
-                return null;
-            }
-        }
+        //        catch (Exception ex)
+        //        {
+        //            JsonConvert.SerializeObject(new { msg = ex.Message });
+        //        }
+        //        return JsonConvert.SerializeObject(new { msg = "Message" });
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return null;
+        //    }
+        //}
         [HttpGet]
         [Route("/api/deleteAccGroupCategoryById")]
         public object deleteAccGroupCategoryById(int id)
@@ -256,14 +256,14 @@ namespace Backend.Controllers
         }
         [HttpPost]
         [Route("/api/createAccGroup")]
-        public object createAccGroup(AccGroup accGrp)
+        public object createAccGroup(AccGroupCategory accGrp)
         {
 
             try
             {
                 try
                 {
-                    var accGrpChk = bMSContext.AccGroup.SingleOrDefault(u => u.Id == accGrp.Id);
+                    var accGrpChk = bMSContext.AccGroupCategory.SingleOrDefault(u => u.Id == accGrp.Id);
                     if (accGrpChk != null)
                     {
 
@@ -272,19 +272,19 @@ namespace Backend.Controllers
                         accGrpChk.GroupCategoryId = accGrp.GroupCategoryId;
                         accGrpChk.ManualCode = accGrp.ManualCode;
                         accGrpChk.Priority = accGrp.Priority;
-                        bMSContext.AccGroup.Update(accGrpChk);
+                        bMSContext.AccGroupCategory.Update(accGrpChk);
                         bMSContext.SaveChanges();
                         return JsonConvert.SerializeObject(new { id = accGrpChk.Id });
                     }
                     else
                     {
-                        AccGroup accountGrp = new AccGroup();
+                        AccGroupCategory accountGrp = new AccGroupCategory();
                         accountGrp.Id = accGrp.Id;
                         accountGrp.AccountTypeId = accGrp.AccountTypeId;
                         accountGrp.GroupCategoryId = accGrp.GroupCategoryId;
                         accountGrp.ManualCode = accGrp.ManualCode;
                         accountGrp.Priority = accGrp.Priority;
-                        bMSContext.AccGroup.Add(accountGrp);
+                        bMSContext.AccGroupCategory.Add(accountGrp);
                         bMSContext.SaveChanges();
                         return JsonConvert.SerializeObject(new { id = accountGrp.Id });
                     }

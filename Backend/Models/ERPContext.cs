@@ -91,6 +91,19 @@ namespace Backend.Models
 
                 entity.Property(e => e.Id).HasColumnName("ID");
 
+                entity.Property(e => e.Name)
+                    .IsRequired()
+                    .HasColumnName("NAME")
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
+            });
+
+            modelBuilder.Entity<AccGroupCategory>(entity =>
+            {
+                entity.ToTable("ACC_GROUP_CATEGORY");
+
+                entity.Property(e => e.Id).HasColumnName("ID");
+
                 entity.Property(e => e.AccountTypeId).HasColumnName("ACCOUNT_TYPE_ID");
 
                 entity.Property(e => e.GroupCategoryId).HasColumnName("GROUP_CATEGORY_ID");
@@ -103,19 +116,6 @@ namespace Backend.Models
                 entity.Property(e => e.Priority)
                     .HasColumnName("PRIORITY")
                     .HasMaxLength(200)
-                    .IsUnicode(false);
-            });
-
-            modelBuilder.Entity<AccGroupCategory>(entity =>
-            {
-                entity.ToTable("ACC_GROUP_CATEGORY");
-
-                entity.Property(e => e.Id).HasColumnName("ID");
-
-                entity.Property(e => e.Name)
-                    .IsRequired()
-                    .HasColumnName("NAME")
-                    .HasMaxLength(100)
                     .IsUnicode(false);
             });
 
