@@ -18,7 +18,6 @@ namespace Backend.Models
         public virtual DbSet<City> City { get; set; }
         public virtual DbSet<CounterSale> CounterSale { get; set; }
         public virtual DbSet<CounterSaleDetail> CounterSaleDetail { get; set; }
-        public virtual DbSet<CustomerDetails> CustomerDetails { get; set; }
         public virtual DbSet<Department> Department { get; set; }
         public virtual DbSet<GoDown> GoDown { get; set; }
         public virtual DbSet<Invoice> Invoice { get; set; }
@@ -49,12 +48,14 @@ namespace Backend.Models
         public virtual DbSet<UserType> UserType { get; set; }
         public virtual DbSet<VendorDetails> VendorDetails { get; set; }
 
+        // Unable to generate entity type for table 'dbo.Customer_Details'. Please see the warning messages.
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-                optionsBuilder.UseSqlServer(@"Server=AS-EFT-HASHAM\SQLEXPRESS;Database=ERP;Trusted_Connection=True;");
+                optionsBuilder.UseSqlServer(@"Server=MOHSINNADEEM\SQL2K17DEV;Database=ERP;Trusted_Connection=True;");
             }
         }
 
@@ -348,91 +349,6 @@ namespace Backend.Models
                     .HasColumnType("decimal(19, 2)");
             });
 
-            modelBuilder.Entity<CustomerDetails>(entity =>
-            {
-                entity.ToTable("Customer_Details");
-
-                entity.Property(e => e.BankDetails)
-                    .HasColumnName("Bank_Details")
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.BillTo)
-                    .HasColumnName("Bill_To")
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.Business)
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.Code)
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.ContactPerson)
-                    .HasColumnName("Contact_Person")
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.CustomerBalance).HasColumnName("Customer_Balance");
-
-                entity.Property(e => e.Email)
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.Facebook)
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.Individual)
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.Instagram)
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.Linkedin)
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.PaymentTerms).HasColumnName("Payment_Terms");
-
-                entity.Property(e => e.Phone)
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.ShipTo)
-                    .HasColumnName("Ship_To")
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.ShopName)
-                    .HasColumnName("Shop_Name")
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.ShopNumber).HasColumnName("Shop_Number");
-
-                entity.Property(e => e.TikTok)
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.Twitter)
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.Website)
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
-
-                entity.HasOne(d => d.PaymentTermsNavigation)
-                    .WithMany(p => p.CustomerDetails)
-                    .HasForeignKey(d => d.PaymentTerms)
-                    .HasConstraintName("FK_Customer_Details_Payment_terms");
-            });
-
             modelBuilder.Entity<Department>(entity =>
             {
                 entity.ToTable("DEPARTMENT");
@@ -485,11 +401,6 @@ namespace Backend.Models
                     .IsUnicode(false);
 
                 entity.Property(e => e.UnitPrice).HasColumnName("Unit_Price");
-
-                entity.HasOne(d => d.CustomerNameNavigation)
-                    .WithMany(p => p.Invoice)
-                    .HasForeignKey(d => d.CustomerName)
-                    .HasConstraintName("FK_Invoice_Customer");
             });
 
             modelBuilder.Entity<ItemBrand>(entity =>
@@ -1210,11 +1121,6 @@ namespace Backend.Models
                 entity.Property(e => e.UnusedAmount)
                     .HasColumnName("Unused_Amount")
                     .HasMaxLength(50);
-
-                entity.HasOne(d => d.CustomerNameNavigation)
-                    .WithMany(p => p.ReceivedPayments)
-                    .HasForeignKey(d => d.CustomerName)
-                    .HasConstraintName("FK_Received_Payments_CustomerName");
 
                 entity.HasOne(d => d.InvoiceNoNavigation)
                     .WithMany(p => p.ReceivedPayments)

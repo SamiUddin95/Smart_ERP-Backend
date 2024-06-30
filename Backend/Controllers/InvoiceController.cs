@@ -71,193 +71,193 @@ namespace Backend.Controllers
             return formattedInvoiceNumber;
         }
 
-        [HttpPost]
-        [Route("/api/createInvoicedetails")]
-        public object createInvoicedetails(Invoice invoice)
-        {
-            try
-            {
+        //[HttpPost]
+        //[Route("/api/createInvoicedetails")]
+        //public object createInvoicedetails(Invoice invoice)
+        //{
+        //    try
+        //    {
 
-                try
-                {
-                    var InvCheck = bMSContext.Invoice.SingleOrDefault(u => u.Id == invoice.Id);
-                    var duedte = bMSContext.CustomerDetails.SingleOrDefault(u => u.Id == invoice.CustomerName).PaymentTerms;
-                    if (InvCheck != null)
-                    {
-                        InvCheck.Id = invoice.Id;
-                        InvCheck.Date = invoice.Date;
-                        InvCheck.Invoice1 = invoice.Invoice1;
-                        InvCheck.CustomerName = invoice.CustomerName;
-                        InvCheck.Status = "UN-PAID";
-                        if (duedte == 1)
-                        {
-                            var cdate = System.DateTime.Now;
-                            var ad15 = Convert.ToDateTime(cdate).AddDays(15);
-                            var fdate = ad15.ToString("MM/dd/yyyy");
-                            InvCheck.DueDate = fdate;
-                        }
-                        else if (duedte == 2)
-                        {
-                            var cdate = System.DateTime.Now;
-                            var ad30 = Convert.ToDateTime(cdate).AddDays(30);
-                            var fdate = ad30.ToString("MM/dd/yyyy");
-                            InvCheck.DueDate = fdate;
-                        }
-                        else if (duedte == 3)
-                        {
-                            var cdate = System.DateTime.Now;
-                            var ad45 = Convert.ToDateTime(cdate).AddDays(45);
-                            var fdate = ad45.ToString("MM/dd/yyyy");
-                            InvCheck.DueDate = fdate;
-                        }
-                        else if (duedte == 4)
-                        {
-                            var cdate = System.DateTime.Now;
-                            var ad60 = Convert.ToDateTime(cdate).AddDays(60);
-                            var fdate = ad60.ToString("MM/dd/yyyy");
-                            InvCheck.DueDate = fdate;
-                        }
-                        else if (duedte == 5)
-                        {
-                            var cdate = System.DateTime.Now;
-                            var ad90 = Convert.ToDateTime(cdate).AddDays(90);
-                            var fdate = ad90.ToString("MM/dd/yyyy");
-                            InvCheck.DueDate = fdate;
-                        }
-                        else if (duedte == 6)
-                        {
-                            var cdate = System.DateTime.Now;
-                            var dor = cdate.ToString("MM/dd/yyyy");
-                            InvCheck.DueDate = dor;
+        //        try
+        //        {
+        //            var InvCheck = bMSContext.Invoice.SingleOrDefault(u => u.Id == invoice.Id);
+        //            var duedte = bMSContext.CustomerDetails.SingleOrDefault(u => u.Id == invoice.CustomerName).PaymentTerms;
+        //            if (InvCheck != null)
+        //            {
+        //                InvCheck.Id = invoice.Id;
+        //                InvCheck.Date = invoice.Date;
+        //                InvCheck.Invoice1 = invoice.Invoice1;
+        //                InvCheck.CustomerName = invoice.CustomerName;
+        //                InvCheck.Status = "UN-PAID";
+        //                if (duedte == 1)
+        //                {
+        //                    var cdate = System.DateTime.Now;
+        //                    var ad15 = Convert.ToDateTime(cdate).AddDays(15);
+        //                    var fdate = ad15.ToString("MM/dd/yyyy");
+        //                    InvCheck.DueDate = fdate;
+        //                }
+        //                else if (duedte == 2)
+        //                {
+        //                    var cdate = System.DateTime.Now;
+        //                    var ad30 = Convert.ToDateTime(cdate).AddDays(30);
+        //                    var fdate = ad30.ToString("MM/dd/yyyy");
+        //                    InvCheck.DueDate = fdate;
+        //                }
+        //                else if (duedte == 3)
+        //                {
+        //                    var cdate = System.DateTime.Now;
+        //                    var ad45 = Convert.ToDateTime(cdate).AddDays(45);
+        //                    var fdate = ad45.ToString("MM/dd/yyyy");
+        //                    InvCheck.DueDate = fdate;
+        //                }
+        //                else if (duedte == 4)
+        //                {
+        //                    var cdate = System.DateTime.Now;
+        //                    var ad60 = Convert.ToDateTime(cdate).AddDays(60);
+        //                    var fdate = ad60.ToString("MM/dd/yyyy");
+        //                    InvCheck.DueDate = fdate;
+        //                }
+        //                else if (duedte == 5)
+        //                {
+        //                    var cdate = System.DateTime.Now;
+        //                    var ad90 = Convert.ToDateTime(cdate).AddDays(90);
+        //                    var fdate = ad90.ToString("MM/dd/yyyy");
+        //                    InvCheck.DueDate = fdate;
+        //                }
+        //                else if (duedte == 6)
+        //                {
+        //                    var cdate = System.DateTime.Now;
+        //                    var dor = cdate.ToString("MM/dd/yyyy");
+        //                    InvCheck.DueDate = dor;
 
-                        }
-                        else if (duedte == 7)
-                        {
-                            var cdate = DateTime.Now;
-                            var eom = cdate.ToString("MM/dd/yyyy");
+        //                }
+        //                else if (duedte == 7)
+        //                {
+        //                    var cdate = DateTime.Now;
+        //                    var eom = cdate.ToString("MM/dd/yyyy");
 
-                            var dte = DateTime.Now.ToString("MM/dd/yyyy");
-                            var syear = dte.Split('/');
-                            int year = Convert.ToInt32(syear[2]);
-                            int month = Convert.ToInt32(syear[1]);
+        //                    var dte = DateTime.Now.ToString("MM/dd/yyyy");
+        //                    var syear = dte.Split('/');
+        //                    int year = Convert.ToInt32(syear[2]);
+        //                    int month = Convert.ToInt32(syear[1]);
 
-                            int daysInMonth = DateTime.DaysInMonth(year, month);
+        //                    int daysInMonth = DateTime.DaysInMonth(year, month);
 
-                            var eomdte = eom.Split("/");
-                            int eom1 = Convert.ToInt32(eomdte[1]);
+        //                    var eomdte = eom.Split("/");
+        //                    int eom1 = Convert.ToInt32(eomdte[1]);
 
-                            var EndOfMonth = daysInMonth - eom1;
+        //                    var EndOfMonth = daysInMonth - eom1;
 
-                            var fdte = cdate.AddDays(EndOfMonth);
-                            InvCheck.DueDate = fdte.ToString("MM/dd/yyyy");
-
-
-                        }
-                        InvCheck.Qty = invoice.Qty;
-                        InvCheck.UnitPrice = invoice.UnitPrice;
-                        InvCheck.Amount = InvCheck.Qty * InvCheck.UnitPrice;
-
-                        InvCheck.BalanceDue = InvCheck.Amount;//invoice.BalanceDue;
-                        bMSContext.Invoice.Update(InvCheck);
-                        bMSContext.SaveChanges();
-                        return JsonConvert.SerializeObject(new { id = InvCheck.Id });
-                    }
-                    else
-                    {
-                        Invoice invice = new Invoice();
-                        invice.Id = invoice.Id;
-                        invice.Date = invoice.Date;
-                        invice.Invoice1 = GenerateInvoiceNumber();//invoice.Invoice1;
-                        invice.CustomerName = invoice.CustomerName;
-                        invice.Status = "UN-PAID";
-                        //Duedate
-                        if (duedte == 1)
-                        {
-                            var cdate = System.DateTime.Now;
-                            var ad15 = Convert.ToDateTime(cdate).AddDays(15);
-                            var fdate = ad15.ToString("MM/dd/yyyy");
-                            invice.DueDate = fdate;
-                        }
-                        else if (duedte == 2)
-                        {
-                            var cdate = System.DateTime.Now;
-                            var ad30 = Convert.ToDateTime(cdate).AddDays(30);
-                            var fdate = ad30.ToString("MM/dd/yyyy");
-                            invice.DueDate = fdate;
-                        }
-                        else if (duedte == 3)
-                        {
-                            var cdate = System.DateTime.Now;
-                            var ad45 = Convert.ToDateTime(cdate).AddDays(45);
-                            var fdate = ad45.ToString("MM/dd/yyyy");
-                            invice.DueDate = fdate;
-                        }
-                        else if (duedte == 4)
-                        {
-                            var cdate = System.DateTime.Now;
-                            var ad60 = Convert.ToDateTime(cdate).AddDays(60);
-                            var fdate = ad60.ToString("MM/dd/yyyy");
-                            invice.DueDate = fdate;
-                        }
-                        else if (duedte == 5)
-                        {
-                            var cdate = System.DateTime.Now;
-                            var ad90 = Convert.ToDateTime(cdate).AddDays(90);
-                            var fdate = ad90.ToString("MM/dd/yyyy");
-                            invice.DueDate = fdate;
-                        }
-                        else if (duedte == 6)
-                        {
-                            var cdate = System.DateTime.Now;
-                            var dor = cdate.ToString("MM/dd/yyyy");
-                            invice.DueDate = dor;
-
-                        }
-                        else if (duedte == 7)
-                        {
-                            var cdate = DateTime.Now;
-                            var eom = cdate.ToString("MM/dd/yyyy");
-
-                            var dte = DateTime.Now.ToString("MM/dd/yyyy");
-                            var syear = dte.Split('/');
-                            int year = Convert.ToInt32(syear[2]);
-                            int month = Convert.ToInt32(syear[1]);
-
-                            int daysInMonth = DateTime.DaysInMonth(year, month);
-
-                            var eomdte = eom.Split("/");
-                            int eom1 = Convert.ToInt32(eomdte[1]);
-
-                            var EndOfMonth = daysInMonth - eom1;
-
-                            var fdte = cdate.AddDays(EndOfMonth);
-                            invice.DueDate = fdte.ToString("MM/dd/yyyy");
+        //                    var fdte = cdate.AddDays(EndOfMonth);
+        //                    InvCheck.DueDate = fdte.ToString("MM/dd/yyyy");
 
 
-                        }
-                        invice.Qty = invoice.Qty;
-                        invice.UnitPrice = invoice.UnitPrice;
-                        invice.Amount = invice.Qty * invice.UnitPrice;
-                        invice.BalanceDue = invice.Amount;
-                        bMSContext.Invoice.Add(invice);
-                        bMSContext.SaveChanges();
-                        return JsonConvert.SerializeObject(new { id = invoice.Id });
-                    }
-                }
-                catch (Exception ex)
-                {
+        //                }
+        //                InvCheck.Qty = invoice.Qty;
+        //                InvCheck.UnitPrice = invoice.UnitPrice;
+        //                InvCheck.Amount = InvCheck.Qty * InvCheck.UnitPrice;
 
-                    JsonConvert.SerializeObject(new { msg = ex.Message });
-                }
-                return JsonConvert.SerializeObject(new { msg = "Message" });
-            }
-            catch (Exception ex)
-            {
+        //                InvCheck.BalanceDue = InvCheck.Amount;//invoice.BalanceDue;
+        //                bMSContext.Invoice.Update(InvCheck);
+        //                bMSContext.SaveChanges();
+        //                return JsonConvert.SerializeObject(new { id = InvCheck.Id });
+        //            }
+        //            else
+        //            {
+        //                Invoice invice = new Invoice();
+        //                invice.Id = invoice.Id;
+        //                invice.Date = invoice.Date;
+        //                invice.Invoice1 = GenerateInvoiceNumber();//invoice.Invoice1;
+        //                invice.CustomerName = invoice.CustomerName;
+        //                invice.Status = "UN-PAID";
+        //                //Duedate
+        //                if (duedte == 1)
+        //                {
+        //                    var cdate = System.DateTime.Now;
+        //                    var ad15 = Convert.ToDateTime(cdate).AddDays(15);
+        //                    var fdate = ad15.ToString("MM/dd/yyyy");
+        //                    invice.DueDate = fdate;
+        //                }
+        //                else if (duedte == 2)
+        //                {
+        //                    var cdate = System.DateTime.Now;
+        //                    var ad30 = Convert.ToDateTime(cdate).AddDays(30);
+        //                    var fdate = ad30.ToString("MM/dd/yyyy");
+        //                    invice.DueDate = fdate;
+        //                }
+        //                else if (duedte == 3)
+        //                {
+        //                    var cdate = System.DateTime.Now;
+        //                    var ad45 = Convert.ToDateTime(cdate).AddDays(45);
+        //                    var fdate = ad45.ToString("MM/dd/yyyy");
+        //                    invice.DueDate = fdate;
+        //                }
+        //                else if (duedte == 4)
+        //                {
+        //                    var cdate = System.DateTime.Now;
+        //                    var ad60 = Convert.ToDateTime(cdate).AddDays(60);
+        //                    var fdate = ad60.ToString("MM/dd/yyyy");
+        //                    invice.DueDate = fdate;
+        //                }
+        //                else if (duedte == 5)
+        //                {
+        //                    var cdate = System.DateTime.Now;
+        //                    var ad90 = Convert.ToDateTime(cdate).AddDays(90);
+        //                    var fdate = ad90.ToString("MM/dd/yyyy");
+        //                    invice.DueDate = fdate;
+        //                }
+        //                else if (duedte == 6)
+        //                {
+        //                    var cdate = System.DateTime.Now;
+        //                    var dor = cdate.ToString("MM/dd/yyyy");
+        //                    invice.DueDate = dor;
 
-                return null;
-            }
+        //                }
+        //                else if (duedte == 7)
+        //                {
+        //                    var cdate = DateTime.Now;
+        //                    var eom = cdate.ToString("MM/dd/yyyy");
 
-        }
+        //                    var dte = DateTime.Now.ToString("MM/dd/yyyy");
+        //                    var syear = dte.Split('/');
+        //                    int year = Convert.ToInt32(syear[2]);
+        //                    int month = Convert.ToInt32(syear[1]);
+
+        //                    int daysInMonth = DateTime.DaysInMonth(year, month);
+
+        //                    var eomdte = eom.Split("/");
+        //                    int eom1 = Convert.ToInt32(eomdte[1]);
+
+        //                    var EndOfMonth = daysInMonth - eom1;
+
+        //                    var fdte = cdate.AddDays(EndOfMonth);
+        //                    invice.DueDate = fdte.ToString("MM/dd/yyyy");
+
+
+        //                }
+        //                invice.Qty = invoice.Qty;
+        //                invice.UnitPrice = invoice.UnitPrice;
+        //                invice.Amount = invice.Qty * invice.UnitPrice;
+        //                invice.BalanceDue = invice.Amount;
+        //                bMSContext.Invoice.Add(invice);
+        //                bMSContext.SaveChanges();
+        //                return JsonConvert.SerializeObject(new { id = invoice.Id });
+        //            }
+        //        }
+        //        catch (Exception ex)
+        //        {
+
+        //            JsonConvert.SerializeObject(new { msg = ex.Message });
+        //        }
+        //        return JsonConvert.SerializeObject(new { msg = "Message" });
+        //    }
+        //    catch (Exception ex)
+        //    {
+
+        //        return null;
+        //    }
+
+        //}
 
 
         [HttpGet]
@@ -398,5 +398,6 @@ namespace Backend.Controllers
             return result;
         }
 
-    }
+        }
+    
 }
