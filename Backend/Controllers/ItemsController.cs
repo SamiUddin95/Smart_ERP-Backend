@@ -402,6 +402,7 @@ namespace Backend.Controllers
                         Manufacturerchk.Telephoneno = itemManufacturer.Telephoneno;
                         Manufacturerchk.Telephoneno2 = itemManufacturer.Telephoneno2;
                         Manufacturerchk.Email = itemManufacturer.Email;
+                        Manufacturerchk.Address = itemManufacturer.Address;
 
                         bMSContext.ItemManufacturer.Update(Manufacturerchk);
                         bMSContext.SaveChanges();
@@ -415,6 +416,7 @@ namespace Backend.Controllers
                         itemManufacturer1.Telephoneno = itemManufacturer.Telephoneno;
                         itemManufacturer1.Telephoneno2 = itemManufacturer.Telephoneno2;
                         itemManufacturer1.Email = itemManufacturer.Email;
+                        itemManufacturer.Address = itemManufacturer.Address;
                         bMSContext.ItemManufacturer.Add(itemManufacturer1);
                         bMSContext.SaveChanges();
                         return JsonConvert.SerializeObject(new { id = itemManufacturer1.Id });
