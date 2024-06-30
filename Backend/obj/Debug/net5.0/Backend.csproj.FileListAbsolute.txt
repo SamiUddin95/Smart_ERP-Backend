@@ -470,9 +470,15 @@ D:\Mohsin USB\SMART_ERP\SourceCode-SMART_ERP\BackEnd\Backend\obj\Debug\net5.0\Ba
 D:\Mohsin USB\SMART_ERP\SourceCode-SMART_ERP\BackEnd\Backend\obj\Debug\net5.0\scopedcss\bundle\Backend.styles.css
 D:\Mohsin USB\SMART_ERP\SourceCode-SMART_ERP\BackEnd\Backend\obj\Debug\net5.0\staticwebassets\Backend.StaticWebAssets.Manifest.cache
 D:\Mohsin USB\SMART_ERP\SourceCode-SMART_ERP\BackEnd\Backend\obj\Debug\net5.0\Backend.RazorTargetAssemblyInfo.cache
-D:\Mohsin USB\SMART_ERP\SourceCode-SMART_ERP\BackEnd\Backend\obj\Debug\net5.0\Backend.csproj.CopyComplete
 D:\Mohsin USB\SMART_ERP\SourceCode-SMART_ERP\BackEnd\Backend\obj\Debug\net5.0\Backend.dll
 D:\Mohsin USB\SMART_ERP\SourceCode-SMART_ERP\BackEnd\Backend\obj\Debug\net5.0\refint\Backend.dll
 D:\Mohsin USB\SMART_ERP\SourceCode-SMART_ERP\BackEnd\Backend\obj\Debug\net5.0\Backend.pdb
 D:\Mohsin USB\SMART_ERP\SourceCode-SMART_ERP\BackEnd\Backend\obj\Debug\net5.0\Backend.genruntimeconfig.cache
 D:\Mohsin USB\SMART_ERP\SourceCode-SMART_ERP\BackEnd\Backend\obj\Debug\net5.0\ref\Backend.dll
+D:\Mohsin USB\SMART_ERP\SourceCode-SMART_ERP\BackEnd\Backend\obj\Debug\net5.0\Backend.sourcelink.json
+D:\Mohsin USB\SMART_ERP\SourceCode-SMART_ERP\BackEnd\Backend\obj\Debug\net5.0\staticwebassets\Backend.StaticWebAssets.Pack.cache
+D:\Mohsin USB\SMART_ERP\SourceCode-SMART_ERP\BackEnd\Backend\obj\Debug\net5.0\staticwebassets\msbuild.Backend.Microsoft.AspNetCore.StaticWebAssets.props
+D:\Mohsin USB\SMART_ERP\SourceCode-SMART_ERP\BackEnd\Backend\obj\Debug\net5.0\staticwebassets\msbuild.build.Backend.props
+D:\Mohsin USB\SMART_ERP\SourceCode-SMART_ERP\BackEnd\Backend\obj\Debug\net5.0\staticwebassets\msbuild.buildMultiTargeting.Backend.props
+D:\Mohsin USB\SMART_ERP\SourceCode-SMART_ERP\BackEnd\Backend\obj\Debug\net5.0\staticwebassets\msbuild.buildTransitive.Backend.props
+D:\Mohsin USB\SMART_ERP\SourceCode-SMART_ERP\BackEnd\Backend\obj\Debug\net5.0\Backend.csproj.Up2Date
