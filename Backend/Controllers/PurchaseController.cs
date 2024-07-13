@@ -110,6 +110,27 @@ namespace Backend.Controllers
                                 bMSContext.PurchaseOrderDetail.Add(purchOrderDtl);
                                 bMSContext.SaveChanges();
                             }
+                        }else
+                        {
+                            for (int i = 0; i <= purchOrderModel.purcOrderDtlModel.Count(); i++)
+                            {
+                                PurchaseOrderDetail purchOrderDtl = new PurchaseOrderDetail();
+                                purchOrderDtl.RtnQty = purchOrderModel.purcOrderDtlModel[i].RtnQty;
+                                purchOrderDtl.Qty = purchOrderModel.purcOrderDtlModel[i].Qty;
+                                purchOrderDtl.RecPrice = purchOrderModel.purcOrderDtlModel[i].RecPrice;
+                                purchOrderDtl.SoldQty = purchOrderModel.purcOrderDtlModel[i].SoldQty;
+                                purchOrderDtl.OrderId = data[0].Id;
+                                purchOrderDtl.ItemId = purchOrderModel.purcOrderDtlModel[i].ItemId;
+                                purchOrderDtl.BarCode = purchOrderModel.purcOrderDtlModel[i].BarCode;
+                                purchOrderDtl.CurrentStock = purchOrderModel.purcOrderDtlModel[i].CurrentStock;
+                                purchOrderDtl.RequiredPack = purchOrderModel.purcOrderDtlModel[i].RequiredPack;
+                                purchOrderDtl.FullRate = purchOrderModel.purcOrderDtlModel[i].FullRate;
+                                purchOrderDtl.NetSale = purchOrderModel.purcOrderDtlModel[i].NetSale;
+                                purchOrderDtl.Total = purchOrderModel.purcOrderDtlModel[i].Total;
+                                purchOrderDtl.NetSalePrice = purchOrderModel.purcOrderDtlModel[i].NetSalePrice;
+                                bMSContext.PurchaseOrderDetail.Add(purchOrderDtl);
+                                bMSContext.SaveChanges();
+                            }
                         }
                     }
                 }
