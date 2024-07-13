@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Backend.Models
 {
-    public partial class ItemItems
+    public partial class Item
     {
         public int Id { get; set; }
         public string AliasName { get; set; }

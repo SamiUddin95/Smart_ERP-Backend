@@ -17,6 +17,7 @@ namespace Backend.Models
         public decimal? Amount { get; set; }
         public byte[] UnusedAmount { get; set; }
 
+        public CustomerDetails CustomerNameNavigation { get; set; }
         public Invoice InvoiceNoNavigation { get; set; }
         public PaymentMode ModeNavigation { get; set; }
         public PaymentType TypeNavigation { get; set; }

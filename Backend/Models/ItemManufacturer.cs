@@ -7,7 +7,7 @@ namespace Backend.Models
     {
         public ItemManufacturer()
         {
-            ItemItems = new HashSet<ItemItems>();
+            Item = new HashSet<Item>();
         }
 
         public int Id { get; set; }
@@ -17,6 +17,6 @@ namespace Backend.Models
         public string Email { get; set; }
         public string Address { get; set; }
 
-        public ICollection<ItemItems> ItemItems { get; set; }
+        public ICollection<Item> Item { get; set; }
     }
 }

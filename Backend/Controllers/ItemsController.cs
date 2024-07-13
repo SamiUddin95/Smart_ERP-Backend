@@ -277,21 +277,21 @@ namespace Backend.Controllers
 
         [HttpGet]
         [Route("/api/getAllItems")]
-        public IEnumerable<ItemItems> getAllItems()
+        public IEnumerable<Item> getAllItems()
         {
-            return bMSContext.ItemItems.ToList();
+            return bMSContext.Item.ToList();
         }
 
         [HttpPost]
         [Route("/api/createItems")]
-        public object createItems(ItemItems Items)
+        public object createItems(Item Items)
         {
 
             try
             {
                 try
                 {
-                    var Itemschk = bMSContext.ItemItems.SingleOrDefault(u => u.Id == Items.Id);
+                    var Itemschk = bMSContext.Item.SingleOrDefault(u => u.Id == Items.Id);
                     if (Itemschk != null)
                     {
 
@@ -308,13 +308,13 @@ namespace Backend.Controllers
                         Itemschk.BrandId = Items.BrandId;
                         Itemschk.Discflat = Items.Discflat;
                         Itemschk.Lockdisc = Items.Lockdisc;
-                        bMSContext.ItemItems.Update(Itemschk);
+                        bMSContext.Item.Update(Itemschk);
                         bMSContext.SaveChanges();
                         return JsonConvert.SerializeObject(new { id = Itemschk.Id });
                     }
                     else
                     {
-                        ItemItems itemItems = new ItemItems();
+                        Item itemItems = new Item();
 
                         itemItems.AliasName = Items.AliasName;
                         itemItems.ItemName = Items.ItemName;
@@ -328,7 +328,7 @@ namespace Backend.Controllers
                         itemItems.BrandId = Items.BrandId;
                         itemItems.Discflat = Items.Discflat;
                         itemItems.Lockdisc = Items.Lockdisc;
-                        bMSContext.ItemItems.Add(itemItems);
+                        bMSContext.Item.Add(itemItems);
                         bMSContext.SaveChanges();
                         return JsonConvert.SerializeObject(new { id = itemItems.Id });
                     }
@@ -352,10 +352,10 @@ namespace Backend.Controllers
         {
             try
             {
-                var delitem = bMSContext.ItemItems.SingleOrDefault(u => u.Id == id);
+                var delitem = bMSContext.Item.SingleOrDefault(u => u.Id == id);
                 if (delitem != null)
                 {
-                    bMSContext.ItemItems.Remove(delitem);
+                    bMSContext.Item.Remove(delitem);
                     bMSContext.SaveChanges();
                     return JsonConvert.SerializeObject(new { id = delitem.Id });
                 }
@@ -369,9 +369,9 @@ namespace Backend.Controllers
 
         [HttpGet]
         [Route("/api/getItemById")]
-        public IEnumerable<ItemItems> getItemById(int id)
+        public IEnumerable<Item> getItemById(int id)
         {
-            return bMSContext.ItemItems.Where(u => u.Id == id).ToList();
+            return bMSContext.Item.Where(u => u.Id == id).ToList();
         }
         #endregion
 

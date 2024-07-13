@@ -7,12 +7,12 @@ namespace Backend.Models
     {
         public ItemBrand()
         {
-            ItemItems = new HashSet<ItemItems>();
+            Item = new HashSet<Item>();
         }
 
         public int Id { get; set; }
         public string Name { get; set; }
 
-        public ICollection<ItemItems> ItemItems { get; set; }
+        public ICollection<Item> Item { get; set; }
     }
 }

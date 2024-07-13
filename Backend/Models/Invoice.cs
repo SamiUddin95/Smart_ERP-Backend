@@ -22,6 +22,7 @@ namespace Backend.Models
         public decimal? UnitPrice { get; set; }
         public string Particulars { get; set; }
 
+        public CustomerDetails CustomerNameNavigation { get; set; }
         public ICollection<ReceivedPayments> ReceivedPayments { get; set; }
     }
 }

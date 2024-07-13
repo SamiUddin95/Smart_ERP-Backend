@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Backend.Models
 {
-    public partial class PurchasePurchase
+    public partial class PurchaseReturnDetail
     {
         public int Id { get; set; }
         public string Barcode { get; set; }

@@ -7,8 +7,8 @@ namespace Backend.Models
     {
         public ItemCategory()
         {
+            Item = new HashSet<Item>();
             ItemClass = new HashSet<ItemClass>();
-            ItemItems = new HashSet<ItemItems>();
         }
 
         public int Id { get; set; }
@@ -20,7 +20,7 @@ namespace Backend.Models
         public int? Width { get; set; }
         public string Description { get; set; }
 
+        public ICollection<Item> Item { get; set; }
         public ICollection<ItemClass> ItemClass { get; set; }
-        public ICollection<ItemItems> ItemItems { get; set; }
     }
 }

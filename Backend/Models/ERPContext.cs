@@ -18,13 +18,14 @@ namespace Backend.Models
         public virtual DbSet<City> City { get; set; }
         public virtual DbSet<CounterSale> CounterSale { get; set; }
         public virtual DbSet<CounterSaleDetail> CounterSaleDetail { get; set; }
+        public virtual DbSet<CustomerDetails> CustomerDetails { get; set; }
         public virtual DbSet<Department> Department { get; set; }
         public virtual DbSet<GoDown> GoDown { get; set; }
         public virtual DbSet<Invoice> Invoice { get; set; }
+        public virtual DbSet<Item> Item { get; set; }
         public virtual DbSet<ItemBrand> ItemBrand { get; set; }
         public virtual DbSet<ItemCategory> ItemCategory { get; set; }
         public virtual DbSet<ItemClass> ItemClass { get; set; }
-        public virtual DbSet<ItemItems> ItemItems { get; set; }
         public virtual DbSet<ItemManufacturer> ItemManufacturer { get; set; }
         public virtual DbSet<Month> Month { get; set; }
         public virtual DbSet<Party> Party { get; set; }
@@ -35,8 +36,11 @@ namespace Backend.Models
         public virtual DbSet<PaymentTerms> PaymentTerms { get; set; }
         public virtual DbSet<PaymentType> PaymentType { get; set; }
         public virtual DbSet<PurchaseOpeningPurchase> PurchaseOpeningPurchase { get; set; }
+        public virtual DbSet<PurchaseOrder> PurchaseOrder { get; set; }
         public virtual DbSet<PurchaseOrderCateory> PurchaseOrderCateory { get; set; }
-        public virtual DbSet<PurchasePurchase> PurchasePurchase { get; set; }
+        public virtual DbSet<PurchaseOrderDetail> PurchaseOrderDetail { get; set; }
+        public virtual DbSet<PurchaseReturn> PurchaseReturn { get; set; }
+        public virtual DbSet<PurchaseReturnDetail> PurchaseReturnDetail { get; set; }
         public virtual DbSet<ReceivedPayments> ReceivedPayments { get; set; }
         public virtual DbSet<Rent> Rent { get; set; }
         public virtual DbSet<SalesMan> SalesMan { get; set; }
@@ -48,14 +52,12 @@ namespace Backend.Models
         public virtual DbSet<UserType> UserType { get; set; }
         public virtual DbSet<VendorDetails> VendorDetails { get; set; }
 
-        // Unable to generate entity type for table 'dbo.Customer_Details'. Please see the warning messages.
-
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-                optionsBuilder.UseSqlServer(@"Server=MOHSINNADEEM\SQL2K17DEV;Database=ERP;Trusted_Connection=True;");
+                optionsBuilder.UseSqlServer(@"Server=AS-EFT-HASHAM\SQLEXPRESS;Database=ERP;Trusted_Connection=True;");
             }
         }
 
@@ -349,6 +351,91 @@ namespace Backend.Models
                     .HasColumnType("decimal(19, 2)");
             });
 
+            modelBuilder.Entity<CustomerDetails>(entity =>
+            {
+                entity.ToTable("Customer_Details");
+
+                entity.Property(e => e.BankDetails)
+                    .HasColumnName("Bank_Details")
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.BillTo)
+                    .HasColumnName("Bill_To")
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Business)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Code)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.ContactPerson)
+                    .HasColumnName("Contact_Person")
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.CustomerBalance).HasColumnName("Customer_Balance");
+
+                entity.Property(e => e.Email)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Facebook)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Individual)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Instagram)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Linkedin)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.PaymentTerms).HasColumnName("Payment_Terms");
+
+                entity.Property(e => e.Phone)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.ShipTo)
+                    .HasColumnName("Ship_To")
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.ShopName)
+                    .HasColumnName("Shop_Name")
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.ShopNumber).HasColumnName("Shop_Number");
+
+                entity.Property(e => e.TikTok)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Twitter)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Website)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.HasOne(d => d.PaymentTermsNavigation)
+                    .WithMany(p => p.CustomerDetails)
+                    .HasForeignKey(d => d.PaymentTerms)
+                    .HasConstraintName("FK_Customer_Details_Payment_terms");
+            });
+
             modelBuilder.Entity<Department>(entity =>
             {
                 entity.ToTable("DEPARTMENT");
@@ -401,6 +488,75 @@ namespace Backend.Models
                     .IsUnicode(false);
 
                 entity.Property(e => e.UnitPrice).HasColumnName("Unit_Price");
+
+                entity.HasOne(d => d.CustomerNameNavigation)
+                    .WithMany(p => p.Invoice)
+                    .HasForeignKey(d => d.CustomerName)
+                    .HasConstraintName("FK_Invoice_Customer");
+            });
+
+            modelBuilder.Entity<Item>(entity =>
+            {
+                entity.ToTable("ITEM");
+
+                entity.Property(e => e.Id).HasColumnName("ID");
+
+                entity.Property(e => e.AliasName)
+                    .HasColumnName("ALIAS_NAME")
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.BrandId).HasColumnName("BRAND_ID");
+
+                entity.Property(e => e.CategoryId).HasColumnName("CATEGORY_ID");
+
+                entity.Property(e => e.ClassId).HasColumnName("CLASS_ID");
+
+                entity.Property(e => e.Discflat).HasColumnName("DISCFLAT");
+
+                entity.Property(e => e.ItemName)
+                    .IsRequired()
+                    .HasColumnName("ITEM_NAME")
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Lockdisc).HasColumnName("LOCKDISC");
+
+                entity.Property(e => e.ManufacturerId).HasColumnName("MANUFACTURER_ID");
+
+                entity.Property(e => e.PurchasePrice).HasColumnName("PURCHASE_PRICE");
+
+                entity.Property(e => e.RecentPurchase).HasColumnName("RECENT_PURCHASE");
+
+                entity.Property(e => e.Remarks)
+                    .HasColumnName("REMARKS")
+                    .IsUnicode(false);
+
+                entity.Property(e => e.SalePrice).HasColumnName("SALE_PRICE");
+
+                entity.HasOne(d => d.Brand)
+                    .WithMany(p => p.Item)
+                    .HasForeignKey(d => d.BrandId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_ITEM_ITEMS_BRAND");
+
+                entity.HasOne(d => d.Category)
+                    .WithMany(p => p.Item)
+                    .HasForeignKey(d => d.CategoryId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_ITEM_ITEMS_CATEGORY");
+
+                entity.HasOne(d => d.Class)
+                    .WithMany(p => p.Item)
+                    .HasForeignKey(d => d.ClassId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_ITEM_ITEMS_CLASS");
+
+                entity.HasOne(d => d.Manufacturer)
+                    .WithMany(p => p.Item)
+                    .HasForeignKey(d => d.ManufacturerId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_ITEM_ITEMS_MANUFACTURER");
             });
 
             modelBuilder.Entity<ItemBrand>(entity =>
@@ -462,70 +618,6 @@ namespace Backend.Models
                     .WithMany(p => p.ItemClass)
                     .HasForeignKey(d => d.CategoryId)
                     .HasConstraintName("FK_ITEM_CLASS_ITEM_CATEGORY");
-            });
-
-            modelBuilder.Entity<ItemItems>(entity =>
-            {
-                entity.ToTable("ITEM_ITEMS");
-
-                entity.Property(e => e.Id).HasColumnName("ID");
-
-                entity.Property(e => e.AliasName)
-                    .HasColumnName("ALIAS_NAME")
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.BrandId).HasColumnName("BRAND_ID");
-
-                entity.Property(e => e.CategoryId).HasColumnName("CATEGORY_ID");
-
-                entity.Property(e => e.ClassId).HasColumnName("CLASS_ID");
-
-                entity.Property(e => e.Discflat).HasColumnName("DISCFLAT");
-
-                entity.Property(e => e.ItemName)
-                    .IsRequired()
-                    .HasColumnName("ITEM_NAME")
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.Lockdisc).HasColumnName("LOCKDISC");
-
-                entity.Property(e => e.ManufacturerId).HasColumnName("MANUFACTURER_ID");
-
-                entity.Property(e => e.PurchasePrice).HasColumnName("PURCHASE_PRICE");
-
-                entity.Property(e => e.RecentPurchase).HasColumnName("RECENT_PURCHASE");
-
-                entity.Property(e => e.Remarks)
-                    .HasColumnName("REMARKS")
-                    .IsUnicode(false);
-
-                entity.Property(e => e.SalePrice).HasColumnName("SALE_PRICE");
-
-                entity.HasOne(d => d.Brand)
-                    .WithMany(p => p.ItemItems)
-                    .HasForeignKey(d => d.BrandId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_ITEM_ITEMS_BRAND");
-
-                entity.HasOne(d => d.Category)
-                    .WithMany(p => p.ItemItems)
-                    .HasForeignKey(d => d.CategoryId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_ITEM_ITEMS_CATEGORY");
-
-                entity.HasOne(d => d.Class)
-                    .WithMany(p => p.ItemItems)
-                    .HasForeignKey(d => d.ClassId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_ITEM_ITEMS_CLASS");
-
-                entity.HasOne(d => d.Manufacturer)
-                    .WithMany(p => p.ItemItems)
-                    .HasForeignKey(d => d.ManufacturerId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_ITEM_ITEMS_MANUFACTURER");
             });
 
             modelBuilder.Entity<ItemManufacturer>(entity =>
@@ -970,6 +1062,27 @@ namespace Backend.Models
                     .IsUnicode(false);
             });
 
+            modelBuilder.Entity<PurchaseOrder>(entity =>
+            {
+                entity.ToTable("PURCHASE_ORDER");
+
+                entity.Property(e => e.Id).HasColumnName("ID");
+
+                entity.Property(e => e.CreatedAt)
+                    .HasColumnName("CREATED_AT")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.DateOfInvoice)
+                    .HasColumnName("DATE_OF_INVOICE")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.PartyId).HasColumnName("PARTY_ID");
+
+                entity.Property(e => e.Remarks)
+                    .HasColumnName("REMARKS")
+                    .HasMaxLength(50);
+            });
+
             modelBuilder.Entity<PurchaseOrderCateory>(entity =>
             {
                 entity.ToTable("PURCHASE_ORDER_CATEORY");
@@ -983,9 +1096,77 @@ namespace Backend.Models
                     .IsUnicode(false);
             });
 
-            modelBuilder.Entity<PurchasePurchase>(entity =>
+            modelBuilder.Entity<PurchaseOrderDetail>(entity =>
             {
-                entity.ToTable("PURCHASE_PURCHASE");
+                entity.ToTable("PURCHASE_ORDER_DETAIL");
+
+                entity.Property(e => e.Id).HasColumnName("ID");
+
+                entity.Property(e => e.BarCode)
+                    .HasColumnName("BAR_CODE")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.CurrentStock).HasColumnName("CURRENT_STOCK");
+
+                entity.Property(e => e.FullRate).HasColumnName("FULL_RATE");
+
+                entity.Property(e => e.ItemId).HasColumnName("ITEM_ID");
+
+                entity.Property(e => e.NetSale).HasColumnName("NET_SALE");
+
+                entity.Property(e => e.NetSalePrice).HasColumnName("NET_SALE_PRICE");
+
+                entity.Property(e => e.OrderId).HasColumnName("ORDER_ID");
+
+                entity.Property(e => e.Qty).HasColumnName("QTY");
+
+                entity.Property(e => e.RecPrice).HasColumnName("REC_PRICE");
+
+                entity.Property(e => e.RequiredPack)
+                    .HasColumnName("REQUIRED_PACK")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.RtnQty).HasColumnName("RTN_QTY");
+
+                entity.Property(e => e.SoldQty).HasColumnName("SOLD_QTY");
+
+                entity.Property(e => e.Total).HasColumnName("TOTAL");
+            });
+
+            modelBuilder.Entity<PurchaseReturn>(entity =>
+            {
+                entity.ToTable("PURCHASE_RETURN");
+
+                entity.Property(e => e.Id).HasColumnName("ID");
+
+                entity.Property(e => e.Date)
+                    .HasColumnName("DATE")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.EndDate)
+                    .HasColumnName("END_DATE")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.GoDownId).HasColumnName("GO_DOWN_ID");
+
+                entity.Property(e => e.OrderNo).HasColumnName("ORDER_NO");
+
+                entity.Property(e => e.PoCategroyId).HasColumnName("PO_CATEGROY_ID");
+
+                entity.Property(e => e.ProjectionDays)
+                    .HasColumnName("PROJECTION_DAYS")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.StartDate)
+                    .HasColumnName("START_DATE")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.Vehicle).HasColumnName("VEHICLE");
+            });
+
+            modelBuilder.Entity<PurchaseReturnDetail>(entity =>
+            {
+                entity.ToTable("PURCHASE_RETURN_DETAIL");
 
                 entity.Property(e => e.Id).HasColumnName("ID");
 
@@ -1121,6 +1302,11 @@ namespace Backend.Models
                 entity.Property(e => e.UnusedAmount)
                     .HasColumnName("Unused_Amount")
                     .HasMaxLength(50);
+
+                entity.HasOne(d => d.CustomerNameNavigation)
+                    .WithMany(p => p.ReceivedPayments)
+                    .HasForeignKey(d => d.CustomerName)
+                    .HasConstraintName("FK_Received_Payments_CustomerName");
 
                 entity.HasOne(d => d.InvoiceNoNavigation)
                     .WithMany(p => p.ReceivedPayments)
