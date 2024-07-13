@@ -20,9 +20,19 @@ namespace Backend.Controllers
 
         [HttpGet]
         [Route("/api/getAllPurchaseOrder")]
-        public IEnumerable<PurchaseOrder> getAllPurchase()
+        public IEnumerable<dynamic> getAllPurchase()
         {
-            return bMSContext.PurchaseOrder.ToList();
+            var result = (from po in bMSContext.PurchaseOrder
+                          join p in bMSContext.Party on po.PartyId equals p.Id
+                          select new
+                          {
+                              partyId = p.PartyName,
+                              dateOfInvoice = po.DateOfInvoice,
+                              remarks=po.Remarks,
+                              createdAt=po.CreatedAt,
+                              id=po.Id,
+                          }).ToList();
+            return result;
         }
 
         [HttpPost]
@@ -37,8 +47,10 @@ namespace Backend.Controllers
                     PurchaseOrder pOrder = new PurchaseOrder();
                     pOrder.PartyId = purchOrderModel.PartyId;
                     pOrder.Remarks = purchOrderModel.Remarks;
-                    pOrder.DateOfInvoice = purchOrderModel.DateOfInvoice; 
-                    pOrder.CreatedAt = purchOrderModel.CreatedAt;
+                    pOrder.DateOfInvoice = purchOrderModel.DateOfInvoice;
+                    pOrder.CreatedAt = DateTime.Now.Date.ToString();
+                    bMSContext.PurchaseOrder.Add(pOrder);
+                    bMSContext.SaveChanges();
                     if (purchOrderModel.purcOrderDtlModel.Count() > 0)
                     {
                         for (int i = 0; i <= purchOrderModel.purcOrderDtlModel.Count(); i++)
@@ -56,7 +68,9 @@ namespace Backend.Controllers
                             purchOrderDtl.FullRate = purchOrderModel.purcOrderDtlModel[i].FullRate;
                             purchOrderDtl.NetSale = purchOrderModel.purcOrderDtlModel[i].NetSale;
                             purchOrderDtl.Total = purchOrderModel.purcOrderDtlModel[i].Total;
-                            purchOrderDtl.NetSalePrice = purchOrderModel.purcOrderDtlModel[i].NetSalePrice; 
+                            purchOrderDtl.NetSalePrice = purchOrderModel.purcOrderDtlModel[i].NetSalePrice;
+                            bMSContext.PurchaseOrderDetail.Add(purchOrderDtl);
+                            bMSContext.SaveChanges();
                         }
                     }
                 }
