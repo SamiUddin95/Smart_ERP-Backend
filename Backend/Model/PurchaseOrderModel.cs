@@ -8,7 +8,14 @@ namespace Backend.Model
     {
         public long Id { get; set; }
         public int PartyId { get; set; } 
+        public string ProjectionDays { get; set; }
+        public decimal InvTotal { get; set; }
+        public decimal Disc  { get; set; }
         public string DateOfInvoice { get; set; }
+        public string PurOrderTerm { get; set; }
+        public string PoCategory { get; set; }
+        public string StartDate { get; set; }
+        public string EndDate { get; set; }
         public string Remarks { get; set; }
         public string CreatedAt { get; set; } 
         public List<PurchaseOrderDetailModel> purcOrderDtlModel {get;set;}
@@ -23,11 +30,11 @@ namespace Backend.Model
         public int? ItemId { get; set; } 
         public int? SoldQty { get; set; }
         public int? RtnQty { get; set; }
-        public int? NetSale { get; set; }
+        public int? NetSaleQty { get; set; }
         public int? CurrentStock { get; set; }
-        public string? RequiredPack { get; set; }
+        public int? RequiredQty { get; set; }
         public decimal? NetSalePrice { get; set; }
-        public decimal? FullRate { get; set; }
+        public decimal? Rate { get; set; }
         public int? Qty { get; set; }
         public decimal? RecPrice { get; set; }
         public int? Total { get; set; }

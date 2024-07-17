@@ -6,59 +6,38 @@ namespace Backend.Model
 {
     public class PurchaseReturnModel
     {
+
         public long Id { get; set; }
         public long OrderNo { get; set; }
-        public int PoCategroyId { get; set; }
+        public int PartyId { get; set; }
         public string Date { get; set; }
-        public string StartDate { get; set; }
-        public string EndDate { get; set; }
-        public int? GoDownId { get; set; }
-        public int? Vehicle { get; set; }
-        public string ProjectionDays { get; set; }
+        public int UserId { get; set; }
+        public string PurSno { get; set; }
+        public string ItemType { get; set; }
+        public int TotalQty { get; set; }
+        public int LooseQty { get; set; }
+        public int BonusQty { get; set; }
+        public int QtyPack { get; set; }
+        public decimal TotalExcTax { get; set; }
+        public decimal TotalIncTax { get; set; }
+        public decimal AvgPrice { get; set; }
+        public int? TotalStock { get; set; } 
+        public decimal? Total { get; set; }
+        public decimal? Disc { get;  set; }
+        public decimal? GrandTotal { get; set; }
+        public decimal? flatDisc { get; set; }
         public List<PurchaseReturnDetailModel> purcOrderDtlModel {get;set;}
-
-
     }
-    public class PurchaseReturnDetailModel
+    public partial class PurchaseReturnDetailModel
     {
+        public long Id { get; set; }
+        public long? OrderReturnId { get; set; }
         public string Barcode { get; set; }
-        public string ItemName { get; set; }
-        public int? Quantity { get; set; }
-        public DateTime? Expiry { get; set; }
-        public int? BonusQuantity { get; set; }
-        public decimal? PurchasePrice { get; set; }
-        public decimal? Discbypercent { get; set; }
-        public decimal? Discbyvalue { get; set; }
-        public decimal? TotalExcTax { get; set; }
-        public decimal? Gstbypercent { get; set; }
-        public decimal? Gstbyvalue { get; set; }
-        public decimal? TotalIncludeTax { get; set; }
-        public decimal? SalePrice { get; set; }
-        public decimal? SaleDisc { get; set; }
-        public decimal? Marginbypercent { get; set; }
-        public decimal? NetRate { get; set; }
-        public string PartyName { get; set; }
-        public string Remarks { get; set; }
-        public string PartyInv { get; set; }
-        public bool? Approved { get; set; }
-        public int? RecentPurchasePrice { get; set; }
-        public int? TotalStock { get; set; }
-        public decimal? AvgPrice { get; set; }
-        public int? DiscFlatEn { get; set; }
-        public int? MiscEn { get; set; }
-        public decimal? RetailPrice { get; set; }
-        public int? QtyPack { get; set; }
-        public int? LooseQty { get; set; }
-        public int? TotalQty { get; set; }
-        public int? BonusQty { get; set; }
-        public int? DescPercValue { get; set; }
-        public int? DiscFlatValue { get; set; }
-        public int? DiscFlatValue2 { get; set; }
-        public int? GstValue { get; set; }
-        public int? GstValue2 { get; set; }
-        public int? TotalExecTax { get; set; }
-        public int? TotalIncTax { get; set; }
-        public int? BonusValue { get; set; }
-        public int? GrandTotal { get; set; }
+        public int? ItemId { get; set; }
+        public int? Qty { get; set; }
+        public decimal? FullRate { get; set; }
+        public decimal? Disc { get; set; }
+        public decimal? FlatDisc { get; set; }
+        public decimal? Total { get; set; }
     }
 }
