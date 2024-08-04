@@ -57,7 +57,7 @@ namespace Backend.Models
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-                optionsBuilder.UseSqlServer(@"Server=MOHSINNADEEM\SQL2K17DEV;Database=ERP;Trusted_Connection=True;");
+                optionsBuilder.UseSqlServer(@"Server=AS-EFT-HASHAM\SQLEXPRESS;Database=ERP;Trusted_Connection=True;");
             }
         }
 

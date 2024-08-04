@@ -2,14 +2,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using System.Linq;
+using System.Threading.Tasks; 
 using Backend.Models;
 using Microsoft.AspNetCore.Cors;
 using Newtonsoft.Json;
 using Microsoft.AspNetCore.Authentication;
 using Backend.Model;
-using Newtonsoft.Json.Bson;
 
 namespace Backend.Controllers
 {
@@ -97,7 +95,7 @@ namespace Backend.Controllers
                         data[0].StartDate = purchOrderModel.StartDate.ToString();
                         data[0].InvTotal = purchOrderModel.InvTotal;
                         data[0].CreatedAt = DateTime.Now.Date.ToString();
-                        bMSContext.PurchaseOrder.Add(data[0]);
+                        bMSContext.PurchaseOrder.Update(data[0]);
                         bMSContext.SaveChanges(); 
                         var dataPurDtl= bMSContext.PurchaseOrderDetail.Where(x => x.OrderId == purchOrderModel.Id).FirstOrDefault();
                         if (dataPurDtl != null) 
@@ -127,7 +125,7 @@ namespace Backend.Controllers
                                 PurchaseOrderDetail purchOrderDtl = new PurchaseOrderDetail();
                                 purchOrderDtl.RtnQty = purchOrderModel.purcOrderDtlModel[i].RtnQty;
                                 purchOrderDtl.SoldQty = purchOrderModel.purcOrderDtlModel[i].SoldQty;
-                                purchOrderDtl.OrderId = dataPurDtl.Id;
+                                purchOrderDtl.OrderId = data[0].Id;
                                 purchOrderDtl.ItemId = purchOrderModel.purcOrderDtlModel[i].ItemId;
                                 purchOrderDtl.BarCode = purchOrderModel.purcOrderDtlModel[i].BarCode;
                                 purchOrderDtl.CurrentStock = purchOrderModel.purcOrderDtlModel[i].CurrentStock;
