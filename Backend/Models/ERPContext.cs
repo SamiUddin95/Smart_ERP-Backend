@@ -35,6 +35,8 @@ namespace Backend.Models
         public virtual DbSet<PaymentMode> PaymentMode { get; set; }
         public virtual DbSet<PaymentTerms> PaymentTerms { get; set; }
         public virtual DbSet<PaymentType> PaymentType { get; set; }
+        public virtual DbSet<Purchase> Purchase { get; set; }
+        public virtual DbSet<PurchaseDetail> PurchaseDetail { get; set; }
         public virtual DbSet<PurchaseOpeningPurchase> PurchaseOpeningPurchase { get; set; }
         public virtual DbSet<PurchaseOrder> PurchaseOrder { get; set; }
         public virtual DbSet<PurchaseOrderCateory> PurchaseOrderCateory { get; set; }
@@ -874,6 +876,131 @@ namespace Backend.Models
                     .HasColumnName("PAYMENT_TYPE")
                     .HasMaxLength(50)
                     .IsUnicode(false);
+            });
+
+            modelBuilder.Entity<Purchase>(entity =>
+            {
+                entity.ToTable("PURCHASE");
+
+                entity.Property(e => e.Id).HasColumnName("ID");
+
+                entity.Property(e => e.BillTotal)
+                    .HasColumnName("BILL_TOTAL")
+                    .HasColumnType("decimal(10, 2)");
+
+                entity.Property(e => e.InvoiceNo)
+                    .HasColumnName("INVOICE_NO")
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.ItemsQuantity).HasColumnName("ITEMS_QUANTITY");
+
+                entity.Property(e => e.RecentPurchasePrice)
+                    .HasColumnName("RECENT_PURCHASE_PRICE")
+                    .HasColumnType("decimal(10, 2)");
+
+                entity.Property(e => e.Remarks)
+                    .HasColumnName("REMARKS")
+                    .HasMaxLength(255)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.SalePrice)
+                    .HasColumnName("SALE_PRICE")
+                    .HasColumnType("decimal(10, 2)");
+
+                entity.Property(e => e.TotalDiscount)
+                    .HasColumnName("TOTAL_DISCOUNT")
+                    .HasColumnType("decimal(10, 2)")
+                    .HasDefaultValueSql("((0.00))");
+
+                entity.Property(e => e.TotalGst)
+                    .HasColumnName("TOTAL_GST")
+                    .HasColumnType("decimal(10, 2)")
+                    .HasDefaultValueSql("((0.00))");
+
+                entity.Property(e => e.VendorId)
+                    .HasColumnName("VENDOR_ID")
+                    .HasMaxLength(255)
+                    .IsUnicode(false);
+            });
+
+            modelBuilder.Entity<PurchaseDetail>(entity =>
+            {
+                entity.ToTable("PURCHASE_DETAIL");
+
+                entity.Property(e => e.Id).HasColumnName("ID");
+
+                entity.Property(e => e.Barcode)
+                    .HasColumnName("BARCODE")
+                    .HasMaxLength(255)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.BonusQuantity)
+                    .HasColumnName("BONUS_QUANTITY")
+                    .HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.DiscountByPercent)
+                    .HasColumnName("DISCOUNT_BY_PERCENT")
+                    .HasColumnType("decimal(5, 2)")
+                    .HasDefaultValueSql("((0.00))");
+
+                entity.Property(e => e.DiscountByValue)
+                    .HasColumnName("DISCOUNT_BY_VALUE")
+                    .HasColumnType("decimal(10, 2)")
+                    .HasDefaultValueSql("((0.00))");
+
+                entity.Property(e => e.GstByPercent)
+                    .HasColumnName("GST_BY_PERCENT")
+                    .HasColumnType("decimal(5, 2)")
+                    .HasDefaultValueSql("((0.00))");
+
+                entity.Property(e => e.GstByValue)
+                    .HasColumnName("GST_BY_VALUE")
+                    .HasColumnType("decimal(10, 2)")
+                    .HasDefaultValueSql("((0.00))");
+
+                entity.Property(e => e.ItemName)
+                    .HasColumnName("ITEM_NAME")
+                    .HasMaxLength(255)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.MarginPercent)
+                    .HasColumnName("MARGIN_PERCENT")
+                    .HasColumnType("decimal(5, 2)")
+                    .HasDefaultValueSql("((0.00))");
+
+                entity.Property(e => e.NetRate)
+                    .HasColumnName("NET_RATE")
+                    .HasColumnType("decimal(10, 2)");
+
+                entity.Property(e => e.NetSalePrice)
+                    .HasColumnName("NET_SALE_PRICE")
+                    .HasColumnType("decimal(10, 2)");
+
+                entity.Property(e => e.PurchaseId).HasColumnName("PURCHASE_ID");
+
+                entity.Property(e => e.PurchasePrice)
+                    .HasColumnName("PURCHASE_PRICE")
+                    .HasColumnType("decimal(10, 2)");
+
+                entity.Property(e => e.Quantity).HasColumnName("QUANTITY");
+
+                entity.Property(e => e.SaleDiscountByValue)
+                    .HasColumnName("SALE_DISCOUNT_BY_VALUE")
+                    .HasColumnType("decimal(10, 2)")
+                    .HasDefaultValueSql("((0.00))");
+
+                entity.Property(e => e.SalePrice)
+                    .HasColumnName("SALE_PRICE")
+                    .HasColumnType("decimal(10, 2)");
+
+                entity.Property(e => e.Total)
+                    .HasColumnName("TOTAL")
+                    .HasColumnType("decimal(10, 2)");
+
+                entity.Property(e => e.TotalWithGst)
+                    .HasColumnName("TOTAL_WITH_GST")
+                    .HasColumnType("decimal(10, 2)");
             });
 
             modelBuilder.Entity<PurchaseOpeningPurchase>(entity =>

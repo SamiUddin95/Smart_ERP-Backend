@@ -9,7 +9,6 @@ namespace Backend.Models
         public long OrderNo { get; set; }
         public int PartyId { get; set; }
         public string Date { get; set; }
-        public string ItemType { get; set; }
         public int? UserId { get; set; }
         public string PurSno { get; set; }
         public int? TotalQty { get; set; }
@@ -21,7 +20,8 @@ namespace Backend.Models
         public decimal? AvgPrice { get; set; }
         public decimal? TotalStock { get; set; }
         public decimal? GrandTotal { get; set; }
-        public decimal? Total { get; set; } 
+        public decimal? Total { get; set; }
+        public string ItemType { get; set; }
         public decimal? Disc { get; set; }
         public decimal? FlatDisc { get; set; }
     }

@@ -17,9 +17,233 @@ namespace Backend.Controllers
     {
         ERPContext bMSContext = new ERPContext();
 
+        [HttpPost]
+        [Route("/api/createPurchase")]
+        public object CreateOrUpdatePurchaseOrder(PurchaseModel purchModel)
+        {
+            try
+            {
+                if (purchModel.Id == 0)
+                {
+                    // Create a new Purchase order
+                    Purchase purchase = new Purchase
+                    {
+                        VendorId = purchModel.VendorId,
+                        Remarks = purchModel.Remarks,
+                        InvoiceNo = purchModel.InvoiceNo,
+                        RecentPurchasePrice = purchModel.RecentPurchasePrice,
+                        SalePrice = purchModel.SalePrice,
+                        ItemsQuantity = purchModel.ItemsQuantity,
+                        TotalDiscount = purchModel.TotalDiscount,
+                        TotalGst = purchModel.TotalGst,
+                        BillTotal = purchModel.BillTotal
+                    };
+
+                    // Save the Purchase
+                    bMSContext.Purchase.Add(purchase);
+                    bMSContext.SaveChanges();
+
+                    // Save Purchase Details
+                    if (purchModel.PurchaseDetailModel != null && purchModel.PurchaseDetailModel.Any())
+                    {
+                        foreach (var detail in purchModel.PurchaseDetailModel)
+                        {
+                            PurchaseDetail purchDetail = new PurchaseDetail
+                            {
+                                PurchaseId = purchase.Id,
+                                Barcode = detail.Barcode,
+                                ItemName = detail.ItemName,
+                                Quantity = detail.Quantity,
+                                BonusQuantity = detail.BonusQuantity,
+                                PurchasePrice = detail.PurchasePrice,
+                                DiscountByPercent = detail.DiscountByPercent,
+                                DiscountByValue = detail.DiscountByValue,
+                                Total = detail.Total,
+                                GstByPercent = detail.GstByPercent,
+                                GstByValue = detail.GstByValue,
+                                TotalWithGst = detail.TotalWithGst,
+                                NetRate = detail.NetRate,
+                                MarginPercent = detail.MarginPercent,
+                                SalePrice = detail.SalePrice,
+                                SaleDiscountByValue = detail.SaleDiscountByValue,
+                                NetSalePrice = detail.NetSalePrice
+                            };
+                            bMSContext.PurchaseDetail.Add(purchDetail);
+                        }
+                        bMSContext.SaveChanges();
+                    }
+                }
+                else
+                {
+                    // Update existing Purchase order
+                    var existingPurchase = bMSContext.Purchase.FirstOrDefault(x => x.Id == purchModel.Id);
+                    if (existingPurchase != null)
+                    {
+                        existingPurchase.VendorId = purchModel.VendorId;
+                        existingPurchase.Remarks = purchModel.Remarks;
+                        existingPurchase.InvoiceNo = purchModel.InvoiceNo;
+                        existingPurchase.RecentPurchasePrice = purchModel.RecentPurchasePrice;
+                        existingPurchase.SalePrice = purchModel.SalePrice;
+                        existingPurchase.ItemsQuantity = purchModel.ItemsQuantity;
+                        existingPurchase.TotalDiscount = purchModel.TotalDiscount;
+                        existingPurchase.TotalGst = purchModel.TotalGst;
+                        existingPurchase.BillTotal = purchModel.BillTotal;
+
+                        bMSContext.Purchase.Update(existingPurchase);
+                        bMSContext.SaveChanges();
+
+                        // Update Purchase Details
+                        var existingDetails = bMSContext.PurchaseDetail.Where(x => x.PurchaseId == existingPurchase.Id).ToList();
+                        bMSContext.PurchaseDetail.RemoveRange(existingDetails);
+                        bMSContext.SaveChanges();
+
+                        if (purchModel.PurchaseDetailModel != null && purchModel.PurchaseDetailModel.Any())
+                        {
+                            foreach (var detail in purchModel.PurchaseDetailModel)
+                            {
+                                PurchaseDetail purchDetail = new PurchaseDetail
+                                {
+                                    PurchaseId = existingPurchase.Id,
+                                    Barcode = detail.Barcode,
+                                    ItemName = detail.ItemName,
+                                    Quantity = detail.Quantity,
+                                    BonusQuantity = detail.BonusQuantity,
+                                    PurchasePrice = detail.PurchasePrice,
+                                    DiscountByPercent = detail.DiscountByPercent,
+                                    DiscountByValue = detail.DiscountByValue,
+                                    Total = detail.Total,
+                                    GstByPercent = detail.GstByPercent,
+                                    GstByValue = detail.GstByValue,
+                                    TotalWithGst = detail.TotalWithGst,
+                                    NetRate = detail.NetRate,
+                                    MarginPercent = detail.MarginPercent,
+                                    SalePrice = detail.SalePrice,
+                                    SaleDiscountByValue = detail.SaleDiscountByValue,
+                                    NetSalePrice = detail.NetSalePrice
+                                };
+                                bMSContext.PurchaseDetail.Add(purchDetail);
+                            }
+                            bMSContext.SaveChanges();
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return JsonConvert.SerializeObject(new { msg = ex.Message });
+            }
+            return JsonConvert.SerializeObject(new { msg = "Purchase Order processed successfully" });
+        }
+        [HttpGet]
+        [Route("/api/getAllPurchas")]
+        public IEnumerable<dynamic> getAllPurchase()
+        {
+            var result = (from purchase in bMSContext.Purchase
+                          join purchaseDetail in bMSContext.PurchaseDetail on purchase.Id equals purchaseDetail.PurchaseId
+                          select new
+                          {
+                              purchaseId = purchase.Id,
+                              vendorId = purchase.VendorId,
+                              invoiceNo = purchase.InvoiceNo,
+                              remarks = purchase.Remarks,
+                              recentPurchasePrice = purchase.RecentPurchasePrice,
+                              salePrice = purchase.SalePrice,
+                              itemsQuantity = purchase.ItemsQuantity,
+                              totalDiscount = purchase.TotalDiscount,
+                              totalGst = purchase.TotalGst,
+                              billTotal = purchase.BillTotal,
+                          }).ToList();
+
+            return result;
+
+        }
+        [HttpGet]
+        [Route("/api/getPurchaseById")]
+        public IEnumerable<dynamic> getPurchaseById(int id)
+        {
+            // Query to fetch data from Purchase table
+            var purchase = bMSContext.Purchase
+                .Select(p => new
+                {
+                    id = p.Id,
+                    vendorId = p.VendorId,
+                    invoiceNo = p.InvoiceNo,
+                    remarks = p.Remarks,
+                    recentPurchasePrice = p.RecentPurchasePrice,
+                    salePrice = p.SalePrice,
+                    itemsQuantity = p.ItemsQuantity,
+                    totalDiscount = p.TotalDiscount,
+                    totalGst = p.TotalGst,
+                    billTotal = p.BillTotal
+                   
+                })
+                .Where(x => x.id == id)
+                .ToList();
+
+            // Query to fetch data from PurchaseDetail table
+            var purchaseDetails = bMSContext.PurchaseDetail
+                .Select(pDtl => new
+                {
+                    id = pDtl.Id,
+                    purchaseId = pDtl.PurchaseId,
+                    barcode = pDtl.Barcode,
+                    itemName = pDtl.ItemName,
+                    quantity = pDtl.Quantity,
+                    bonusQuantity = pDtl.BonusQuantity,
+                    purchasePrice = pDtl.PurchasePrice,
+                    discountByPercent = pDtl.DiscountByPercent,
+                    discountByValue = pDtl.DiscountByValue,
+                    total = pDtl.Total,
+                    gstByPercent = pDtl.GstByPercent,
+                    gstByValue = pDtl.GstByValue,
+                    totalWithGst = pDtl.TotalWithGst,
+                    netRate = pDtl.NetRate,
+                    marginPercent = pDtl.MarginPercent,
+                    salePriceDetail = pDtl.SalePrice,
+                    saleDiscountByValue = pDtl.SaleDiscountByValue,
+                    netSalePrice = pDtl.NetSalePrice
+                })
+                .Where(x => x.purchaseId == id)
+                .ToList();
+
+            // Combine the results
+            var result = new
+            {
+                purchase = purchase,
+                purchaseDetails = purchaseDetails
+            };
+
+            yield return JsonConvert.SerializeObject(result);
+        }
+        [HttpGet]
+        [Route("/api/deletePurchaseById")]
+        public object deletePurchaseById(int id)
+        {
+            try
+            { 
+                var delPurchase = bMSContext.Purchase.SingleOrDefault(p => p.Id == id);
+                if (delPurchase != null)
+                { 
+                    var delPurchaseDetails = bMSContext.PurchaseDetail.Where(pDtl => pDtl.PurchaseId == id).ToList(); 
+                    if (delPurchaseDetails.Any())
+                    {
+                        bMSContext.PurchaseDetail.RemoveRange(delPurchaseDetails);
+                    } 
+                    bMSContext.Purchase.Remove(delPurchase); 
+                    bMSContext.SaveChanges(); 
+                    return JsonConvert.SerializeObject(new { id = delPurchase.Id });
+                }
+            }
+            catch (Exception ex)
+            { 
+                return null;
+            } 
+            return null;
+        }
+
         [HttpGet]
         [Route("/api/getAllPurchaseOrder")]
-        public IEnumerable<dynamic> getAllPurchase()
+        public IEnumerable<dynamic> getAllPurchaseOrder()
         {
             var result = (from po in bMSContext.PurchaseOrder
                           join p in bMSContext.Party on po.PartyId equals p.Id
@@ -151,7 +375,7 @@ namespace Backend.Controllers
 
         [HttpGet]
         [Route("/api/deletePurchaseOrderById")]
-        public object deletePurchaseById(int id)
+        public object deletePurchaseOrderById(int id)
         {
             try
             {
@@ -171,7 +395,7 @@ namespace Backend.Controllers
         }
         [HttpGet]
         [Route("/api/getPurchaseOrderById")]
-        public IEnumerable<dynamic> getPurchaseById(int id)
+        public IEnumerable<dynamic> getPurchaseOrderById(int id)
         {
             var purchaseOrders = bMSContext.PurchaseOrder
               .Select(po => new
