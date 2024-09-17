@@ -165,5 +165,43 @@ namespace Backend.Controllers
             return result;
 
         }
+
+
+        [HttpGet]
+        [Route("/api/getBasicDataReport")]
+        public IEnumerable<BasicDataReport> getBasicDataReport(int brandId, int categoryId, int classId,string name,string dateFrom,string dateTo)
+        {
+            string constr = _configuration.GetConnectionString("DefaultConnection");
+            List<BasicDataReport> result = new List<BasicDataReport>();
+            string query = "exec GetBasicDataReport @dateFrom ='"+dateFrom+"', @dateTo ='"+dateTo+"', @brandId ="+brandId+", " +
+                "@categoryId ="+categoryId+",@classId ="+classId;
+
+            using (SqlConnection con = new SqlConnection(constr))
+            {
+                using (SqlCommand cmd = new SqlCommand(query))
+                {
+                    cmd.Connection = con;
+                    con.Open();
+                    using (SqlDataReader sdr = cmd.ExecuteReader())
+                    {
+                        while (sdr.Read())
+                        {
+                            result.Add(new BasicDataReport
+                            {
+                                SALEPRICE = sdr["SALEPRICE"] == DBNull.Value ? 0 : Convert.ToDecimal(sdr["SALEPRICE"]),
+                                PURCHASEPRICE = sdr["PURCHASEPRICE"] == DBNull.Value ? 0 : Convert.ToDecimal(sdr["PURCHASEPRICE"]),
+                                ITEMNAME = sdr["ITEMNAME"].ToString(),
+                                MANUFACTURERNAME = sdr["MANUFACTURERNAME"].ToString(),
+                                BRANDNAME = sdr["BRANDNAME"].ToString(),
+                                CREATEDON = sdr["CREATEDON"].ToString(),
+                            });
+                        };
+                    }
+                    con.Close();
+                }
+            }
+            return result;
+
+        }
     }
 }
