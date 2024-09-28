@@ -6,7 +6,7 @@ namespace Backend.Models
     public partial class Purchase
     {
         public int Id { get; set; }
-        public string VendorId { get; set; }
+        public int? VendorId { get; set; }
         public string Remarks { get; set; }
         public string InvoiceNo { get; set; }
         public decimal? RecentPurchasePrice { get; set; }
@@ -15,5 +15,7 @@ namespace Backend.Models
         public decimal? TotalDiscount { get; set; }
         public decimal? TotalGst { get; set; }
         public decimal? BillTotal { get; set; }
+        public DateTime? CreatedAt { get; set; }
+        public string CreatedBy { get; set; }
     }
 }

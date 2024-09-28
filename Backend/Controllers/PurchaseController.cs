@@ -19,7 +19,7 @@ namespace Backend.Controllers
 
         [HttpPost]
         [Route("/api/createPurchase")]
-        public object CreateOrUpdatePurchaseOrder(PurchaseModel purchModel)
+        public object CreateOrUpdatePurchase(PurchaseModel purchModel)
         {
             try
             {
@@ -51,7 +51,7 @@ namespace Backend.Controllers
                             {
                                 PurchaseId = purchase.Id,
                                 Barcode = detail.Barcode,
-                                ItemName = detail.ItemName,
+                                ItemId = detail.ItemId,
                                 Quantity = detail.Quantity,
                                 BonusQuantity = detail.BonusQuantity,
                                 PurchasePrice = detail.PurchasePrice,
@@ -104,7 +104,7 @@ namespace Backend.Controllers
                                 {
                                     PurchaseId = existingPurchase.Id,
                                     Barcode = detail.Barcode,
-                                    ItemName = detail.ItemName,
+                                    ItemId = detail.ItemId,
                                     Quantity = detail.Quantity,
                                     BonusQuantity = detail.BonusQuantity,
                                     PurchasePrice = detail.PurchasePrice,
@@ -138,11 +138,11 @@ namespace Backend.Controllers
         public IEnumerable<dynamic> getAllPurchase()
         {
             var result = (from purchase in bMSContext.Purchase
-                          join purchaseDetail in bMSContext.PurchaseDetail on purchase.Id equals purchaseDetail.PurchaseId
+                          join Party in bMSContext.Party on purchase.VendorId equals Party.Id
                           select new
                           {
                               purchaseId = purchase.Id,
-                              vendorId = purchase.VendorId,
+                              vendorId = Party.PartyName,
                               invoiceNo = purchase.InvoiceNo,
                               remarks = purchase.Remarks,
                               recentPurchasePrice = purchase.RecentPurchasePrice,
@@ -151,6 +151,8 @@ namespace Backend.Controllers
                               totalDiscount = purchase.TotalDiscount,
                               totalGst = purchase.TotalGst,
                               billTotal = purchase.BillTotal,
+                              date=purchase.CreatedAt
+                              postedBy=purchase.CreatedBy
                           }).ToList();
 
             return result;
@@ -186,7 +188,7 @@ namespace Backend.Controllers
                     id = pDtl.Id,
                     purchaseId = pDtl.PurchaseId,
                     barcode = pDtl.Barcode,
-                    itemName = pDtl.ItemName,
+                    ItemId = pDtl.ItemId,
                     quantity = pDtl.Quantity,
                     bonusQuantity = pDtl.BonusQuantity,
                     purchasePrice = pDtl.PurchasePrice,

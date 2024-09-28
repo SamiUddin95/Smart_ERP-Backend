@@ -889,6 +889,15 @@ namespace Backend.Models
                     .HasColumnName("BILL_TOTAL")
                     .HasColumnType("decimal(10, 2)");
 
+                entity.Property(e => e.CreatedAt)
+                    .HasColumnName("CREATED_AT")
+                    .HasColumnType("date");
+
+                entity.Property(e => e.CreatedBy)
+                    .HasColumnName("CREATED_BY")
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
                 entity.Property(e => e.InvoiceNo)
                     .HasColumnName("INVOICE_NO")
                     .HasMaxLength(100)
@@ -919,10 +928,7 @@ namespace Backend.Models
                     .HasColumnType("decimal(10, 2)")
                     .HasDefaultValueSql("((0.00))");
 
-                entity.Property(e => e.VendorId)
-                    .HasColumnName("VENDOR_ID")
-                    .HasMaxLength(255)
-                    .IsUnicode(false);
+                entity.Property(e => e.VendorId).HasColumnName("VENDOR_ID");
             });
 
             modelBuilder.Entity<PurchaseDetail>(entity =>
@@ -960,10 +966,7 @@ namespace Backend.Models
                     .HasColumnType("decimal(10, 2)")
                     .HasDefaultValueSql("((0.00))");
 
-                entity.Property(e => e.ItemName)
-                    .HasColumnName("ITEM_NAME")
-                    .HasMaxLength(255)
-                    .IsUnicode(false);
+                entity.Property(e => e.ItemId).HasColumnName("ITEM_ID");
 
                 entity.Property(e => e.MarginPercent)
                     .HasColumnName("MARGIN_PERCENT")

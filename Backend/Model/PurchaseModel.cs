@@ -5,7 +5,7 @@ namespace Backend.Model
     public class PurchaseModel
     {
         public int Id { get; set; }
-        public string VendorId { get; set; }
+        public int VendorId { get; set; }
         public string Remarks { get; set; }
         public string InvoiceNo { get; set; }
         public decimal? RecentPurchasePrice { get; set; }
@@ -22,7 +22,7 @@ namespace Backend.Model
         public int Id { get; set; }
         public int? PurchaseId { get; set; }
         public string Barcode { get; set; }
-        public string ItemName { get; set; }
+        public int ItemId { get; set; }
         public int? Quantity { get; set; }
         public int? BonusQuantity { get; set; }
         public decimal? PurchasePrice { get; set; }

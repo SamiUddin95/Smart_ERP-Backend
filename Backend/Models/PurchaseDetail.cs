@@ -8,7 +8,7 @@ namespace Backend.Models
         public int Id { get; set; }
         public int? PurchaseId { get; set; }
         public string Barcode { get; set; }
-        public string ItemName { get; set; }
+        public int? ItemId { get; set; }
         public int? Quantity { get; set; }
         public int? BonusQuantity { get; set; }
         public decimal? PurchasePrice { get; set; }
