@@ -18,6 +18,8 @@ namespace Backend.Models
         public int BrandId { get; set; }
         public int? Discflat { get; set; }
         public int Lockdisc { get; set; }
+        public string CreatedOn { get; set; }
+        public string UpdatedOn { get; set; }
 
         public ItemBrand Brand { get; set; }
         public ItemCategory Category { get; set; }

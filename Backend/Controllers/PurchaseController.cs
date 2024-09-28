@@ -25,7 +25,6 @@ namespace Backend.Controllers
             {
                 if (purchModel.Id == 0)
                 {
-                    // Create a new Purchase order
                     Purchase purchase = new Purchase
                     {
                         VendorId = purchModel.VendorId,
@@ -135,7 +134,7 @@ namespace Backend.Controllers
             return JsonConvert.SerializeObject(new { msg = "Purchase Order processed successfully" });
         }
         [HttpGet]
-        [Route("/api/getAllPurchas")]
+        [Route("/api/getAllPurchases")]
         public IEnumerable<dynamic> getAllPurchase()
         {
             var result = (from purchase in bMSContext.Purchase

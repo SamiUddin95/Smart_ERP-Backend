@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 namespace Backend.Models
 {
-    public partial class Brand
+    public partial class AccGroupOld
     {
-        public long Id { get; set; }
+        public int Id { get; set; }
         public string Name { get; set; }
     }
 }

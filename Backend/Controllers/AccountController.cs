@@ -16,9 +16,22 @@ namespace Backend.Controllers
         ERPContext bMSContext = new ERPContext(); 
         [HttpGet]
         [Route("/api/getAllAccountCategory")]
-        public IEnumerable<AccCategory> getAllAccountCategory()
+        public IEnumerable<dynamic> getAllAccountCategory()
         {
-            return bMSContext.AccCategory.ToList();
+            var result = (from acc in bMSContext.AccCategory
+                         join act in bMSContext.AccType on acc.AccountTypeId equals act.Id
+                         select new
+                         {
+                             AccCategory = acc.Name,
+                             AccType = act.Name,
+                             Id = acc.Id,
+                             Priority = acc.Priority,
+                             ManualCode = acc.ManualCode,
+                             name=acc.Name
+                             
+                         }).ToList();
+
+            return result;
         }  
         [HttpPost]
         [Route("/api/createAccountCategory")]
@@ -174,9 +187,29 @@ namespace Backend.Controllers
 
         [HttpGet]
         [Route("/api/getAllAccGroupCategory")]
-        public IEnumerable<AccGroupCategory> getAllAccGroupCategory()
+        public IEnumerable<AccGroup> getAllAccGroupCategory()
         {
-            return bMSContext.AccGroupCategory.ToList();
+
+            //var result = (from purchase in bMSContext.Purchase
+            //              join purchaseDetail in bMSContext.PurchaseDetail on purchase.Id equals purchaseDetail.PurchaseId
+            //              select new
+            //              {
+            //                  purchaseId = purchase.Id,
+            //                  vendorId = purchase.VendorId,
+            //                  invoiceNo = purchase.InvoiceNo,
+            //                  remarks = purchase.Remarks,
+            //                  recentPurchasePrice = purchase.RecentPurchasePrice,
+            //                  salePrice = purchase.SalePrice,
+            //                  itemsQuantity = purchase.ItemsQuantity,
+            //                  totalDiscount = purchase.TotalDiscount,
+            //                  totalGst = purchase.TotalGst,
+            //                  billTotal = purchase.BillTotal,
+            //              }).ToList();
+
+            //return result;
+            //var result=(from AccGroupCategory in bMSContext.AccGroupCategory
+            //    join AccCategory in bMSContext.AccCategory on AccGroupCategory.GroupCategoryId equals AccCategory.Id)
+            return bMSContext.AccGroup.ToList();
         }
         //[HttpPost]
         //[Route("/api/createAccGroupCategory")]
@@ -225,10 +258,10 @@ namespace Backend.Controllers
         {
             try
             {
-                var accGrpCat = bMSContext.AccGroupCategory.SingleOrDefault(u => u.Id == id);
+                var accGrpCat = bMSContext.AccGroup.SingleOrDefault(u => u.Id == id);
                 if (accGrpCat != null)
                 {
-                    bMSContext.AccGroupCategory.Remove(accGrpCat);
+                    bMSContext.AccGroup.Remove(accGrpCat);
                     bMSContext.SaveChanges();
                     return JsonConvert.SerializeObject(new { id = accGrpCat.Id });
                 }
@@ -241,9 +274,9 @@ namespace Backend.Controllers
         }
         [HttpGet]
         [Route("/api/getAccGroupCategoryById")]
-        public IEnumerable<AccGroupCategory> getAccGroupCategoryById(int id)
+        public IEnumerable<AccGroup> getAccGroupCategoryById(int id)
         {
-            return bMSContext.AccGroupCategory.Where(u => u.Id == id).ToList();
+            return bMSContext.AccGroup.Where(u => u.Id == id).ToList();
         }
 
 
@@ -256,35 +289,37 @@ namespace Backend.Controllers
         }
         [HttpPost]
         [Route("/api/createAccGroup")]
-        public object createAccGroup(AccGroupCategory accGrp)
+        public object createAccGroup(AccGroup accGrp)
         {
 
             try
             {
                 try
                 {
-                    var accGrpChk = bMSContext.AccGroupCategory.SingleOrDefault(u => u.Id == accGrp.Id);
+                    var accGrpChk = bMSContext.AccGroup.SingleOrDefault(u => u.Id == accGrp.Id);
                     if (accGrpChk != null)
                     {
 
                         accGrpChk.Id = accGrp.Id;
                         accGrpChk.AccountTypeId = accGrp.AccountTypeId;
-                        accGrpChk.GroupCategoryId = accGrp.GroupCategoryId;
+                        accGrpChk.AccountCategoryId = accGrp.AccountCategoryId;
+                        accGrpChk.Name = accGrp.Name;
                         accGrpChk.ManualCode = accGrp.ManualCode;
                         accGrpChk.Priority = accGrp.Priority;
-                        bMSContext.AccGroupCategory.Update(accGrpChk);
+                        bMSContext.AccGroup.Update(accGrpChk);
                         bMSContext.SaveChanges();
                         return JsonConvert.SerializeObject(new { id = accGrpChk.Id });
                     }
                     else
                     {
-                        AccGroupCategory accountGrp = new AccGroupCategory();
+                        AccGroup accountGrp = new AccGroup();
                         accountGrp.Id = accGrp.Id;
                         accountGrp.AccountTypeId = accGrp.AccountTypeId;
-                        accountGrp.GroupCategoryId = accGrp.GroupCategoryId;
+                        accountGrp.AccountCategoryId = accGrp.AccountCategoryId;
+                        accountGrp.Name = accGrp.Name;
                         accountGrp.ManualCode = accGrp.ManualCode;
                         accountGrp.Priority = accGrp.Priority;
-                        bMSContext.AccGroupCategory.Add(accountGrp);
+                        bMSContext.AccGroup.Add(accountGrp);
                         bMSContext.SaveChanges();
                         return JsonConvert.SerializeObject(new { id = accountGrp.Id });
                     }

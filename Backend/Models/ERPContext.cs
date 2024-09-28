@@ -8,13 +8,12 @@ namespace Backend.Models
     {
         public virtual DbSet<AccCategory> AccCategory { get; set; }
         public virtual DbSet<AccGroup> AccGroup { get; set; }
-        public virtual DbSet<AccGroupCategory> AccGroupCategory { get; set; }
+        public virtual DbSet<AccGroupOld> AccGroupOld { get; set; }
         public virtual DbSet<Account> Account { get; set; }
         public virtual DbSet<AccType> AccType { get; set; }
         public virtual DbSet<Active> Active { get; set; }
         public virtual DbSet<AgreementType> AgreementType { get; set; }
         public virtual DbSet<Area> Area { get; set; }
-        public virtual DbSet<Brand> Brand { get; set; }
         public virtual DbSet<City> City { get; set; }
         public virtual DbSet<CounterSale> CounterSale { get; set; }
         public virtual DbSet<CounterSaleDetail> CounterSaleDetail { get; set; }
@@ -96,31 +95,36 @@ namespace Backend.Models
 
                 entity.Property(e => e.Id).HasColumnName("ID");
 
-                entity.Property(e => e.Name)
-                    .IsRequired()
-                    .HasColumnName("NAME")
-                    .HasMaxLength(100)
-                    .IsUnicode(false);
-            });
-
-            modelBuilder.Entity<AccGroupCategory>(entity =>
-            {
-                entity.ToTable("ACC_GROUP_CATEGORY");
-
-                entity.Property(e => e.Id).HasColumnName("ID");
+                entity.Property(e => e.AccountCategoryId).HasColumnName("ACCOUNT_CATEGORY_ID");
 
                 entity.Property(e => e.AccountTypeId).HasColumnName("ACCOUNT_TYPE_ID");
-
-                entity.Property(e => e.GroupCategoryId).HasColumnName("GROUP_CATEGORY_ID");
 
                 entity.Property(e => e.ManualCode)
                     .HasColumnName("MANUAL_CODE")
                     .HasMaxLength(200)
                     .IsUnicode(false);
 
+                entity.Property(e => e.Name)
+                    .HasColumnName("NAME")
+                    .HasMaxLength(200)
+                    .IsUnicode(false);
+
                 entity.Property(e => e.Priority)
                     .HasColumnName("PRIORITY")
                     .HasMaxLength(200)
+                    .IsUnicode(false);
+            });
+
+            modelBuilder.Entity<AccGroupOld>(entity =>
+            {
+                entity.ToTable("ACC_GROUP_OLD");
+
+                entity.Property(e => e.Id).HasColumnName("ID");
+
+                entity.Property(e => e.Name)
+                    .IsRequired()
+                    .HasColumnName("NAME")
+                    .HasMaxLength(100)
                     .IsUnicode(false);
             });
 
@@ -248,19 +252,6 @@ namespace Backend.Models
                 entity.Property(e => e.Id).HasColumnName("ID");
 
                 entity.Property(e => e.Name)
-                    .HasColumnName("NAME")
-                    .HasMaxLength(200)
-                    .IsUnicode(false);
-            });
-
-            modelBuilder.Entity<Brand>(entity =>
-            {
-                entity.ToTable("BRAND");
-
-                entity.Property(e => e.Id).HasColumnName("ID");
-
-                entity.Property(e => e.Name)
-                    .IsRequired()
                     .HasColumnName("NAME")
                     .HasMaxLength(200)
                     .IsUnicode(false);
@@ -514,6 +505,11 @@ namespace Backend.Models
 
                 entity.Property(e => e.ClassId).HasColumnName("CLASS_ID");
 
+                entity.Property(e => e.CreatedOn)
+                    .HasColumnName("CREATED_ON")
+                    .HasMaxLength(30)
+                    .IsUnicode(false);
+
                 entity.Property(e => e.Discflat).HasColumnName("DISCFLAT");
 
                 entity.Property(e => e.ItemName)
@@ -535,6 +531,11 @@ namespace Backend.Models
                     .IsUnicode(false);
 
                 entity.Property(e => e.SalePrice).HasColumnName("SALE_PRICE");
+
+                entity.Property(e => e.UpdatedOn)
+                    .HasColumnName("UPDATED_ON")
+                    .HasMaxLength(30)
+                    .IsUnicode(false);
 
                 entity.HasOne(d => d.Brand)
                     .WithMany(p => p.Item)
