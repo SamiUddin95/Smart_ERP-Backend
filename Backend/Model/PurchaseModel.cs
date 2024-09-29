@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Backend.Model
 {
@@ -8,8 +9,10 @@ namespace Backend.Model
         public int VendorId { get; set; }
         public string Remarks { get; set; }
         public string InvoiceNo { get; set; }
+        public string CreatedBy { get; set; }
         public decimal? RecentPurchasePrice { get; set; }
         public decimal? SalePrice { get; set; }
+        public DateTime? CreatedAt { get; set; }
         public int? ItemsQuantity { get; set; }
         public decimal? TotalDiscount { get; set; }
         public decimal? TotalGst { get; set; }

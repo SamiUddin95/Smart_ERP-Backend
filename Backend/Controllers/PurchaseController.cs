@@ -35,14 +35,12 @@ namespace Backend.Controllers
                         ItemsQuantity = purchModel.ItemsQuantity,
                         TotalDiscount = purchModel.TotalDiscount,
                         TotalGst = purchModel.TotalGst,
-                        BillTotal = purchModel.BillTotal
+                        BillTotal = purchModel.BillTotal,
+                        CreatedBy = purchModel.CreatedBy,
+                        CreatedAt = purchModel.CreatedAt
                     };
-
-                    // Save the Purchase
                     bMSContext.Purchase.Add(purchase);
                     bMSContext.SaveChanges();
-
-                    // Save Purchase Details
                     if (purchModel.PurchaseDetailModel != null && purchModel.PurchaseDetailModel.Any())
                     {
                         foreach (var detail in purchModel.PurchaseDetailModel)
@@ -87,7 +85,8 @@ namespace Backend.Controllers
                         existingPurchase.TotalDiscount = purchModel.TotalDiscount;
                         existingPurchase.TotalGst = purchModel.TotalGst;
                         existingPurchase.BillTotal = purchModel.BillTotal;
-
+                        existingPurchase.CreatedAt = purchModel.CreatedAt;
+                        existingPurchase.CreatedBy = purchModel.CreatedBy;
                         bMSContext.Purchase.Update(existingPurchase);
                         bMSContext.SaveChanges();
 
@@ -151,8 +150,7 @@ namespace Backend.Controllers
                               totalDiscount = purchase.TotalDiscount,
                               totalGst = purchase.TotalGst,
                               billTotal = purchase.BillTotal,
-                              date=purchase.CreatedAt
-                              postedBy=purchase.CreatedBy
+                              CreatedBy = purchase.CreatedBy
                           }).ToList();
 
             return result;
