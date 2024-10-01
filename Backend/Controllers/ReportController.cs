@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Cors;
 using Microsoft.Extensions.Configuration;
 using System.Data.SqlClient;
 using System.Globalization;
+using Backend.Model.Report;
 
 namespace Backend.Controllers
 {
@@ -194,6 +195,113 @@ namespace Backend.Controllers
                                 MANUFACTURERNAME = sdr["MANUFACTURERNAME"].ToString(),
                                 BRANDNAME = sdr["BRANDNAME"].ToString(),
                                 CREATEDON = sdr["CREATEDON"].ToString(),
+                            });
+                        };
+                    }
+                    con.Close();
+                }
+            }
+            return result;
+
+        }
+
+
+        [HttpGet]
+        [Route("/api/getPurchaseReport")]
+        public IEnumerable<PurchaseReport> getPurchaseReport(int vendorId, int categoryId, int classId, string name, string dateFrom, string dateTo)
+        {
+            string constr = _configuration.GetConnectionString("DefaultConnection");
+            List<PurchaseReport> result = new List<PurchaseReport>();
+            string query = "exec GetPurchaseReport @dateFrom ='" + dateFrom + "', @dateTo ='" + dateTo + "', @vendorId =" + vendorId + ", " +
+                "@categoryId =" + categoryId + ",@classId =" + classId;
+
+            using (SqlConnection con = new SqlConnection(constr))
+            {
+                using (SqlCommand cmd = new SqlCommand(query))
+                {
+                    cmd.Connection = con;
+                    con.Open();
+                    using (SqlDataReader sdr = cmd.ExecuteReader())
+                    {
+                        while (sdr.Read())
+                        {
+                            result.Add(new PurchaseReport
+                            {
+                                TOTALAMOUNT = sdr["TOTALAMOUNT"] == DBNull.Value ? 0 : Convert.ToDecimal(sdr["TOTALAMOUNT"]),
+                                PARTYID = sdr["PARTYID"] == DBNull.Value ? 0 : Convert.ToInt32(sdr["PARTYID"]), 
+                                SUPPLIERNAME = sdr["SUPPLIERNAME"].ToString(), 
+                            });
+                        };
+                    }
+                    con.Close();
+                }
+            }
+            return result;
+
+        }
+
+        [HttpGet]
+        [Route("/api/getPurchaseOrderReport")]
+        public IEnumerable<PurchaseOrderReport> getPurchaseOrderReport(int vendorId, int categoryId, int classId, string name, string dateFrom, string dateTo)
+        {
+            string constr = _configuration.GetConnectionString("DefaultConnection");
+            List<PurchaseOrderReport> result = new List<PurchaseOrderReport>();
+            string query = "exec GetPurchaseOrderReport @dateFrom ='" + dateFrom + "', @dateTo ='" + dateTo + "', @vendorId =" + vendorId + ", " +
+                "@categoryId =" + categoryId + ",@classId =" + classId;
+
+            using (SqlConnection con = new SqlConnection(constr))
+            {
+                using (SqlCommand cmd = new SqlCommand(query))
+                {
+                    cmd.Connection = con;
+                    con.Open();
+                    using (SqlDataReader sdr = cmd.ExecuteReader())
+                    {
+                        while (sdr.Read())
+                        {
+                            result.Add(new PurchaseOrderReport
+                            {
+                                TOTALAMOUNT = sdr["TOTALAMOUNT"] == DBNull.Value ? 0 : Convert.ToDecimal(sdr["TOTALAMOUNT"]),
+                                TOTALDISCOUNT = sdr["TOTALDISCOUNT"] == DBNull.Value ? 0 : Convert.ToDecimal(sdr["TOTALDISCOUNT"]),
+                                ITEMQTY = sdr["ITEMQTY"] == DBNull.Value ? 0 : Convert.ToInt32(sdr["ITEMQTY"]),
+                                PARTYID = sdr["PARTYID"] == DBNull.Value ? 0 : Convert.ToInt32(sdr["PARTYID"]),
+                                SUPPLIERNAME = sdr["SUPPLIERNAME"].ToString(), 
+                            });
+                        };
+                    }
+                    con.Close();
+                }
+            }
+            return result;
+
+        }
+
+        [HttpGet]
+        [Route("/api/getPurchaseReturnReport")]
+        public IEnumerable<PurchaseReturnReport> getPurchaseReturnReport(int vendorId, int categoryId, int classId, string name, string dateFrom, string dateTo)
+        {
+            string constr = _configuration.GetConnectionString("DefaultConnection");
+            List<PurchaseReturnReport> result = new List<PurchaseReturnReport>();
+            string query = "exec GetPurchaseReturnReport @dateFrom ='" + dateFrom + "', @dateTo ='" + dateTo + "', @vendorId =" + vendorId + ", " +
+                "@categoryId =" + categoryId + ",@classId =" + classId;
+
+            using (SqlConnection con = new SqlConnection(constr))
+            {
+                using (SqlCommand cmd = new SqlCommand(query))
+                {
+                    cmd.Connection = con;
+                    con.Open();
+                    using (SqlDataReader sdr = cmd.ExecuteReader())
+                    {
+                        while (sdr.Read())
+                        {
+                            result.Add(new PurchaseReturnReport
+                            {
+                                SUPPLIER_NAME = sdr["SUPPLIER_NAME"].ToString(),
+                                GRAND_TOTAL = sdr["GRAND_TOTAL"] == DBNull.Value ? 0 : Convert.ToDecimal(sdr["GRAND_TOTAL"]),
+                                TOTAL_INC_TAX = sdr["TOTAL_INC_TAX"] == DBNull.Value ? 0 : Convert.ToDecimal(sdr["TOTAL_INC_TAX"]),
+                                TOTAL_EXC_TAX = sdr["TOTAL_EXC_TAX"] == DBNull.Value ? 0 : Convert.ToDecimal(sdr["TOTAL_EXC_TAX"]),
+                                PARTY_ID = sdr["PARTY_ID"] == DBNull.Value ? 0 : Convert.ToInt32(sdr["PARTY_ID"]),
                             });
                         };
                     }
