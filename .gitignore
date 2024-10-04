@@ -19,3 +19,11 @@ Backend/Models/ERPContext.cs
 /.vs/Backend/v17/.futdcache.v2
 /.vs/Backend/config/applicationhost.config
 >>>>>>> eaa8a8962858cfec5aecbd56568c6325ea43dbfd
+/Backend/Models/ERPContext.cs
+/.gitignore
+/.gitignore
+/Backend/obj/Debug/net5.0/Backend.AssemblyInfo.cs
+/Backend/obj/Debug/net5.0/apphost.exe
+/Backend/obj/Debug/net5.0/Backend.AssemblyInfoInputs.cache
+/Backend/obj/Debug/net5.0/Backend.csproj.AssemblyReference.cache
+/Backend/obj/Debug/net5.0/Backend.GeneratedMSBuildEditorConfig.editorconfig

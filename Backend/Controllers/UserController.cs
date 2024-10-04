@@ -43,6 +43,8 @@ namespace Backend.Controllers
                         usrCheck.Gender = user.Gender;
                         usrCheck.IsActive = user.IsActive;
                         usrCheck.JoiningDate = user.JoiningDate;
+                        usrCheck.UpdatedAt = DateTime.Now;
+                        usrCheck.UpdatedBy = user.UpdatedBy;
                         bMSContext.User.Update(usrCheck);
                         bMSContext.SaveChanges();
                         return JsonConvert.SerializeObject(new { id = usrCheck.UserId });
@@ -60,6 +62,8 @@ namespace Backend.Controllers
                         usr.Gender = user.Gender;
                         usr.IsActive = user.IsActive;
                         usr.JoiningDate = user.JoiningDate;
+                        usr.CreatedAt = DateTime.Now;
+                        usr.CreatedBy = user.CreatedBy;
                         bMSContext.User.Add(usr);
                         bMSContext.SaveChanges();
                         return JsonConvert.SerializeObject(new { id = usr.UserId });
@@ -94,6 +98,8 @@ namespace Backend.Controllers
                 usrCheck.Gender = user.Gender;
                 usrCheck.IsActive = user.IsActive;
                 usrCheck.JoiningDate = user.JoiningDate;
+                usrCheck.UpdatedAt = DateTime.Now;
+                usrCheck.UpdatedBy = user.UpdatedBy;
                 bMSContext.User.Update(usrCheck);
                 bMSContext.SaveChanges();
                 return JsonConvert.SerializeObject(new { id = usrCheck.UserId });

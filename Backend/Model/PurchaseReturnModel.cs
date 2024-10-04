@@ -26,6 +26,8 @@ namespace Backend.Model
         public decimal? Disc { get;  set; }
         public decimal? GrandTotal { get; set; }
         public decimal? flatDisc { get; set; }
+        public string Createdby { get; set; }
+        public string Updatedby { get; set; }
         public List<PurchaseReturnDetailModel> purcOrderDtlModel {get;set;}
     }
     public partial class PurchaseReturnDetailModel

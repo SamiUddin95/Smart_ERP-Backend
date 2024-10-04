@@ -39,6 +39,8 @@ namespace Backend.Controllers
 
                         brandchk.Id = brand.Id;
                         brandchk.Name = brand.Name;
+                        brand.UpdatedAt = DateTime.Now;
+                        brandchk.UpdatedBy = brand.UpdatedBy;
                         bMSContext.ItemBrand.Update(brandchk);
                         bMSContext.SaveChanges();
                         return JsonConvert.SerializeObject(new { id = brandchk.Id });
@@ -48,6 +50,8 @@ namespace Backend.Controllers
                         ItemBrand brand1 = new ItemBrand();
                         //brandchk.Id = brand.Id;
                         brand1.Name = brand.Name;
+                        brand1.CreatedAt = DateTime.Now;
+                        brand1.CreatedBy = brand.CreatedBy;
                         bMSContext.ItemBrand.Add(brand1);
                         bMSContext.SaveChanges();
                         return JsonConvert.SerializeObject(new { id = brand1.Id });
@@ -125,7 +129,8 @@ namespace Backend.Controllers
                         categorychk.Height = itemCategory.Height;
                         categorychk.Width = itemCategory.Width;
                         categorychk.Description = itemCategory.Description;
-
+                        categorychk.UpdatedAt = DateTime.Now;
+                        categorychk.UpdatedBy = itemCategory.UpdatedBy;
                         bMSContext.ItemCategory.Update(categorychk);
                         bMSContext.SaveChanges();
                         return JsonConvert.SerializeObject(new { id = categorychk.Id });
@@ -141,6 +146,8 @@ namespace Backend.Controllers
                         itemCategory1.Height = itemCategory.Height;
                         itemCategory1.Width = itemCategory.Width;
                         itemCategory1.Description = itemCategory.Description;
+                        itemCategory1.CreatedAt = DateTime.Now;
+                        itemCategory1.CreatedBy = itemCategory.CreatedBy;
                         bMSContext.ItemCategory.Add(itemCategory1);
                         bMSContext.SaveChanges();
                         return JsonConvert.SerializeObject(new { id = itemCategory1.Id });
@@ -215,6 +222,8 @@ namespace Backend.Controllers
                         classchk.Name = itemClass.Name;
                         classchk.DepartmentId = itemClass.DepartmentId;
                         classchk.CategoryId = itemClass.CategoryId;
+                        classchk.UpdatedAt = DateTime.Now;
+                        classchk.UpdatedBy = itemClass.UpdatedBy;
                         bMSContext.ItemClass.Update(classchk);
                         bMSContext.SaveChanges();
                         return JsonConvert.SerializeObject(new { id = classchk.Id });
@@ -226,6 +235,8 @@ namespace Backend.Controllers
                         itemClass1.Name = itemClass.Name;
                         itemClass1.DepartmentId = itemClass.DepartmentId;
                         itemClass1.CategoryId = itemClass.CategoryId;
+                        itemClass1.CreatedAt = DateTime.Now;
+                        itemClass1.CreatedBy = itemClass.CreatedBy;
                         bMSContext.ItemClass.Add(itemClass1);
                         bMSContext.SaveChanges();
                         return JsonConvert.SerializeObject(new { id = itemClass1.Id });
@@ -308,6 +319,8 @@ namespace Backend.Controllers
                         Itemschk.BrandId = Items.BrandId;
                         Itemschk.Discflat = Items.Discflat;
                         Itemschk.Lockdisc = Items.Lockdisc;
+                        Itemschk.UpdatedAt = DateTime.Now;
+                        Itemschk.UpdatedBy = Items.UpdatedBy;
                         bMSContext.Item.Update(Itemschk);
                         bMSContext.SaveChanges();
                         return JsonConvert.SerializeObject(new { id = Itemschk.Id });
@@ -328,6 +341,8 @@ namespace Backend.Controllers
                         itemItems.BrandId = Items.BrandId;
                         itemItems.Discflat = Items.Discflat;
                         itemItems.Lockdisc = Items.Lockdisc;
+                        itemItems.CreatedAt = DateTime.Now;
+                        itemItems.CreatedBy = Items.CreatedBy;
                         bMSContext.Item.Add(itemItems);
                         bMSContext.SaveChanges();
                         return JsonConvert.SerializeObject(new { id = itemItems.Id });
@@ -403,7 +418,8 @@ namespace Backend.Controllers
                         Manufacturerchk.Telephoneno2 = itemManufacturer.Telephoneno2;
                         Manufacturerchk.Email = itemManufacturer.Email;
                         Manufacturerchk.Address = itemManufacturer.Address;
-
+                        Manufacturerchk.UpdatedAt = DateTime.Now;
+                        Manufacturerchk.UpdatedBy = itemManufacturer.UpdatedBy;
                         bMSContext.ItemManufacturer.Update(Manufacturerchk);
                         bMSContext.SaveChanges();
                         return JsonConvert.SerializeObject(new { id = Manufacturerchk.Id });
@@ -417,6 +433,8 @@ namespace Backend.Controllers
                         itemManufacturer1.Telephoneno2 = itemManufacturer.Telephoneno2;
                         itemManufacturer1.Email = itemManufacturer.Email;
                         itemManufacturer.Address = itemManufacturer.Address;
+                        itemManufacturer.CreatedAt = DateTime.Now;
+                        itemManufacturer.CreatedBy = itemManufacturer.CreatedBy;
                         bMSContext.ItemManufacturer.Add(itemManufacturer1);
                         bMSContext.SaveChanges();
                         return JsonConvert.SerializeObject(new { id = itemManufacturer1.Id });

@@ -72,7 +72,9 @@ namespace Backend.Controllers
                         partyCheck.Address1 = par.Address1;
                         partyCheck.ContactPerson = par.ContactPerson;
                         partyCheck.CategoryId = par.CategoryId;
-                        partyCheck.DueDays = par.DueDays;   
+                        partyCheck.DueDays = par.DueDays;
+                        partyCheck.UpdatedAt = DateTime.Now;
+                        partyCheck.UpdatedBy = par.UpdatedBy;
                         bMSContext.Party.Update(partyCheck);
                         bMSContext.SaveChanges();
                         return JsonConvert.SerializeObject(new { id = partyCheck.Id });
@@ -95,7 +97,9 @@ namespace Backend.Controllers
                         newParty.Address1 = par.Address1;
                         newParty.ContactPerson = par.ContactPerson;
                         newParty.CategoryId = par.CategoryId;
-                        newParty.DueDays = par.DueDays; 
+                        newParty.DueDays = par.DueDays;
+                        newParty.CreatedAt = DateTime.Now;
+                        newParty.CreatedBy = par.CreatedBy;
                         bMSContext.Party.Add(newParty);
                         bMSContext.SaveChanges();
                         return JsonConvert.SerializeObject(new { id = newParty.Id });
@@ -140,6 +144,8 @@ namespace Backend.Controllers
                         partyPrice.Gst = item.GST;
                         partyPrice.Discount = item.Discount;
                         partyPrice.Discount2 = item.Discount2;
+                        partyPrice.CreatedAt = DateTime.Now;
+                        partyPrice.CreatedBy = item.Createdby;
                         bMSContext.PartyPriceDetail.Add(partyPrice);
                         bMSContext.SaveChanges();
                     }
@@ -161,6 +167,8 @@ namespace Backend.Controllers
                         partyPrice.Gst = item.GST;
                         partyPrice.Discount = item.Discount;
                         partyPrice.Discount2 = item.Discount2;
+                        partyPrice.CreatedAt = DateTime.Now;
+                        partyPrice.CreatedBy = item.Createdby;
                         bMSContext.PartyPriceDetail.Add(partyPrice);
                         bMSContext.SaveChanges();
                     }

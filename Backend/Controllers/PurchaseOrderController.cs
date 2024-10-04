@@ -71,6 +71,8 @@ namespace Backend.Controllers
                     OpenPurchk.DiscValue2 = openingPurchase.DiscValue2;
                     OpenPurchk.GstValue2 = openingPurchase.GstValue2;
                     OpenPurchk.GrantTotal = openingPurchase.GrantTotal;
+                    OpenPurchk.UpdatedAt = DateTime.Now;
+                    OpenPurchk.UpdatedBy = openingPurchase.UpdatedBy;
                     bMSContext.PurchaseOpeningPurchase.Update(OpenPurchk);
                     bMSContext.SaveChanges();
                     return JsonConvert.SerializeObject(new { id = OpenPurchk.Id });
@@ -118,6 +120,8 @@ namespace Backend.Controllers
                     purchaseOpeningPurchase.DiscValue2 = openingPurchase.DiscValue2;
                     purchaseOpeningPurchase.GstValue2 = openingPurchase.GstValue2;
                     purchaseOpeningPurchase.GrantTotal = openingPurchase.GrantTotal;
+                    purchaseOpeningPurchase.CreatedAt = DateTime.Now;
+                    purchaseOpeningPurchase.CreatedBy = openingPurchase.CreatedBy;
                     bMSContext.PurchaseOpeningPurchase.Add(purchaseOpeningPurchase);
                     bMSContext.SaveChanges();
                     return JsonConvert.SerializeObject(new { id = purchaseOpeningPurchase.Id });

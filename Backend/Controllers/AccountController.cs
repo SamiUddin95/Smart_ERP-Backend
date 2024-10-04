@@ -51,6 +51,8 @@ namespace Backend.Controllers
                         accCatChk.Name = accCategory.Name;
                         accCatChk.ManualCode = accCategory.ManualCode;
                         accCatChk.Priority = accCategory.Priority;
+                        accCatChk.UpdatedAt = DateTime.Now;
+                        accCatChk.UpdatedBy = accCategory.UpdatedBy;
                         bMSContext.AccCategory.Update(accCatChk);
                         bMSContext.SaveChanges();
                         return JsonConvert.SerializeObject(new { id = accCatChk.Id });
@@ -63,6 +65,8 @@ namespace Backend.Controllers
                         accCat.Name = accCategory.Name;
                         accCat.ManualCode = accCategory.ManualCode;
                         accCat.Priority = accCategory.Priority;
+                        accCatChk.CreatedAt = DateTime.Now;
+                        accCatChk.CreatedBy = accCategory.CreatedBy;
                         bMSContext.AccCategory.Add(accCat);
                         bMSContext.SaveChanges();
                         return JsonConvert.SerializeObject(new { id = accCat.Id });
@@ -130,6 +134,8 @@ namespace Backend.Controllers
 
                         accTypeChk.Id = accType.Id;
                         accTypeChk.Name = accType.Name;
+                        accTypeChk.UpdatedAt = DateTime.Now;
+                        accTypeChk.UpdatedBy = accType.UpdatedBy;
                         bMSContext.AccType.Update(accTypeChk);
                         bMSContext.SaveChanges();
                         return JsonConvert.SerializeObject(new { id = accTypeChk.Id });
@@ -139,6 +145,8 @@ namespace Backend.Controllers
                         AccType accountType = new AccType();
                         accountType.Id = accType.Id;
                         accountType.Name = accType.Name;
+                        accountType.CreatedAt = DateTime.Now;
+                        accountType.CreatedBy = accType.CreatedBy;
                         bMSContext.AccType.Add(accountType);
                         bMSContext.SaveChanges();
                         return JsonConvert.SerializeObject(new { id = accountType.Id });
@@ -306,6 +314,8 @@ namespace Backend.Controllers
                         accGrpChk.Name = accGrp.Name;
                         accGrpChk.ManualCode = accGrp.ManualCode;
                         accGrpChk.Priority = accGrp.Priority;
+                        accGrpChk.UpdatedAt = DateTime.Now;
+                        accGrpChk.UpdatedBy = accGrp.UpdatedBy;
                         bMSContext.AccGroup.Update(accGrpChk);
                         bMSContext.SaveChanges();
                         return JsonConvert.SerializeObject(new { id = accGrpChk.Id });
@@ -319,6 +329,8 @@ namespace Backend.Controllers
                         accountGrp.Name = accGrp.Name;
                         accountGrp.ManualCode = accGrp.ManualCode;
                         accountGrp.Priority = accGrp.Priority;
+                        accountGrp.CreatedAt = DateTime.Now;
+                        accountGrp.CreatedBy = accGrp.CreatedBy;
                         bMSContext.AccGroup.Add(accountGrp);
                         bMSContext.SaveChanges();
                         return JsonConvert.SerializeObject(new { id = accountGrp.Id });
@@ -397,10 +409,8 @@ namespace Backend.Controllers
                         accChk.TaxAmount = acc.TaxAmount;
                         accChk.ManualCode = acc.ManualCode;
                         accChk.KindCode = acc.KindCode;
-                        accChk.CreatedBy = acc.CreatedBy;
+                        accChk.UpdatedAt = DateTime.Now;
                         accChk.UpdatedBy = acc.UpdatedBy;
-                        accChk.CreatedAt = acc.CreatedAt;
-                        accChk.UpdatedAt = acc.UpdatedAt;
                         bMSContext.Account.Update(accChk);
                         bMSContext.SaveChanges();
                         return JsonConvert.SerializeObject(new { id = accChk.Id });
@@ -422,10 +432,8 @@ namespace Backend.Controllers
                         account.TaxAmount = acc.TaxAmount;
                         account.ManualCode = acc.ManualCode;
                         account.KindCode = acc.KindCode;
+                        account.CreatedAt = DateTime.Now;
                         account.CreatedBy = acc.CreatedBy;
-                        account.UpdatedBy = acc.UpdatedBy;
-                        account.CreatedAt = acc.CreatedAt;
-                        account.UpdatedAt = acc.UpdatedAt;
                         bMSContext.Account.Add(account);
                         bMSContext.SaveChanges();
                         return JsonConvert.SerializeObject(new { id = account.Id });

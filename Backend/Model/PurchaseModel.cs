@@ -40,5 +40,6 @@ namespace Backend.Model
         public decimal? SalePrice { get; set; }
         public decimal? SaleDiscountByValue { get; set; }
         public decimal? NetSalePrice { get; set; }
+        public string CreatedBy { get; set; }
     }
 }

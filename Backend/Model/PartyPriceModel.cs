@@ -18,6 +18,7 @@ namespace Backend.Model
             public string Remakrs { get; set; }
             public int Discount { get; set; }
             public int Discount2 { get; set; }
+            public string Createdby { get; set; }
         }
     }
 }

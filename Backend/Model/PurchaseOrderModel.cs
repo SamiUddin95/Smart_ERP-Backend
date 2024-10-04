@@ -17,7 +17,9 @@ namespace Backend.Model
         public string StartDate { get; set; }
         public string EndDate { get; set; }
         public string Remarks { get; set; }
-        public string CreatedAt { get; set; } 
+        public string CreatedAt { get; set; }
+        public string Createdby { get; set; }
+        public string Updatedby { get; set; }
         public List<PurchaseOrderDetailModel> purcOrderDtlModel {get;set;}
 
 

@@ -36,8 +36,8 @@ namespace Backend.Controllers
                         TotalDiscount = purchModel.TotalDiscount,
                         TotalGst = purchModel.TotalGst,
                         BillTotal = purchModel.BillTotal,
+                        CreatedAt = DateTime.Now,
                         CreatedBy = purchModel.CreatedBy,
-                        CreatedAt = purchModel.CreatedAt
                     };
                     bMSContext.Purchase.Add(purchase);
                     bMSContext.SaveChanges();
@@ -63,7 +63,9 @@ namespace Backend.Controllers
                                 MarginPercent = detail.MarginPercent,
                                 SalePrice = detail.SalePrice,
                                 SaleDiscountByValue = detail.SaleDiscountByValue,
-                                NetSalePrice = detail.NetSalePrice
+                                NetSalePrice = detail.NetSalePrice,
+                                CreatedAt = DateTime.Now,
+                                CreatedBy = detail.CreatedBy,
                             };
                             bMSContext.PurchaseDetail.Add(purchDetail);
                         }
@@ -85,8 +87,8 @@ namespace Backend.Controllers
                         existingPurchase.TotalDiscount = purchModel.TotalDiscount;
                         existingPurchase.TotalGst = purchModel.TotalGst;
                         existingPurchase.BillTotal = purchModel.BillTotal;
-                        existingPurchase.CreatedAt = purchModel.CreatedAt;
-                        existingPurchase.CreatedBy = purchModel.CreatedBy;
+                        existingPurchase.UpdatedAt = DateTime.Now;
+                        existingPurchase.UpdatedBy = purchModel.CreatedBy;
                         bMSContext.Purchase.Update(existingPurchase);
                         bMSContext.SaveChanges();
 
@@ -117,7 +119,9 @@ namespace Backend.Controllers
                                     MarginPercent = detail.MarginPercent,
                                     SalePrice = detail.SalePrice,
                                     SaleDiscountByValue = detail.SaleDiscountByValue,
-                                    NetSalePrice = detail.NetSalePrice
+                                    NetSalePrice = detail.NetSalePrice,
+                                    CreatedAt = DateTime.Now,
+                                    CreatedBy = detail.CreatedBy
                                 };
                                 bMSContext.PurchaseDetail.Add(purchDetail);
                             }
@@ -282,6 +286,7 @@ namespace Backend.Controllers
                     pOrder.StartDate = purchOrderModel.StartDate.ToString();
                     pOrder.InvTotal = purchOrderModel.InvTotal; 
                     pOrder.CreatedAt = DateTime.Now.Date.ToString();
+                    pOrder.CreatedBy = purchOrderModel.Createdby;
                     bMSContext.PurchaseOrder.Add(pOrder);
                     bMSContext.SaveChanges();
                     if (purchOrderModel.purcOrderDtlModel.Count() > 0)
@@ -299,6 +304,8 @@ namespace Backend.Controllers
                             purchOrderDtl.NetSaleQty = purchOrderModel.purcOrderDtlModel[i].NetSaleQty;
                             purchOrderDtl.Total = purchOrderModel.purcOrderDtlModel[i].Total;
                             purchOrderDtl.RequiredQty = purchOrderModel.purcOrderDtlModel[i].RequiredQty;
+                            purchOrderDtl.CreatedAt = DateTime.Now;
+                            purchOrderDtl.CreatedBy = purchOrderModel.Createdby;
                             bMSContext.PurchaseOrderDetail.Add(purchOrderDtl);
                             bMSContext.SaveChanges();
                         }
@@ -317,7 +324,8 @@ namespace Backend.Controllers
                         data[0].EndDate = purchOrderModel.EndDate.ToString();
                         data[0].StartDate = purchOrderModel.StartDate.ToString();
                         data[0].InvTotal = purchOrderModel.InvTotal;
-                        data[0].CreatedAt = DateTime.Now.Date.ToString();
+                        data[0].UpdatedAt = DateTime.Now;
+                        data[0].UpdatedBy = purchOrderModel.Updatedby;
                         bMSContext.PurchaseOrder.Update(data[0]);
                         bMSContext.SaveChanges(); 
                         var dataPurDtl= bMSContext.PurchaseOrderDetail.Where(x => x.OrderId == purchOrderModel.Id).FirstOrDefault();
@@ -338,6 +346,8 @@ namespace Backend.Controllers
                                 purchOrderDtl.NetSaleQty = purchOrderModel.purcOrderDtlModel[i].NetSaleQty;
                                 purchOrderDtl.Total = purchOrderModel.purcOrderDtlModel[i].Total;
                                 purchOrderDtl.RequiredQty = purchOrderModel.purcOrderDtlModel[i].RequiredQty;
+                                purchOrderDtl.CreatedAt = DateTime.Now;
+                                purchOrderDtl.CreatedBy = purchOrderModel.Createdby;
                                 bMSContext.PurchaseOrderDetail.Add(purchOrderDtl);
                                 bMSContext.SaveChanges();
                             }
@@ -356,6 +366,8 @@ namespace Backend.Controllers
                                 purchOrderDtl.NetSaleQty = purchOrderModel.purcOrderDtlModel[i].NetSaleQty;
                                 purchOrderDtl.Total = purchOrderModel.purcOrderDtlModel[i].Total;
                                 purchOrderDtl.RequiredQty = purchOrderModel.purcOrderDtlModel[i].RequiredQty;
+                                purchOrderDtl.CreatedAt = DateTime.Now;
+                                purchOrderDtl.CreatedBy = purchOrderModel.Createdby;
                                 bMSContext.PurchaseOrderDetail.Add(purchOrderDtl);
                                 bMSContext.SaveChanges();
                             }
@@ -488,6 +500,8 @@ namespace Backend.Controllers
                         pOrder.GrandTotal = purchOrderModel.GrandTotal;
                         pOrder.ItemType = purchOrderModel.ItemType;
                         pOrder.Disc = purchOrderModel.Disc;
+                        pOrder.CreatedAt = DateTime.Now;
+                        pOrder.CreatedBy = purchOrderModel.Createdby;
                         bMSContext.PurchaseReturn.Add(pOrder);
                         bMSContext.SaveChanges();
                         if (purchOrderModel.purcOrderDtlModel.Count() > 0) 
@@ -504,6 +518,8 @@ namespace Backend.Controllers
                                 purchOrderDtl.FullRate = purchOrderModel.purcOrderDtlModel[i].FullRate;
                                 purchOrderDtl.Total = purchOrderModel.purcOrderDtlModel[i].Total;
                                 purchOrderDtl.FullRate = purchOrderModel.purcOrderDtlModel[i].FullRate;
+                                purchOrderDtl.CreatedAt = DateTime.Now;
+                                purchOrderDtl.CreatedBy = purchOrderModel.Createdby;
                                 bMSContext.PurchaseReturnDetail.Add(purchOrderDtl);
                                 bMSContext.SaveChanges();
                             }
@@ -531,6 +547,8 @@ namespace Backend.Controllers
                             data.GrandTotal = purchOrderModel.GrandTotal;
                             data.Disc = purchOrderModel.Disc;
                             data.FlatDisc = purchOrderModel.flatDisc;
+                            data.UpdatedAt = DateTime.Now;
+                            data.UpdatedBy = purchOrderModel.Updatedby;
                             bMSContext.PurchaseReturn.Update(data);
                             bMSContext.SaveChanges();
                         var dataPurcReturnDtl = bMSContext.PurchaseReturnDetail.Where(x => x.OrderReturnId == data.Id).ToList();
@@ -555,6 +573,8 @@ namespace Backend.Controllers
                                     purchOrderDtl.FullRate = purchOrderModel.purcOrderDtlModel[i].FullRate;
                                     purchOrderDtl.Total = purchOrderModel.purcOrderDtlModel[i].Total;
                                     purchOrderDtl.FullRate = purchOrderModel.purcOrderDtlModel[i].FullRate;
+                                    purchOrderDtl.CreatedAt = DateTime.Now;
+                                    purchOrderDtl.CreatedBy = purchOrderModel.Createdby;
                                     bMSContext.PurchaseReturnDetail.Add(purchOrderDtl);
                                     bMSContext.SaveChanges();
                                 }

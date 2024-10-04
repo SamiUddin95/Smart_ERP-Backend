@@ -44,6 +44,8 @@ namespace Backend.Controllers
                         couSalechk.Discount = couSale.Discount;
                         couSalechk.TotalDiscount = couSale.TotalDiscount;
                         couSalechk.GrandTotal = couSale.GrandTotal;
+                        couSalechk.UpdatedAt = DateTime.Now;
+                        couSalechk.UpdatedBy = couSale.Updatedby;
                         bMSContext.CounterSale.Update(couSalechk);
                         bMSContext.SaveChanges();
                         return JsonConvert.SerializeObject(new { id = couSalechk.Id });
@@ -61,6 +63,8 @@ namespace Backend.Controllers
                         counterSale.TotalDiscount = couSale.TotalDiscount;
                         counterSale.GrandTotal = couSale.GrandTotal;
                         counterSale.FlatDiscount = couSale.FlatDiscount;
+                        counterSale.CreatedAt = DateTime.Now;
+                        counterSale.CreatedBy = couSale.Createdby;
                         bMSContext.CounterSale.Add(counterSale);
                         bMSContext.SaveChanges();
                         foreach(var item in couSale.counterSaleDetails) 

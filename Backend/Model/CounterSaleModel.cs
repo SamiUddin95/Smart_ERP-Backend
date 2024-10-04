@@ -15,7 +15,8 @@ namespace Backend.Model
         public decimal? Return { get; set; }
         public decimal? EarnedPoints { get; set; }
         public decimal? NetAmount { get; set; }
-
+        public string Createdby { get; set; }
+        public string Updatedby { get; set; }
         public List<CounterSaleDetailModel> counterSaleDetails { get; set; }
     }
     public class CounterSaleDetailModel 

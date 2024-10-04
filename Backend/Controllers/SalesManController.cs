@@ -40,7 +40,9 @@ namespace Backend.Controllers
                     {
                         smCheck.Name = sm.Name;
                         smCheck.SalesManTypeId= sm.SalesManTypeId;
-                        smCheck.IsActive = sm.IsActive;  
+                        smCheck.IsActive = sm.IsActive;
+                        smCheck.UpdatedAt = DateTime.UtcNow;
+                        smCheck.UpdatedBy = sm.UpdatedBy;
                         bMSContext.SalesMan.Update(smCheck);
                         bMSContext.SaveChanges();
                         return JsonConvert.SerializeObject(new { id = sm.Id });
@@ -51,6 +53,8 @@ namespace Backend.Controllers
                         smm.Name = sm.Name;
                         smm.SalesManTypeId = sm.SalesManTypeId;
                         smm.IsActive = sm.IsActive;
+                        smm.CreatedAt = DateTime.Now;
+                        smm.CreatedBy = sm.CreatedBy;
                         bMSContext.SalesMan.Add(smm);
                         bMSContext.SaveChanges();
                         return JsonConvert.SerializeObject(new { id = smm.Id });
