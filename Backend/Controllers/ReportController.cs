@@ -311,5 +311,40 @@ namespace Backend.Controllers
             return result;
 
         }
+
+        [HttpGet]
+        [Route("/api/getUserReport")]
+        public IEnumerable<UserReport> getUserReport(int userGroup, string name, string dateFrom, string dateTo,string joiningDate)
+        {
+            string constr = _configuration.GetConnectionString("DefaultConnection");
+            List<UserReport> result = new List<UserReport>();
+            string query = "exec GetUserReport @dateFrom ='" + dateFrom + "', @dateTo ='" + 
+                dateTo+"',@userGroup="+userGroup+",@joiningDate='"+joiningDate+"',@name='"+name+"'";
+
+            using (SqlConnection con = new SqlConnection(constr))
+            {
+                using (SqlCommand cmd = new SqlCommand(query))
+                {
+                    cmd.Connection = con;
+                    con.Open();
+                    using (SqlDataReader sdr = cmd.ExecuteReader())
+                    {
+                        while (sdr.Read())
+                        {
+                            result.Add(new UserReport
+                            {
+                                USER_NAME = sdr["USER_NAME"].ToString(),
+                                USER_GROUP = sdr["USER_GROUP"].ToString(),
+                                JOINING_DATE = sdr["JOINING_DATE"].ToString(),
+                                SALARY = sdr["SALARY"] == DBNull.Value ? 0 : Convert.ToDecimal(sdr["SALARY"])
+                            });
+                        };
+                    }
+                    con.Close();
+                }
+            }
+            return result;
+
+        }
     }
 }

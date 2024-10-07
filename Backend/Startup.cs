@@ -59,7 +59,7 @@ namespace Backend
 
             app.UseRouting();
             app.UseCors(options => options.WithOrigins());
-            app.UseCors(options => options.WithOrigins("http://103.143.76.105:4800/").AllowAnyMethod());
+            app.UseCors(options => options.WithOrigins("http://192.168.0.118:4100").AllowAnyMethod());
 
             app.UseAuthorization();
 
