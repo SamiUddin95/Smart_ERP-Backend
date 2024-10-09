@@ -293,6 +293,39 @@ namespace Backend.Controllers
             return bMSContext.Item.ToList();
         }
 
+
+        [HttpGet]
+        [Route("/api/getAllItemsdetailsFilterbased")]
+        public IEnumerable<Item> getAllItemsdetailsFilterbased(string itemName, string aliasName, decimal purchasePrice, decimal salePrice)
+        {
+            var query = bMSContext.Item.AsQueryable();
+
+            // Check if itemName and aliasName are 'All'
+            if (itemName != "All")
+            {
+                query = query.Where(i => i.ItemName.Contains(itemName));
+            }
+
+            if (aliasName != "All")
+            {
+                query = query.Where(i => i.AliasName.Contains(aliasName));
+            }
+
+            // Apply additional filters for purchasePrice and salePrice
+            if (purchasePrice > 0)
+            {
+                query = query.Where(i => i.PurchasePrice == purchasePrice);
+            }
+
+            if (salePrice > 0)
+            {
+                query = query.Where(i => i.SalePrice == salePrice);
+            }
+
+            return query.ToList();
+        }
+
+
         [HttpPost]
         [Route("/api/createItems")]
         public object createItems(Item Items)
@@ -327,6 +360,12 @@ namespace Backend.Controllers
                     }
                     else
                     {
+                        var existingItem = bMSContext.Item.SingleOrDefault(i => i.ItemName == Items.ItemName);
+
+                        if (existingItem != null)
+                        {
+                            return JsonConvert.SerializeObject(new { msg = "An item with this name already exists." });
+                        }
                         Item itemItems = new Item();
 
                         itemItems.AliasName = Items.AliasName;
@@ -359,6 +398,17 @@ namespace Backend.Controllers
             {
                 return null;
             }
+        }
+        [HttpGet]
+        [Route("/api/checkDuplicateItemName")]
+        public object CheckDuplicateItemName(string itemName)
+        {
+            var existingItem = bMSContext.Item.SingleOrDefault(i => i.ItemName == itemName);
+            if (existingItem != null)
+            {
+                return Ok(true); 
+            }
+            return Ok(false);
         }
 
         [HttpGet]

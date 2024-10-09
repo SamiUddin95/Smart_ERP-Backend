@@ -17,6 +17,13 @@ namespace Backend.Controllers
     {
         ERPContext bMSContext = new ERPContext();
 
+        [HttpGet]
+        [Route("/api/getItemDetailbyBarCode")]
+        public IEnumerable<Item> getItemDetailbyBarCode(string barCode)
+        {
+            return bMSContext.Item.Where(u => u.AliasName == barCode).ToList();
+        }
+
         [HttpPost]
         [Route("/api/createPurchase")]
         public object CreateOrUpdatePurchase(PurchaseModel purchModel)

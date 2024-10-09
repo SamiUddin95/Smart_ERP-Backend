@@ -157,7 +157,7 @@ namespace Backend.Controllers
                     if (loginDtl.Password != loginModel.Password)
                         return JsonConvert.SerializeObject(new { msg = "Invalid Password" });
 
-                    return JsonConvert.SerializeObject(new { userType = loginDtl.UserTypeId });
+                    return JsonConvert.SerializeObject(new { msg = loginDtl.UserTypeId });
                 }
                 else
                 {
