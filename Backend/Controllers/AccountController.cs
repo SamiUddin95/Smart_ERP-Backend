@@ -65,8 +65,8 @@ namespace Backend.Controllers
                         accCat.Name = accCategory.Name;
                         accCat.ManualCode = accCategory.ManualCode;
                         accCat.Priority = accCategory.Priority;
-                        accCatChk.CreatedAt = DateTime.Now;
-                        accCatChk.CreatedBy = accCategory.CreatedBy;
+                        accCat.CreatedAt = DateTime.Now;
+                        accCat.CreatedBy = accCategory.CreatedBy;
                         bMSContext.AccCategory.Add(accCat);
                         bMSContext.SaveChanges();
                         return JsonConvert.SerializeObject(new { id = accCat.Id });

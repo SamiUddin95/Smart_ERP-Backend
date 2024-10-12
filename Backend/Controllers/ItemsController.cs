@@ -356,6 +356,12 @@ namespace Backend.Controllers
                     }
                     else
                     {
+                        var existingItem = bMSContext.Item.SingleOrDefault(i => i.ItemName == Items.ItemName);
+
+                        if (existingItem != null)
+                        {
+                            return JsonConvert.SerializeObject(new { msg = "An item with this name already exists." });
+                        }
                         Item itemItems = new Item();
 
                         itemItems.AliasName = Items.AliasName;
@@ -388,6 +394,17 @@ namespace Backend.Controllers
             {
                 return null;
             }
+        }
+        [HttpGet]
+        [Route("/api/checkDuplicateItemName")]
+        public object CheckDuplicateItemName(string itemName)
+        {
+            var existingItem = bMSContext.Item.SingleOrDefault(i => i.ItemName == itemName);
+            if (existingItem != null)
+            {
+                return Ok(true); 
+            }
+            return Ok(false);
         }
 
         [HttpGet]
