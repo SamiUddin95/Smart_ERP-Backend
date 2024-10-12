@@ -56,7 +56,7 @@ namespace Backend.Controllers
                             {
                                 PurchaseId = purchase.Id,
                                 Barcode = detail.Barcode,
-                                ItemId = detail.ItemId,
+                                ItemName = detail.ItemName,
                                 Quantity = detail.Quantity,
                                 BonusQuantity = detail.BonusQuantity,
                                 PurchasePrice = detail.PurchasePrice,
@@ -112,7 +112,7 @@ namespace Backend.Controllers
                                 {
                                     PurchaseId = existingPurchase.Id,
                                     Barcode = detail.Barcode,
-                                    ItemId = detail.ItemId,
+                                    ItemName = detail.ItemName,
                                     Quantity = detail.Quantity,
                                     BonusQuantity = detail.BonusQuantity,
                                     PurchasePrice = detail.PurchasePrice,
@@ -197,7 +197,7 @@ namespace Backend.Controllers
                     id = pDtl.Id,
                     purchaseId = pDtl.PurchaseId,
                     barcode = pDtl.Barcode,
-                    ItemId = pDtl.ItemId,
+                    ItemName = pDtl.ItemName,
                     quantity = pDtl.Quantity,
                     bonusQuantity = pDtl.BonusQuantity,
                     purchasePrice = pDtl.PurchasePrice,
