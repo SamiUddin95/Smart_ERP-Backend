@@ -41,5 +41,6 @@ namespace Backend.Models
         [Column("UPDATED_BY")]
         [StringLength(255)]
         public string UpdatedBy { get; set; }
+        public string ItemName { get; set; }
     }
 }

@@ -36,6 +36,7 @@ namespace Backend.Model
         public long? OrderReturnId { get; set; }
         public string Barcode { get; set; }
         public int? ItemId { get; set; }
+        public string ItemName { get; set; }
         public int? Qty { get; set; }
         public decimal? FullRate { get; set; }
         public decimal? Disc { get; set; }

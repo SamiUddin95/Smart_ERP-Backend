@@ -10,9 +10,11 @@ namespace Backend.Model
         public string Remarks { get; set; }
         public string InvoiceNo { get; set; }
         public string CreatedBy { get; set; }
+        public string UpdatedBy { get; set; }
         public decimal? RecentPurchasePrice { get; set; }
         public decimal? SalePrice { get; set; }
         public DateTime? CreatedAt { get; set; }
+        public DateTime? UpdatedAt { get; set; }
         public int? ItemsQuantity { get; set; }
         public decimal? TotalDiscount { get; set; }
         public decimal? TotalGst { get; set; }
@@ -26,6 +28,7 @@ namespace Backend.Model
         public int? PurchaseId { get; set; }
         public string Barcode { get; set; }
         public int ItemId { get; set; }
+        public string ItemName { get; set; }
         public int? Quantity { get; set; }
         public int? BonusQuantity { get; set; }
         public decimal? PurchasePrice { get; set; }

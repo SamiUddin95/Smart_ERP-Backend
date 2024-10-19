@@ -45,6 +45,8 @@ namespace Backend.Controllers
                         BillTotal = purchModel.BillTotal,
                         CreatedAt = DateTime.Now,
                         CreatedBy = purchModel.CreatedBy,
+                        UpdatedAt = DateTime.Now,
+                        UpdatedBy = purchModel.UpdatedBy,
                     };
                     bMSContext.Purchase.Add(purchase);
                     bMSContext.SaveChanges();
@@ -56,7 +58,7 @@ namespace Backend.Controllers
                             {
                                 PurchaseId = purchase.Id,
                                 Barcode = detail.Barcode,
-                                ItemId = detail.ItemId,
+                                ItemName = detail.ItemName,
                                 Quantity = detail.Quantity,
                                 BonusQuantity = detail.BonusQuantity,
                                 PurchasePrice = detail.PurchasePrice,
@@ -112,7 +114,7 @@ namespace Backend.Controllers
                                 {
                                     PurchaseId = existingPurchase.Id,
                                     Barcode = detail.Barcode,
-                                    ItemId = detail.ItemId,
+                                    ItemName = detail.ItemName,
                                     Quantity = detail.Quantity,
                                     BonusQuantity = detail.BonusQuantity,
                                     PurchasePrice = detail.PurchasePrice,
@@ -141,7 +143,7 @@ namespace Backend.Controllers
             {
                 return JsonConvert.SerializeObject(new { msg = ex.Message });
             }
-            return JsonConvert.SerializeObject(new { msg = "Purchase Order processed successfully" });
+            return JsonConvert.SerializeObject(new { msg = "Purchase processed successfully" });
         }
         [HttpGet]
         [Route("/api/getAllPurchases")]
@@ -161,7 +163,9 @@ namespace Backend.Controllers
                               totalDiscount = purchase.TotalDiscount,
                               totalGst = purchase.TotalGst,
                               billTotal = purchase.BillTotal,
-                              CreatedBy = purchase.CreatedBy
+                              CreatedBy = purchase.CreatedBy,
+                              CreatedAt=purchase.CreatedAt,
+                              UpdatedAt=purchase.UpdatedAt
                           }).ToList();
 
             return result;
@@ -197,7 +201,7 @@ namespace Backend.Controllers
                     id = pDtl.Id,
                     purchaseId = pDtl.PurchaseId,
                     barcode = pDtl.Barcode,
-                    ItemId = pDtl.ItemId,
+                    ItemName = pDtl.ItemName,
                     quantity = pDtl.Quantity,
                     bonusQuantity = pDtl.BonusQuantity,
                     purchasePrice = pDtl.PurchasePrice,
@@ -305,6 +309,7 @@ namespace Backend.Controllers
                             purchOrderDtl.SoldQty = purchOrderModel.purcOrderDtlModel[i].SoldQty; 
                             purchOrderDtl.OrderId = pOrder.Id;
                             purchOrderDtl.ItemId = purchOrderModel.purcOrderDtlModel[i].ItemId;
+                            purchOrderDtl.ItemName = purchOrderModel.purcOrderDtlModel[i].ItemName;
                             purchOrderDtl.BarCode = purchOrderModel.purcOrderDtlModel[i].BarCode;
                             purchOrderDtl.CurrentStock = purchOrderModel.purcOrderDtlModel[i].CurrentStock; 
                             purchOrderDtl.Rate = purchOrderModel.purcOrderDtlModel[i].Rate;
@@ -334,19 +339,20 @@ namespace Backend.Controllers
                         data[0].UpdatedAt = DateTime.Now;
                         data[0].UpdatedBy = purchOrderModel.Updatedby;
                         bMSContext.PurchaseOrder.Update(data[0]);
-                        bMSContext.SaveChanges(); 
-                        var dataPurDtl= bMSContext.PurchaseOrderDetail.Where(x => x.OrderId == purchOrderModel.Id).FirstOrDefault();
+                        bMSContext.SaveChanges();  
+                        var dataPurDtl = bMSContext.PurchaseOrderDetail.Where(x => x.OrderId == purchOrderModel.Id).ToList();
+                        bMSContext.PurchaseOrderDetail.RemoveRange(dataPurDtl);
+                        bMSContext.SaveChanges();
                         if (dataPurDtl != null) 
                         {
-                            bMSContext.PurchaseOrderDetail.Remove(dataPurDtl);
-                            bMSContext.SaveChanges();
                             for (int i = 0; i <= purchOrderModel.purcOrderDtlModel.Count(); i++)
                             {
                                 PurchaseOrderDetail purchOrderDtl = new PurchaseOrderDetail();
                                 purchOrderDtl.RtnQty = purchOrderModel.purcOrderDtlModel[i].RtnQty;
                                 purchOrderDtl.SoldQty = purchOrderModel.purcOrderDtlModel[i].SoldQty;
-                                purchOrderDtl.OrderId = dataPurDtl.Id;
+                                purchOrderDtl.OrderId = data[0].Id;
                                 purchOrderDtl.ItemId = purchOrderModel.purcOrderDtlModel[i].ItemId;
+                                purchOrderDtl.ItemName = purchOrderModel.purcOrderDtlModel[i].ItemName;
                                 purchOrderDtl.BarCode = purchOrderModel.purcOrderDtlModel[i].BarCode;
                                 purchOrderDtl.CurrentStock = purchOrderModel.purcOrderDtlModel[i].CurrentStock;
                                 purchOrderDtl.Rate = purchOrderModel.purcOrderDtlModel[i].Rate;
@@ -367,6 +373,7 @@ namespace Backend.Controllers
                                 purchOrderDtl.SoldQty = purchOrderModel.purcOrderDtlModel[i].SoldQty;
                                 purchOrderDtl.OrderId = data[0].Id;
                                 purchOrderDtl.ItemId = purchOrderModel.purcOrderDtlModel[i].ItemId;
+                                purchOrderDtl.ItemName = purchOrderModel.purcOrderDtlModel[i].ItemName;
                                 purchOrderDtl.BarCode = purchOrderModel.purcOrderDtlModel[i].BarCode;
                                 purchOrderDtl.CurrentStock = purchOrderModel.purcOrderDtlModel[i].CurrentStock;
                                 purchOrderDtl.Rate = purchOrderModel.purcOrderDtlModel[i].Rate;
@@ -436,6 +443,7 @@ namespace Backend.Controllers
                     orderId = poDtl.OrderId,
                     barCode = poDtl.BarCode,
                     itemId = poDtl.ItemId,
+                    itemName = poDtl.ItemName,
                     soldQty = poDtl.SoldQty,
                     rtnQty = poDtl.RtnQty,
                     netSaleQty = poDtl.NetSaleQty,
@@ -519,6 +527,7 @@ namespace Backend.Controllers
                                 purchOrderDtl.Barcode =purchOrderModel.purcOrderDtlModel[i].Barcode;
                                 purchOrderDtl.OrderReturnId = pOrder.Id;
                                 purchOrderDtl.ItemId =purchOrderModel.purcOrderDtlModel[i].ItemId;
+                                purchOrderDtl.ItemName =purchOrderModel.purcOrderDtlModel[i].ItemName;
                                 purchOrderDtl.Qty = purchOrderModel.purcOrderDtlModel[i].Qty;
                                 purchOrderDtl.Disc = purchOrderModel.purcOrderDtlModel[i].Disc;
                                 purchOrderDtl.FlatDisc = purchOrderModel.purcOrderDtlModel[i].FlatDisc;
@@ -574,6 +583,7 @@ namespace Backend.Controllers
                                     purchOrderDtl.Barcode = purchOrderModel.purcOrderDtlModel[i].Barcode;
                                     purchOrderDtl.OrderReturnId = data.Id;
                                     purchOrderDtl.ItemId = purchOrderModel.purcOrderDtlModel[i].ItemId;
+                                    purchOrderDtl.ItemName = purchOrderModel.purcOrderDtlModel[i].ItemName;
                                     purchOrderDtl.Qty = purchOrderModel.purcOrderDtlModel[i].Qty;
                                     purchOrderDtl.Disc = purchOrderModel.purcOrderDtlModel[i].Disc;
                                     purchOrderDtl.FlatDisc = purchOrderModel.purcOrderDtlModel[i].FlatDisc;
@@ -649,6 +659,7 @@ namespace Backend.Controllers
                                 orderReturnId = poDtl.OrderReturnId,
                                 barcode = poDtl.Barcode,
                                 itemId = poDtl.ItemId,
+                                itemName = poDtl.ItemName,
                                 qty = poDtl.Qty,
                                 total = poDtl.Total,
                                 fullRate = poDtl.FullRate,

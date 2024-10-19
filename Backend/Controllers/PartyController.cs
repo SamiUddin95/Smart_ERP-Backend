@@ -38,6 +38,23 @@ namespace Backend.Controllers
         public IEnumerable<Party> getAllParty()
         {
             return bMSContext.Party.ToList();
+        } 
+        [HttpGet]
+        [Route("/api/getAllPartyFilterBased")]
+        public IEnumerable<Party> getAllPartyFilterBased(string partyName, string mobileNo, string telephoneNo, string nicNo,string contactPerson)
+        {
+            var query = bMSContext.Party.AsQueryable();
+            if (partyName != "All") 
+                query = query.Where(i => i.PartyName.Contains(partyName));  
+            if (mobileNo != "All") 
+                query = query.Where(i => i.MobileNo.Contains(mobileNo)); 
+            if (telephoneNo != "All") 
+                query = query.Where(i => i.TelPhoneNo == telephoneNo);  
+            if (nicNo !="All") 
+                query = query.Where(i => i.Nic.Contains(nicNo));
+            if (contactPerson != "All")
+                query = query.Where(i => i.ContactPerson.Contains(contactPerson)); 
+            return query.ToList();
         }
         [HttpGet]
         [Route("/api/getAllPartyPrice")]

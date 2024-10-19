@@ -73,3 +73,15 @@ Backend/Models/ERPContext.cs
 /.vs/Backend/v17/.futdcache.v2
 /.vs/Backend/v17/.suo
 /.vs/Backend/v17/DocumentLayout.json
+/.vs/Backend/v16/.suo
+/Backend/bin/Debug/net5.0/appsettings.json
+/Backend/bin/Debug/net5.0/Swashbuckle.AspNetCore.SwaggerUI.dll
+/Backend/bin/Debug/net5.0/Swashbuckle.AspNetCore.Swagger.dll
+/Backend/bin/Debug/net5.0/Swashbuckle.AspNetCore.SwaggerGen.dll
+/Backend/bin/Debug/net5.0/Microsoft.OpenApi.dll
+/Backend/bin/Debug/net5.0/Backend.pdb
+/Backend/bin/Debug/net5.0/Backend.runtimeconfig.dev.json
+/Backend/bin/Debug/net5.0/Backend.exe
+/Backend/bin/Debug/net5.0/Backend.dll
+/Backend/bin/Debug/net5.0/Backend.deps.json
+/Backend/obj/Backend.csproj.nuget.g.targets

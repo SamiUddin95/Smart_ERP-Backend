@@ -298,9 +298,7 @@ namespace Backend.Controllers
         [Route("/api/getAllItemsdetailsFilterbased")]
         public IEnumerable<Item> getAllItemsdetailsFilterbased(string itemName, string aliasName, decimal purchasePrice, decimal salePrice)
         {
-            var query = bMSContext.Item.AsQueryable();
-
-            // Check if itemName and aliasName are 'All'
+            var query = bMSContext.Item.AsQueryable(); 
             if (itemName != "All")
             {
                 query = query.Where(i => i.ItemName.Contains(itemName));
@@ -309,9 +307,7 @@ namespace Backend.Controllers
             if (aliasName != "All")
             {
                 query = query.Where(i => i.AliasName.Contains(aliasName));
-            }
-
-            // Apply additional filters for purchasePrice and salePrice
+            } 
             if (purchasePrice > 0)
             {
                 query = query.Where(i => i.PurchasePrice == purchasePrice);

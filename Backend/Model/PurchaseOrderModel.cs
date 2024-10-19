@@ -29,7 +29,8 @@ namespace Backend.Model
         public long Id { get; set; }
         public long OrderId { get; set; }
         public string BarCode { get; set; }
-        public int? ItemId { get; set; } 
+        public int? ItemId { get; set; }
+        public string ItemName { get; set; }
         public int? SoldQty { get; set; }
         public int? RtnQty { get; set; }
         public int? NetSaleQty { get; set; }
