@@ -321,7 +321,18 @@ namespace Backend.Controllers
             return query.ToList();
         }
 
+        [HttpGet]
+        [Route("/api/getAllBrandsdetailsFilterbased")]
+        public IEnumerable<ItemBrand> getAllBrandsdetailsFilterbased(string brandName)
+        {
+            var query = bMSContext.ItemBrand.AsQueryable();
+            if (brandName != "All")
+            {
+                query = query.Where(i => i.Name.Contains(brandName));
+            }
 
+            return query.ToList();
+        }
         [HttpPost]
         [Route("/api/createItems")]
         public object createItems(Item Items)
@@ -394,17 +405,6 @@ namespace Backend.Controllers
             {
                 return null;
             }
-        }
-        [HttpGet]
-        [Route("/api/checkDuplicateItemName")]
-        public object CheckDuplicateItemName(string itemName)
-        {
-            var existingItem = bMSContext.Item.SingleOrDefault(i => i.ItemName == itemName);
-            if (existingItem != null)
-            {
-                return Ok(true); 
-            }
-            return Ok(false);
         }
 
         [HttpGet]
