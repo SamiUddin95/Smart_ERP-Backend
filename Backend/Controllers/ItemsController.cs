@@ -333,6 +333,53 @@ namespace Backend.Controllers
 
             return query.ToList();
         }
+
+        [HttpGet]
+        [Route("/api/getAllCategorydetailsFilterbased")]
+        public IEnumerable<ItemCategory> getAllCategorydetailsFilterbased(string Name, string description)
+        {
+            var query = bMSContext.ItemCategory.AsQueryable();
+            if (Name != "All")
+            {
+                query = query.Where(i => i.Name.Contains(Name));
+            }
+
+            if (description != "All")
+            {
+                query = query.Where(i => i.Description.Contains(description));
+            }
+
+            return query.ToList();
+        }
+        [HttpGet]
+        [Route("/api/getAllClassdetailsFilterbased")]
+        public IEnumerable<ItemClass> getAllClassdetailsFilterbased(string className)
+        {
+            var query = bMSContext.ItemClass.AsQueryable();
+            if (className != "All")
+            {
+                query = query.Where(i => i.Name.Contains(className));
+            }
+
+            return query.ToList();
+        }
+
+        [HttpGet]
+        [Route("/api/getAllManufacturedetailsFilterbased")]
+        public IEnumerable<ItemManufacturer> getAllManufacturedetailsFilterbased(string name, string email)
+        {
+            var query = bMSContext.ItemManufacturer.AsQueryable();
+            if (name != "All")
+            {
+                query = query.Where(i => i.Name.Contains(name));
+            }
+            if (email != "All")
+            {
+                query = query.Where(i => i.Email.Contains(email));
+            }
+            return query.ToList();
+        }
+
         [HttpPost]
         [Route("/api/createItems")]
         public object createItems(Item Items)
