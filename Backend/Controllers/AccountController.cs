@@ -381,6 +381,97 @@ namespace Backend.Controllers
         {
             return bMSContext.Account.ToList();
         }
+
+        [HttpGet]
+        [Route("/api/getAllAccountFilterbased")]
+        public IEnumerable<Account> getAllAccountFilterbased(string Name, string accNo, decimal taxAmount, decimal taxLimit, string manualCode, string kindCode)
+        {
+            var query = bMSContext.Account.AsQueryable();
+            if (Name != "All")
+            {
+                query = query.Where(i => i.Name.Contains(Name));
+            }
+
+            if (accNo != "All")
+            {
+                query = query.Where(i => i.AccountNumber.Contains(accNo));
+            }
+            if (taxAmount > 0)
+            {
+                query = query.Where(i => i.TaxAmount == taxAmount);
+            }
+
+            if (taxLimit > 0)
+            {
+                query = query.Where(i => i.TaxLimit == taxLimit);
+            }
+            if (manualCode != "All")
+            {
+                query = query.Where(i => i.ManualCode.Contains(manualCode));
+            }
+
+            if (kindCode != "All")
+            {
+                query = query.Where(i => i.KindCode.Contains(kindCode));
+            }
+
+            return query.ToList();
+        }
+
+        [HttpGet]
+        [Route("/api/getAllAccountGroupFilterbased")]
+        public IEnumerable<AccGroup> getAllAccountGroupFilterbased(string Name, int accType, string manualCode, string priority)
+        {
+            var query = bMSContext.AccGroup.AsQueryable();
+            if (Name != "All")
+            {
+                query = query.Where(i => i.Name.Contains(Name));
+            }
+
+            if (accType > 0)
+            {
+                query = query.Where(i => i.AccountTypeId == accType);
+            }
+            if (manualCode != "All")
+            {
+                query = query.Where(i => i.ManualCode.Contains(manualCode));
+            }
+
+            if (priority != "All")
+            {
+                query = query.Where(i => i.Priority.Contains(priority));
+            }
+
+            return query.ToList();
+        }
+
+        [HttpGet]
+        [Route("/api/getAllAccountCategoryFilterbased")]
+        public IEnumerable<AccCategory> getAllAccountCategoryFilterbased(string Name, int accType, string manualCode, string priority)
+        {
+            var query = bMSContext.AccCategory.AsQueryable();
+            if (Name != "All")
+            {
+                query = query.Where(i => i.Name.Contains(Name));
+            }
+
+            if (accType > 0)
+            {
+                query = query.Where(i => i.AccountTypeId == accType);
+            }
+            if (manualCode != "All")
+            {
+                query = query.Where(i => i.ManualCode.Contains(manualCode));
+            }
+
+            if (priority != "All")
+            {
+                query = query.Where(i => i.Priority.Contains(priority));
+            }
+
+            return query.ToList();
+        }
+
         [HttpPost]
         [Route("/api/createAccount")]
         public object createAccount(Account acc)
