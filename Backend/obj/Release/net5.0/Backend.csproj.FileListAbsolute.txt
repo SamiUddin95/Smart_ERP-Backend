@@ -53,7 +53,6 @@ D:\ERP\ERPBACKEND\ERPBACKEND\Backend\Backend\obj\Release\net5.0\Backend.pdb
 D:\ERP\ERPBACKEND\ERPBACKEND\Backend\Backend\obj\Release\net5.0\Backend.genruntimeconfig.cache
 D:\ERP\ERPBACKEND\ERPBACKEND\Backend\Backend\obj\Release\net5.0\ref\Backend.dll
 D:\ERP\Smart_ERP-Backend\Backend\bin\Release\net5.0\appsettings.Development.json
-D:\ERP\Smart_ERP-Backend\Backend\bin\Release\net5.0\appsettings.json
 D:\ERP\Smart_ERP-Backend\Backend\bin\Release\net5.0\Backend.exe
 D:\ERP\Smart_ERP-Backend\Backend\bin\Release\net5.0\Backend.deps.json
 D:\ERP\Smart_ERP-Backend\Backend\bin\Release\net5.0\Backend.runtimeconfig.json
@@ -94,15 +93,11 @@ D:\ERP\Smart_ERP-Backend\Backend\obj\Release\net5.0\Backend.MvcApplicationPartsA
 D:\ERP\Smart_ERP-Backend\Backend\obj\Release\net5.0\Backend.MvcApplicationPartsAssemblyInfo.cache
 D:\ERP\Smart_ERP-Backend\Backend\obj\Release\net5.0\scopedcss\bundle\Backend.styles.css
 D:\ERP\Smart_ERP-Backend\Backend\obj\Release\net5.0\staticwebassets\Backend.StaticWebAssets.Manifest.cache
-D:\ERP\Smart_ERP-Backend\Backend\obj\Release\net5.0\staticwebassets\Backend.StaticWebAssets.Pack.cache
-D:\ERP\Smart_ERP-Backend\Backend\obj\Release\net5.0\staticwebassets\msbuild.Backend.Microsoft.AspNetCore.StaticWebAssets.props
-D:\ERP\Smart_ERP-Backend\Backend\obj\Release\net5.0\staticwebassets\msbuild.build.Backend.props
-D:\ERP\Smart_ERP-Backend\Backend\obj\Release\net5.0\staticwebassets\msbuild.buildMultiTargeting.Backend.props
-D:\ERP\Smart_ERP-Backend\Backend\obj\Release\net5.0\staticwebassets\msbuild.buildTransitive.Backend.props
 D:\ERP\Smart_ERP-Backend\Backend\obj\Release\net5.0\Backend.RazorTargetAssemblyInfo.cache
 D:\ERP\Smart_ERP-Backend\Backend\obj\Release\net5.0\Backend.csproj.CopyComplete
 D:\ERP\Smart_ERP-Backend\Backend\obj\Release\net5.0\Backend.dll
-D:\ERP\Smart_ERP-Backend\Backend\obj\Release\net5.0\refint\Backend.dll
 D:\ERP\Smart_ERP-Backend\Backend\obj\Release\net5.0\Backend.pdb
 D:\ERP\Smart_ERP-Backend\Backend\obj\Release\net5.0\Backend.genruntimeconfig.cache
 D:\ERP\Smart_ERP-Backend\Backend\obj\Release\net5.0\ref\Backend.dll
+D:\ERP\Smart_ERP-Backend\Backend\bin\Release\net5.0\ref\Backend.dll
+D:\ERP\Smart_ERP-Backend\Backend\obj\Release\net5.0\staticwebassets\Backend.StaticWebAssets.xml
