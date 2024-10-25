@@ -19,5 +19,10 @@ namespace Backend.Models
         public string CreatedBy { get; set; }
         public DateTime? UpdatedAt { get; set; }
         public string UpdatedBy { get; set; }
+        public decimal? NetCostTotal { get; set; }
+        public decimal? NetSaleTotal { get; set; }
+        public int? NetQuantity { get; set; }
+        public decimal? TotalDisc { get; set; }
+        public decimal? NetProfitInValue { get; set; }
     }
 }

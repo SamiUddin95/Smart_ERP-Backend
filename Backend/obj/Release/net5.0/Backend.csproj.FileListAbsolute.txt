@@ -99,5 +99,9 @@ D:\ERP\Smart_ERP-Backend\Backend\obj\Release\net5.0\Backend.dll
 D:\ERP\Smart_ERP-Backend\Backend\obj\Release\net5.0\Backend.pdb
 D:\ERP\Smart_ERP-Backend\Backend\obj\Release\net5.0\Backend.genruntimeconfig.cache
 D:\ERP\Smart_ERP-Backend\Backend\obj\Release\net5.0\ref\Backend.dll
-D:\ERP\Smart_ERP-Backend\Backend\bin\Release\net5.0\ref\Backend.dll
-D:\ERP\Smart_ERP-Backend\Backend\obj\Release\net5.0\staticwebassets\Backend.StaticWebAssets.xml
+D:\ERP\Smart_ERP-Backend\Backend\obj\Release\net5.0\staticwebassets\Backend.StaticWebAssets.Pack.cache
+D:\ERP\Smart_ERP-Backend\Backend\obj\Release\net5.0\staticwebassets\msbuild.Backend.Microsoft.AspNetCore.StaticWebAssets.props
+D:\ERP\Smart_ERP-Backend\Backend\obj\Release\net5.0\staticwebassets\msbuild.build.Backend.props
+D:\ERP\Smart_ERP-Backend\Backend\obj\Release\net5.0\staticwebassets\msbuild.buildMultiTargeting.Backend.props
+D:\ERP\Smart_ERP-Backend\Backend\obj\Release\net5.0\staticwebassets\msbuild.buildTransitive.Backend.props
+D:\ERP\Smart_ERP-Backend\Backend\obj\Release\net5.0\refint\Backend.dll

@@ -36,13 +36,16 @@ namespace Backend.Controllers
                     {
                         VendorId = purchModel.VendorId,
                         Remarks = purchModel.Remarks,
-                        InvoiceNo = purchModel.InvoiceNo,
-                        RecentPurchasePrice = purchModel.RecentPurchasePrice,
-                        SalePrice = purchModel.SalePrice,
-                        ItemsQuantity = purchModel.ItemsQuantity,
+                        InvoiceNo = purchModel.InvoiceNo, 
+                        SalePrice = purchModel.SalePrice, 
                         TotalDiscount = purchModel.TotalDiscount,
                         TotalGst = purchModel.TotalGst,
                         BillTotal = purchModel.BillTotal,
+                        NetSaleTotal = purchModel.netSaleTotal,
+                        NetCostTotal = purchModel.netCostTotal,
+                        NetQuantity = purchModel.NetQuantity,
+                        TotalDisc = purchModel.TotalDisc,
+                        NetProfitInValue = purchModel.netProfitInValue,
                         CreatedAt = DateTime.Now,
                         CreatedBy = purchModel.CreatedBy,
                         UpdatedAt = DateTime.Now,
@@ -50,36 +53,40 @@ namespace Backend.Controllers
                     };
                     bMSContext.Purchase.Add(purchase);
                     bMSContext.SaveChanges();
-                    if (purchModel.PurchaseDetailModel != null && purchModel.PurchaseDetailModel.Any())
-                    {
-                        foreach (var detail in purchModel.PurchaseDetailModel)
+                    
+                        if (purchModel.PurchaseDetailModel != null && purchModel.PurchaseDetailModel.Any())
                         {
-                            PurchaseDetail purchDetail = new PurchaseDetail
+                            foreach (var detail in purchModel.PurchaseDetailModel)
                             {
-                                PurchaseId = purchase.Id,
-                                Barcode = detail.Barcode,
-                                ItemName = detail.ItemName,
-                                Quantity = detail.Quantity,
-                                BonusQuantity = detail.BonusQuantity,
-                                PurchasePrice = detail.PurchasePrice,
-                                DiscountByPercent = detail.DiscountByPercent,
-                                DiscountByValue = detail.DiscountByValue,
-                                Total = detail.Total,
-                                GstByPercent = detail.GstByPercent,
-                                GstByValue = detail.GstByValue,
-                                TotalWithGst = detail.TotalWithGst,
-                                NetRate = detail.NetRate,
-                                MarginPercent = detail.MarginPercent,
-                                SalePrice = detail.SalePrice,
-                                SaleDiscountByValue = detail.SaleDiscountByValue,
-                                NetSalePrice = detail.NetSalePrice,
-                                CreatedAt = DateTime.Now,
-                                CreatedBy = detail.CreatedBy,
-                            };
-                            bMSContext.PurchaseDetail.Add(purchDetail);
+                                PurchaseDetail purchDetail = new PurchaseDetail
+                                {
+                                    PurchaseId = purchase.Id,
+                                    Barcode = detail.Barcode,
+                                    ItemName = detail.ItemName,
+                                    Quantity = detail.Quantity,
+                                    BonusQuantity = detail.BonusQuantity,
+                                    PurchasePrice = detail.PurchasePrice, 
+                                    DiscountByPercent = detail.DiscountByPercent,
+                                    DiscountByValue = detail.DiscountByValue,
+                                    GstByPercent = detail.GstByPercent,
+                                    GstByValue = detail.GstByValue,
+                                    TotalIncDisc = detail.TotalIncDisc,
+                                    TotalIncGst = detail.TotalIncGst,
+
+                                    NetRate = detail.NetRate,
+                                    NetQuantity = detail.NetQuantity,
+                                    SubTotal = detail.SubTotal,
+                                    MarginPercent = detail.MarginPercent,
+                                    SalePrice = detail.SalePrice,
+                                    SaleDiscountByValue = detail.SaleDiscountByValue, 
+                                    NetSalePrice = detail.NetSalePrice,
+                                    CreatedAt = DateTime.Now,
+                                    CreatedBy = detail.CreatedBy
+                                };
+                                bMSContext.PurchaseDetail.Add(purchDetail);
+                            } 
                         }
-                        bMSContext.SaveChanges();
-                    }
+                        bMSContext.SaveChanges(); 
                 }
                 else
                 {
@@ -89,13 +96,16 @@ namespace Backend.Controllers
                     {
                         existingPurchase.VendorId = purchModel.VendorId;
                         existingPurchase.Remarks = purchModel.Remarks;
-                        existingPurchase.InvoiceNo = purchModel.InvoiceNo;
-                        existingPurchase.RecentPurchasePrice = purchModel.RecentPurchasePrice;
-                        existingPurchase.SalePrice = purchModel.SalePrice;
-                        existingPurchase.ItemsQuantity = purchModel.ItemsQuantity;
+                        existingPurchase.InvoiceNo = purchModel.InvoiceNo; 
+                        existingPurchase.SalePrice = purchModel.SalePrice; 
                         existingPurchase.TotalDiscount = purchModel.TotalDiscount;
                         existingPurchase.TotalGst = purchModel.TotalGst;
                         existingPurchase.BillTotal = purchModel.BillTotal;
+                        existingPurchase.NetSaleTotal = purchModel.netSaleTotal;
+                        existingPurchase.NetCostTotal = purchModel.netCostTotal;
+                        existingPurchase.NetQuantity = purchModel.NetQuantity;
+                        existingPurchase.TotalDisc = purchModel.TotalDisc;
+                        existingPurchase.NetProfitInValue = purchModel.netProfitInValue;
                         existingPurchase.UpdatedAt = DateTime.Now;
                         existingPurchase.UpdatedBy = purchModel.CreatedBy;
                         bMSContext.Purchase.Update(existingPurchase);
@@ -120,11 +130,14 @@ namespace Backend.Controllers
                                     PurchasePrice = detail.PurchasePrice,
                                     DiscountByPercent = detail.DiscountByPercent,
                                     DiscountByValue = detail.DiscountByValue,
-                                    Total = detail.Total,
                                     GstByPercent = detail.GstByPercent,
                                     GstByValue = detail.GstByValue,
-                                    TotalWithGst = detail.TotalWithGst,
+                                    //TotalWithGst = detail.TotalWithGst,
+                                    TotalIncDisc = detail.TotalIncDisc,
+                                    TotalIncGst = detail.TotalIncGst,
                                     NetRate = detail.NetRate,
+                                    NetQuantity = detail.NetQuantity,
+                                    SubTotal = detail.SubTotal,
                                     MarginPercent = detail.MarginPercent,
                                     SalePrice = detail.SalePrice,
                                     SaleDiscountByValue = detail.SaleDiscountByValue,
@@ -157,15 +170,18 @@ namespace Backend.Controllers
                               vendorId = Party.PartyName,
                               invoiceNo = purchase.InvoiceNo,
                               remarks = purchase.Remarks,
-                              recentPurchasePrice = purchase.RecentPurchasePrice,
+                              netCostTotal = purchase.NetCostTotal,
+                              netSaleTotal = purchase.NetSaleTotal,
+                              netQuantity = purchase.NetQuantity,
+                              totalDiscount = purchase.TotalDisc,
+                              netProfitInValue = purchase.NetProfitInValue,
                               salePrice = purchase.SalePrice,
-                              itemsQuantity = purchase.ItemsQuantity,
-                              totalDiscount = purchase.TotalDiscount,
+                              itemsQuantity = purchase.ItemsQuantity, 
                               totalGst = purchase.TotalGst,
                               billTotal = purchase.BillTotal,
-                              CreatedBy = purchase.CreatedBy,
-                              CreatedAt=purchase.CreatedAt,
-                              UpdatedAt=purchase.UpdatedAt
+                              createdBy = purchase.CreatedBy,
+                              createdAt=purchase.CreatedAt,
+                              updatedAt=purchase.UpdatedAt
                           }).ToList();
 
             return result;
@@ -188,7 +204,8 @@ namespace Backend.Controllers
                     itemsQuantity = p.ItemsQuantity,
                     totalDiscount = p.TotalDiscount,
                     totalGst = p.TotalGst,
-                    billTotal = p.BillTotal
+                    billTotal = p.BillTotal,
+                    netQuantity=p.NetQuantity
                    
                 })
                 .Where(x => x.id == id)
@@ -211,9 +228,13 @@ namespace Backend.Controllers
                     gstByPercent = pDtl.GstByPercent,
                     gstByValue = pDtl.GstByValue,
                     totalWithGst = pDtl.TotalWithGst,
+                    totalIncDisc = pDtl.TotalIncDisc,
+                    totalIncGst = pDtl.TotalIncGst,
                     netRate = pDtl.NetRate,
-                    marginPercent = pDtl.MarginPercent,
-                    salePriceDetail = pDtl.SalePrice,
+                    netQuantity = pDtl.NetQuantity,
+                    subTotal = pDtl.SubTotal,
+                    marginPercent = pDtl.MarginPercent, 
+                    salePrice = pDtl.SalePrice,
                     saleDiscountByValue = pDtl.SaleDiscountByValue,
                     netSalePrice = pDtl.NetSalePrice
                 })

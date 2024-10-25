@@ -28,5 +28,9 @@ namespace Backend.Models
         public string CreatedBy { get; set; }
         public string UpdatedBy { get; set; }
         public string ItemName { get; set; }
+        public int? NetQuantity { get; set; }
+        public decimal? SubTotal { get; set; }
+        public decimal? TotalIncDisc { get; set; }
+        public decimal? TotalIncGst { get; set; }
     }
 }

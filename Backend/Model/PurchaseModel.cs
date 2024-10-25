@@ -10,15 +10,18 @@ namespace Backend.Model
         public string Remarks { get; set; }
         public string InvoiceNo { get; set; }
         public string CreatedBy { get; set; }
-        public string UpdatedBy { get; set; }
-        public decimal? RecentPurchasePrice { get; set; }
+        public string UpdatedBy { get; set; } 
         public decimal? SalePrice { get; set; }
         public DateTime? CreatedAt { get; set; }
-        public DateTime? UpdatedAt { get; set; }
-        public int? ItemsQuantity { get; set; }
+        public DateTime? UpdatedAt { get; set; } 
         public decimal? TotalDiscount { get; set; }
-        public decimal? TotalGst { get; set; }
         public decimal? BillTotal { get; set; }
+        public decimal? TotalDisc { get; set; }
+        public decimal? TotalGst { get; set; }
+        public decimal? netCostTotal { get; set; }
+        public decimal? netSaleTotal { get; set; }
+        public decimal? netProfitInValue { get; set; }
+        public int? NetQuantity { get; set; }
         public List<PurchaseDetailModel> PurchaseDetailModel { get; set; }
 
     }
@@ -33,12 +36,14 @@ namespace Backend.Model
         public int? BonusQuantity { get; set; }
         public decimal? PurchasePrice { get; set; }
         public decimal? DiscountByPercent { get; set; }
-        public decimal? DiscountByValue { get; set; }
-        public decimal? Total { get; set; }
+        public decimal? DiscountByValue { get; set; } 
         public decimal? GstByPercent { get; set; }
-        public decimal? GstByValue { get; set; }
-        public decimal? TotalWithGst { get; set; }
+        public decimal? GstByValue { get; set; } 
+        public decimal? TotalIncDisc { get; set; }
+        public decimal? TotalIncGst { get; set; }
         public decimal? NetRate { get; set; }
+        public int? NetQuantity { get; set; }
+        public decimal? SubTotal { get; set; }
         public decimal? MarginPercent { get; set; }
         public decimal? SalePrice { get; set; }
         public decimal? SaleDiscountByValue { get; set; }
