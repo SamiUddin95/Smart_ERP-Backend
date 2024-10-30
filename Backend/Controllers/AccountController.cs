@@ -384,7 +384,7 @@ namespace Backend.Controllers
 
         [HttpGet]
         [Route("/api/getAllAccountFilterbased")]
-        public IEnumerable<Account> getAllAccountFilterbased(string Name, string accNo, decimal taxAmount, decimal taxLimit, string manualCode, string kindCode)
+        public IEnumerable<Account> getAllAccountFilterbased(string Name, int accNo, decimal taxAmount, decimal taxLimit, string manualCode, string kindCode)
         {
             var query = bMSContext.Account.AsQueryable();
             if (Name != "All")
@@ -392,9 +392,9 @@ namespace Backend.Controllers
                 query = query.Where(i => i.Name.Contains(Name));
             }
 
-            if (accNo != "All")
+            if (accNo != 0)
             {
-                query = query.Where(i => i.AccountNumber.Contains(accNo));
+                query = query.Where(i => i.AccountNumber == accNo);
             }
             if (taxAmount > 0)
             {
@@ -508,9 +508,19 @@ namespace Backend.Controllers
                     }
                     else
                     {
+                        var latestAccount = bMSContext.Account
+                        .OrderByDescending(a => a.AccountNumber)
+                        .FirstOrDefault();
+
+                        long newAccountNumber = 1;
+
+                        if (latestAccount != null)
+                        {
+                            newAccountNumber = latestAccount.AccountNumber + 1;
+                        }
                         Account account = new Account(); 
                         account.AccountCategoryId = acc.AccountCategoryId;
-                        account.AccountNumber = acc.AccountNumber;
+                        account.AccountNumber = newAccountNumber;
                         account.AccountTypeId = acc.AccountTypeId;
                         account.SubCdTypeId = acc.SubCdTypeId;
                         account.SubGroupId = acc.SubGroupId;
