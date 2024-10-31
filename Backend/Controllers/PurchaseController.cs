@@ -46,9 +46,10 @@ namespace Backend.Controllers
                         NetQuantity = purchModel.NetQuantity,
                         TotalDisc = purchModel.TotalDisc,
                         NetProfitInValue = purchModel.netProfitInValue,
-                        CreatedAt = DateTime.Now,
+                        CreatedAt = DateTime.Now.Date,
                         CreatedBy = purchModel.CreatedBy,
-                        UpdatedAt = DateTime.Now,
+                        UpdatedAt = DateTime.Now.Date,
+                        PostedDate = DateTime.Now.Date,
                         UpdatedBy = purchModel.UpdatedBy,
                     };
                     bMSContext.Purchase.Add(purchase);
@@ -107,6 +108,7 @@ namespace Backend.Controllers
                         existingPurchase.TotalDisc = purchModel.TotalDisc;
                         existingPurchase.NetProfitInValue = purchModel.netProfitInValue;
                         existingPurchase.UpdatedAt = DateTime.Now;
+                        existingPurchase.PostedDate = DateTime.Now;
                         existingPurchase.UpdatedBy = purchModel.CreatedBy;
                         bMSContext.Purchase.Update(existingPurchase);
                         bMSContext.SaveChanges();
@@ -160,14 +162,38 @@ namespace Backend.Controllers
         }
         [HttpGet]
         [Route("/api/getAllPurchases")]
-        public IEnumerable<dynamic> getAllPurchase()
-        {
+        public IEnumerable<dynamic> getAllPurchase(string dateFrom, string dateTo, string postedDate, string postedBy, int partyId, string invNo)
+        { 
+            DateTime? dateFromParsed = null;
+            DateTime? dateToParsed = null;
+            DateTime? postedDateParsed = null;
+
+            if (!string.IsNullOrEmpty(dateFrom) && DateTime.TryParse(dateFrom, out DateTime parsedDateFrom))
+            {
+                dateFromParsed = parsedDateFrom;
+            }
+
+            if (!string.IsNullOrEmpty(dateTo) && DateTime.TryParse(dateTo, out DateTime parsedDateTo))
+            {
+                dateToParsed = parsedDateTo;
+            }
+
+            if (!string.IsNullOrEmpty(postedDate) && DateTime.TryParse(postedDate, out DateTime parsedPostedDate))
+            {
+                postedDateParsed = parsedPostedDate;
+            }
+
             var result = (from purchase in bMSContext.Purchase
-                          join Party in bMSContext.Party on purchase.VendorId equals Party.Id
+                          join party in bMSContext.Party on purchase.VendorId equals party.Id
+                          where (dateFromParsed == null || purchase.UpdatedAt >= dateFromParsed.Value.Date)
+                                && (dateToParsed == null || purchase.UpdatedAt <= dateToParsed.Value.Date)
+                                && (postedDateParsed == null || purchase.PostedDate == postedDateParsed.Value.Date)
+                                && (partyId == 0 || purchase.VendorId == partyId)
+                                && (invNo == "0" || purchase.InvoiceNo == invNo) 
                           select new
                           {
                               purchaseId = purchase.Id,
-                              vendorId = Party.PartyName,
+                              vendorId = party.PartyName,
                               invoiceNo = purchase.InvoiceNo,
                               remarks = purchase.Remarks,
                               netCostTotal = purchase.NetCostTotal,
@@ -176,17 +202,18 @@ namespace Backend.Controllers
                               totalDiscount = purchase.TotalDisc,
                               netProfitInValue = purchase.NetProfitInValue,
                               salePrice = purchase.SalePrice,
-                              itemsQuantity = purchase.ItemsQuantity, 
+                              itemsQuantity = purchase.ItemsQuantity,
                               totalGst = purchase.TotalGst,
                               billTotal = purchase.BillTotal,
                               createdBy = purchase.CreatedBy,
-                              createdAt=purchase.CreatedAt,
-                              updatedAt=purchase.UpdatedAt
+                              createdAt = purchase.CreatedAt,
+                              updatedAt = purchase.UpdatedAt,
+                              postedDate=purchase.PostedDate
                           }).ToList();
 
             return result;
-
         }
+
         [HttpGet]
         [Route("/api/getPurchaseById")]
         public IEnumerable<dynamic> getPurchaseById(int id)

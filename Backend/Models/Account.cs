@@ -6,7 +6,7 @@ namespace Backend.Models
     public partial class Account
     {
         public long Id { get; set; }
-        public string AccountNumber { get; set; }
+        public long AccountNumber { get; set; }
         public int GroupId { get; set; }
         public int SubGroupId { get; set; }
         public int AccountCategoryId { get; set; }

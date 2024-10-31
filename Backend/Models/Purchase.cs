@@ -24,5 +24,6 @@ namespace Backend.Models
         public int? NetQuantity { get; set; }
         public decimal? TotalDisc { get; set; }
         public decimal? NetProfitInValue { get; set; }
+        public DateTime? PostedDate { get; set; }
     }
 }
