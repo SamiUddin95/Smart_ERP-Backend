@@ -85,3 +85,4 @@ Backend/Models/ERPContext.cs
 /Backend/bin/Debug/net5.0/Backend.dll
 /Backend/bin/Debug/net5.0/Backend.deps.json
 /Backend/obj/Backend.csproj.nuget.g.targets
+/.vs/Backend/config/applicationhost.config
