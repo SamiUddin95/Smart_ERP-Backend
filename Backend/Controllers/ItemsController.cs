@@ -382,39 +382,49 @@ namespace Backend.Controllers
 
         [HttpPost]
         [Route("/api/createItems")]
-        public object createItems(Item Items)
+        public object createItems([FromBody] ItemWithAlternates data)
         {
 
             try
             {
                 try
                 {
-                    var Itemschk = bMSContext.Item.SingleOrDefault(u => u.Id == Items.Id);
+                    var Itemschk = bMSContext.Item.SingleOrDefault(u => u.Id == data.Item.Id);
                     if (Itemschk != null)
                     {
 
-                        Itemschk.Id = Items.Id;
-                        Itemschk.AliasName = Items.AliasName;
-                        Itemschk.ItemName = Items.ItemName;
-                        Itemschk.PurchasePrice = Items.PurchasePrice;
-                        Itemschk.SalePrice = Items.SalePrice;
-                        Itemschk.CategoryId = Items.CategoryId;
-                        Itemschk.ClassId = Items.ClassId;
-                        Itemschk.ManufacturerId = Items.ManufacturerId;
-                        Itemschk.Remarks = Items.Remarks;
-                        Itemschk.RecentPurchase = Items.RecentPurchase;
-                        Itemschk.BrandId = Items.BrandId;
-                        Itemschk.Discflat = Items.Discflat;
-                        Itemschk.Lockdisc = Items.Lockdisc;
+                        Itemschk.Id = data.Item.Id;
+                        Itemschk.AliasName = data.Item.AliasName;
+                        Itemschk.ItemName = data.Item.ItemName;
+                        Itemschk.PurchasePrice = data.Item.PurchasePrice;
+                        Itemschk.SalePrice = data.Item.SalePrice;
+                        Itemschk.CategoryId = data.Item.CategoryId;
+                        Itemschk.ClassId = data.Item.ClassId;
+                        Itemschk.ManufacturerId = data.Item.ManufacturerId;
+                        Itemschk.Remarks = data.Item.Remarks;
+                        Itemschk.RecentPurchase = data.Item.RecentPurchase;
+                        Itemschk.BrandId = data.Item.BrandId;
+                        Itemschk.Discflat = data.Item.Discflat;
+                        Itemschk.Lockdisc = data.Item.Lockdisc;
                         Itemschk.UpdatedAt = DateTime.Now;
-                        Itemschk.UpdatedBy = Items.UpdatedBy;
+                        Itemschk.UpdatedBy = data.Item.UpdatedBy;
+
+                        var existingAlternateItems = bMSContext.AlternateItem.Where(a => a.ItemId == Itemschk.Id).ToList();
+                        bMSContext.AlternateItem.RemoveRange(existingAlternateItems); 
+
+                        foreach (var altItem in data.AlternateItems)
+                        {
+                            altItem.ItemId = Itemschk.Id; 
+                            bMSContext.AlternateItem.Add(altItem);
+                        }
+
                         bMSContext.Item.Update(Itemschk);
                         bMSContext.SaveChanges();
                         return JsonConvert.SerializeObject(new { id = Itemschk.Id });
                     }
                     else
                     {
-                        var existingItem = bMSContext.Item.SingleOrDefault(i => i.ItemName == Items.ItemName);
+                        var existingItem = bMSContext.Item.SingleOrDefault(i => i.ItemName == data.Item.ItemName);
 
                         if (existingItem != null)
                         {
@@ -422,22 +432,32 @@ namespace Backend.Controllers
                         }
                         Item itemItems = new Item();
 
-                        itemItems.AliasName = Items.AliasName;
-                        itemItems.ItemName = Items.ItemName;
-                        itemItems.PurchasePrice = Items.PurchasePrice;
-                        itemItems.SalePrice = Items.SalePrice;
-                        itemItems.CategoryId = Items.CategoryId;
-                        itemItems.ClassId = Items.ClassId;
-                        itemItems.ManufacturerId = Items.ManufacturerId;
-                        itemItems.Remarks = Items.Remarks;
-                        itemItems.RecentPurchase = Items.RecentPurchase;
-                        itemItems.BrandId = Items.BrandId;
-                        itemItems.Discflat = Items.Discflat;
-                        itemItems.Lockdisc = Items.Lockdisc;
+                        itemItems.AliasName = data.Item.AliasName;
+                        itemItems.ItemName = data.Item.ItemName;
+                        itemItems.PurchasePrice = data.Item.PurchasePrice;
+                        itemItems.SalePrice = data.Item.SalePrice;
+                        itemItems.CategoryId = data.Item.CategoryId;
+                        itemItems.ClassId = data.Item.ClassId;
+                        itemItems.ManufacturerId = data.Item.ManufacturerId;
+                        itemItems.Remarks = data.Item.Remarks;
+                        itemItems.RecentPurchase = data.Item.RecentPurchase;
+                        itemItems.BrandId = data.Item.BrandId;
+                        itemItems.Discflat = data.Item.Discflat;
+                        itemItems.Lockdisc = data.Item.Lockdisc;
                         itemItems.CreatedAt = DateTime.Now;
-                        itemItems.CreatedBy = Items.CreatedBy;
+                        itemItems.CreatedBy = data.Item.CreatedBy;
+
                         bMSContext.Item.Add(itemItems);
                         bMSContext.SaveChanges();
+
+                        foreach (var altItem in data.AlternateItems)
+                        {
+                            altItem.ItemId = itemItems.Id;
+                            bMSContext.AlternateItem.Add(altItem);
+                        }
+
+                        bMSContext.SaveChanges();
+
                         return JsonConvert.SerializeObject(new { id = itemItems.Id });
                     }
                 }
@@ -589,4 +609,9 @@ namespace Backend.Controllers
             return bMSContext.Active.ToList();
         }
     }
+}
+public class ItemWithAlternates
+{
+    public Item Item { get; set; }
+    public List<AlternateItem> AlternateItems { get; set; }
 }
