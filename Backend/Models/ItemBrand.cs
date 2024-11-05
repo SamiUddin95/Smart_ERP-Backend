@@ -16,6 +16,8 @@ namespace Backend.Models
         public DateTime? UpdatedAt { get; set; }
         public string CreatedBy { get; set; }
         public string UpdatedBy { get; set; }
+        public int? ManufacturerId { get; set; }
+        public string Remarks { get; set; }
 
         public ICollection<Item> Item { get; set; }
     }

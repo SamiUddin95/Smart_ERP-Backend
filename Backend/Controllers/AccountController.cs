@@ -49,6 +49,8 @@ namespace Backend.Controllers
                         accCatChk.Id = accCategory.Id; 
                         accCatChk.AccountTypeId = accCategory.AccountTypeId; 
                         accCatChk.Name = accCategory.Name;
+                        accCatChk.Remarks = accCategory.Remarks;
+                        accCatChk.CatNumber = accCategory.CatNumber;
                         accCatChk.ManualCode = accCategory.ManualCode;
                         accCatChk.Priority = accCategory.Priority;
                         accCatChk.UpdatedAt = DateTime.Now;
@@ -65,6 +67,8 @@ namespace Backend.Controllers
                         accCat.Name = accCategory.Name;
                         accCat.ManualCode = accCategory.ManualCode;
                         accCat.Priority = accCategory.Priority;
+                        accCat.Remarks = accCategory.Remarks;
+                        accCat.CatNumber = accCategory.CatNumber;
                         accCat.CreatedAt = DateTime.Now;
                         accCat.CreatedBy = accCategory.CreatedBy;
                         bMSContext.AccCategory.Add(accCat);
@@ -312,6 +316,8 @@ namespace Backend.Controllers
                         accGrpChk.AccountTypeId = accGrp.AccountTypeId;
                         accGrpChk.AccountCategoryId = accGrp.AccountCategoryId;
                         accGrpChk.Name = accGrp.Name;
+                        accGrpChk.Remarks = accGrp.Remarks;
+                        accGrpChk.GroupNumber = accGrp.GroupNumber;
                         accGrpChk.ManualCode = accGrp.ManualCode;
                         accGrpChk.Priority = accGrp.Priority;
                         accGrpChk.UpdatedAt = DateTime.Now;
@@ -329,6 +335,8 @@ namespace Backend.Controllers
                         accountGrp.Name = accGrp.Name;
                         accountGrp.ManualCode = accGrp.ManualCode;
                         accountGrp.Priority = accGrp.Priority;
+                        accountGrp.Remarks = accGrp.Remarks;
+                        accountGrp.GroupNumber = accGrp.GroupNumber;
                         accountGrp.CreatedAt = DateTime.Now;
                         accountGrp.CreatedBy = accGrp.CreatedBy;
                         bMSContext.AccGroup.Add(accountGrp);
@@ -384,38 +392,51 @@ namespace Backend.Controllers
 
         [HttpGet]
         [Route("/api/getAllAccountFilterbased")]
-        public IEnumerable<Account> getAllAccountFilterbased(string Name, int accNo, decimal taxAmount, decimal taxLimit, string manualCode, string kindCode)
+        public IEnumerable<dynamic> getAllAccountFilterbased(string Name, int accNo, int groupId, int categoryId)
         {
-            var query = bMSContext.Account.AsQueryable();
-            if (Name != "All")
-            {
-                query = query.Where(i => i.Name.Contains(Name));
-            }
+            var result = (from acc in bMSContext.Account
+                          join acgrp in bMSContext.AccGroup on acc.GroupId equals acgrp.Id
+                          join accat in bMSContext.AccCategory on acc.AccountCategoryId equals accat.Id
+                          where (groupId == 0 ||acc.GroupId==groupId)
+                          where (categoryId==0 ||acc.GroupId==groupId)
+                          where (accNo==0 ||acc.AccountNumber==accNo)
+                          where (Name == "All" || acc.Name == Name)
+                          select new
+                          {
+                              accCategoryId=acgrp.Name,
+                              accGroupId=acgrp.Name,
+                              accountNumber=acc.AccountNumber,
+                              accountTypeId=accat.Name,
+                              kindCode=acc.KindCode,
+                              taxAmount=acc.TaxAmount,
+                              taxLimit=acc.TaxLimit,
+                              id=acc.Id,
+                              name=acc.Name,
+                              manualCode=acc.ManualCode,
+                          }
+                        ).ToList();
+            //var query = bMSContext.Account.AsQueryable();
+            //if (Name != "All")
+            //{
+            //    query = query.Where(i => i.Name.Contains(Name));
+            //}
 
-            if (accNo != 0)
-            {
-                query = query.Where(i => i.AccountNumber == accNo);
-            }
-            if (taxAmount > 0)
-            {
-                query = query.Where(i => i.TaxAmount == taxAmount);
-            }
+            //if (accNo != 0)
+            //{
+            //    query = query.Where(i => i.AccountNumber == accNo);
+            //}
+            //if (groupId > 0)
+            //{
+            //    query = query.Where(i => i.GroupId == groupId);
+            //}
 
-            if (taxLimit > 0)
-            {
-                query = query.Where(i => i.TaxLimit == taxLimit);
-            }
-            if (manualCode != "All")
-            {
-                query = query.Where(i => i.ManualCode.Contains(manualCode));
-            }
+            //if (categoryId > 0)
+            //{
+            //    query = query.Where(i => i.AccountCategoryId == categoryId);
+            //}
 
-            if (kindCode != "All")
-            {
-                query = query.Where(i => i.KindCode.Contains(kindCode));
-            }
 
-            return query.ToList();
+            return result;
         }
 
         [HttpGet]
@@ -494,8 +515,10 @@ namespace Backend.Controllers
                         accChk.GroupId = acc.GroupId;
                         accChk.BalanceLimit = acc.BalanceLimit;
                         accChk.DiscNo = acc.DiscNo;
+                        accChk.Priority = acc.Priority;
                         accChk.TaxLimit = acc.TaxLimit;
                         accChk.Name = acc.Name;
+                        accChk.Remarks = acc.Remarks;
                         accChk.TypeId = acc.TypeId;
                         accChk.TaxAmount = acc.TaxAmount;
                         accChk.ManualCode = acc.ManualCode;
@@ -527,8 +550,10 @@ namespace Backend.Controllers
                         account.GroupId = acc.GroupId;
                         account.BalanceLimit = acc.BalanceLimit;
                         account.DiscNo = acc.DiscNo;
+                        account.Priority = acc.Priority;
                         account.TaxLimit = acc.TaxLimit;
                         account.Name = acc.Name;
+                        account.Remarks = acc.Remarks;
                         account.TypeId = acc.TypeId;
                         account.TaxAmount = acc.TaxAmount;
                         account.ManualCode = acc.ManualCode;

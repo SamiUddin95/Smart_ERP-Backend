@@ -39,6 +39,8 @@ namespace Backend.Controllers
 
                         brandchk.Id = brand.Id;
                         brandchk.Name = brand.Name;
+                        brandchk.Remarks = brand.Remarks;
+                        brandchk.ManufacturerId = brand.ManufacturerId;
                         brand.UpdatedAt = DateTime.Now;
                         brandchk.UpdatedBy = brand.UpdatedBy;
                         bMSContext.ItemBrand.Update(brandchk);
@@ -47,9 +49,10 @@ namespace Backend.Controllers
                     }
                     else
                     {
-                        ItemBrand brand1 = new ItemBrand();
-                        //brandchk.Id = brand.Id;
+                        ItemBrand brand1 = new ItemBrand(); 
                         brand1.Name = brand.Name;
+                        brand1.Remarks = brand.Remarks;
+                        brand1.ManufacturerId = brand.ManufacturerId;
                         brand1.CreatedAt = DateTime.Now;
                         brand1.CreatedBy = brand.CreatedBy;
                         bMSContext.ItemBrand.Add(brand1);
@@ -125,7 +128,8 @@ namespace Backend.Controllers
                         categorychk.Name = itemCategory.Name;
                         categorychk.IsActive = itemCategory.IsActive;
                         categorychk.Priority = itemCategory.Priority;
-                        categorychk.DepartmentId = itemCategory.DepartmentId;
+                        //categorychk.DepartmentId = itemCategory.DepartmentId;
+                        categorychk.DepartmentId = 1;
                         categorychk.Height = itemCategory.Height;
                         categorychk.Width = itemCategory.Width;
                         categorychk.Description = itemCategory.Description;
@@ -142,7 +146,8 @@ namespace Backend.Controllers
                         itemCategory1.Name = itemCategory.Name;
                         itemCategory1.IsActive = itemCategory.IsActive;
                         itemCategory1.Priority = itemCategory.Priority;
-                        itemCategory1.DepartmentId = itemCategory.DepartmentId;
+                        //itemCategory1.DepartmentId = itemCategory.DepartmentId;
+                        itemCategory1.DepartmentId = 1;
                         itemCategory1.Height = itemCategory.Height;
                         itemCategory1.Width = itemCategory.Width;
                         itemCategory1.Description = itemCategory.Description;
