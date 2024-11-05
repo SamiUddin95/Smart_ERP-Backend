@@ -7,6 +7,7 @@ using System.Linq;
 using Backend.Models;
 using Microsoft.AspNetCore.Cors;
 using Newtonsoft.Json;
+using Backend.Model;
 
 namespace Backend.Controllers
 {
@@ -387,7 +388,7 @@ namespace Backend.Controllers
 
         [HttpPost]
         [Route("/api/createItems")]
-        public object createItems(Item Items)
+        public object createItems(ItemModel Items)
         {
 
             try
@@ -415,6 +416,24 @@ namespace Backend.Controllers
                         Itemschk.UpdatedBy = Items.UpdatedBy;
                         bMSContext.Item.Update(Itemschk);
                         bMSContext.SaveChanges();
+                        var delAltItem = bMSContext.AlternateItem.SingleOrDefault(u => u.ItemId == Items.Id);
+                        if (delAltItem != null)
+                        {
+                            bMSContext.AlternateItem.Remove(delAltItem);
+                            bMSContext.SaveChanges();
+                        }
+                        foreach (var item in Items.alternateItem)
+                        {
+                            AlternateItem at = new AlternateItem();
+                            at.AliasName = item.AliasName;
+                            at.Salediscflat = item.Salediscflat;
+                            at.Salediscperc = item.Salediscperc;
+                            at.ItemId = item.Id;
+                            at.Remarks = item.Remarks;
+                            at.Qty = item.Qty;
+                            bMSContext.AlternateItem.Add(at);
+                            bMSContext.SaveChanges();
+                        }
                         return JsonConvert.SerializeObject(new { id = Itemschk.Id });
                     }
                     else
@@ -425,8 +444,7 @@ namespace Backend.Controllers
                         {
                             return JsonConvert.SerializeObject(new { msg = "An item with this name already exists." });
                         }
-                        Item itemItems = new Item();
-
+                        Item itemItems = new Item(); 
                         itemItems.AliasName = Items.AliasName;
                         itemItems.ItemName = Items.ItemName;
                         itemItems.PurchasePrice = Items.PurchasePrice;
@@ -443,6 +461,18 @@ namespace Backend.Controllers
                         itemItems.CreatedBy = Items.CreatedBy;
                         bMSContext.Item.Add(itemItems);
                         bMSContext.SaveChanges();
+                        foreach (var item in Items.alternateItem)
+                        {
+                            AlternateItem at = new AlternateItem();
+                            at.AliasName = item.AliasName;
+                            at.Salediscflat = item.Salediscflat;
+                            at.Salediscperc = item.Salediscperc;
+                            at.ItemId = itemItems.Id;
+                            at.Remarks = item.Remarks;
+                            at.Qty = item.Qty;
+                            bMSContext.AlternateItem.Add(at);
+                            bMSContext.SaveChanges();
+                        }
                         return JsonConvert.SerializeObject(new { id = itemItems.Id });
                     }
                 }
@@ -482,9 +512,44 @@ namespace Backend.Controllers
 
         [HttpGet]
         [Route("/api/getItemById")]
-        public IEnumerable<Item> getItemById(int id)
+        public IEnumerable<dynamic> getItemById(int id)
         {
-            return bMSContext.Item.Where(u => u.Id == id).ToList();
+            var item = bMSContext.Item.Select(it => new
+            {
+                id=it.Id,
+                aliasName=it.AliasName,
+                brandId=it.BrandId,
+                manufacturerId=it.ManufacturerId,
+                salePrice=it.SalePrice,
+                remarks=it.Remarks,
+                itemName=it.ItemName,
+                categoryId=it.CategoryId,
+                classId=it.ClassId,
+                purchasePrice =it.PurchasePrice,
+                recentPurchase = it.RecentPurchase,
+                discflat = it.Discflat,
+                lockdisc = it.Lockdisc
+
+            }).Where(u => u.id == id).ToList();
+            var altItem = bMSContext.AlternateItem
+                .Select(alt => new
+                {
+                    id = alt.Id,
+                    itemId = alt.ItemId,
+                    aliasName = alt.AliasName,
+                    qty = alt.Qty,
+                    saleDiscPerc = alt.Salediscperc,
+                    saleDiscFlat = alt.Salediscflat,
+                    remarks = alt.Remarks,
+                }).Where(x => x.itemId== id).ToList();
+
+            var result = new
+            {
+                item = item,
+                altItem = altItem
+            };
+
+            yield return JsonConvert.SerializeObject(result);
         }
         #endregion
 
