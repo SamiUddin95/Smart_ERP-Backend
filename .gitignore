@@ -114,3 +114,10 @@ Backend/Models/ERPContext.cs
 /Backend/Models/ItemManufacturer.cs
 /.vs/ProjectEvaluation/backend.projects.v7.bin
 /.vs/ProjectEvaluation/backend.metadata.v7.bin
+/Backend/obj/Release/net5.0/PubTmp/Out/Backend.dll
+/Backend/bin/Release/net5.0/Backend.pdb
+/Backend/bin/Release/net5.0/Backend.dll
+/Backend/obj/Release/net5.0/Backend.pdb
+/Backend/obj/Release/net5.0/Backend.dll
+/Backend/obj/Release/net5.0/PubTmp/Out/Backend.pdb
+/.gitignore
