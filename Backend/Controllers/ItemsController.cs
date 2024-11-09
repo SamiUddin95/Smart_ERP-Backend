@@ -390,104 +390,106 @@ namespace Backend.Controllers
         [Route("/api/createItems")]
         public object createItems(ItemModel Items)
         {
-
             try
             {
-                try
+                var existingItem = bMSContext.Item.SingleOrDefault(i => i.ItemName == Items.ItemName && i.Id != Items.Id);
+                if (existingItem != null)
                 {
-                    var Itemschk = bMSContext.Item.SingleOrDefault(u => u.Id == Items.Id);
-                    if (Itemschk != null)
-                    {
-
-                        Itemschk.Id = Items.Id;
-                        Itemschk.AliasName = Items.AliasName;
-                        Itemschk.ItemName = Items.ItemName;
-                        Itemschk.PurchasePrice = Items.PurchasePrice;
-                        Itemschk.SalePrice = Items.SalePrice;
-                        Itemschk.CategoryId = Items.CategoryId;
-                        Itemschk.ClassId = Items.ClassId;
-                        Itemschk.ManufacturerId = Items.ManufacturerId;
-                        Itemschk.Remarks = Items.Remarks;
-                        Itemschk.RecentPurchase = Items.RecentPurchase;
-                        Itemschk.BrandId = Items.BrandId;
-                        Itemschk.Discflat = Items.Discflat;
-                        Itemschk.Lockdisc = Items.Lockdisc;
-                        Itemschk.UpdatedAt = DateTime.Now;
-                        Itemschk.UpdatedBy = Items.UpdatedBy;
-                        bMSContext.Item.Update(Itemschk);
-                        bMSContext.SaveChanges();
-                        var delAltItem = bMSContext.AlternateItem.SingleOrDefault(u => u.ItemId == Items.Id);
-                        if (delAltItem != null)
-                        {
-                            bMSContext.AlternateItem.Remove(delAltItem);
-                            bMSContext.SaveChanges();
-                        }
-                        foreach (var item in Items.alternateItem)
-                        {
-                            AlternateItem at = new AlternateItem();
-                            at.AliasName = item.AliasName;
-                            at.Salediscflat = item.Salediscflat;
-                            at.Salediscperc = item.Salediscperc;
-                            at.ItemId = item.Id;
-                            at.Remarks = item.Remarks;
-                            at.Qty = item.Qty;
-                            bMSContext.AlternateItem.Add(at);
-                            bMSContext.SaveChanges();
-                        }
-                        return JsonConvert.SerializeObject(new { id = Itemschk.Id });
-                    }
-                    else
-                    {
-                        var existingItem = bMSContext.Item.SingleOrDefault(i => i.ItemName == Items.ItemName);
-
-                        if (existingItem != null)
-                        {
-                            return JsonConvert.SerializeObject(new { msg = "An item with this name already exists." });
-                        }
-                        Item itemItems = new Item(); 
-                        itemItems.AliasName = Items.AliasName;
-                        itemItems.ItemName = Items.ItemName;
-                        itemItems.PurchasePrice = Items.PurchasePrice;
-                        itemItems.SalePrice = Items.SalePrice;
-                        itemItems.CategoryId = Items.CategoryId;
-                        itemItems.ClassId = Items.ClassId;
-                        itemItems.ManufacturerId = Items.ManufacturerId;
-                        itemItems.Remarks = Items.Remarks;
-                        itemItems.RecentPurchase = Items.RecentPurchase;
-                        itemItems.BrandId = Items.BrandId;
-                        itemItems.Discflat = Items.Discflat;
-                        itemItems.Lockdisc = Items.Lockdisc;
-                        itemItems.CreatedAt = DateTime.Now;
-                        itemItems.CreatedBy = Items.CreatedBy;
-                        bMSContext.Item.Add(itemItems);
-                        bMSContext.SaveChanges();
-                        foreach (var item in Items.alternateItem)
-                        {
-                            AlternateItem at = new AlternateItem();
-                            at.AliasName = item.AliasName;
-                            at.Salediscflat = item.Salediscflat;
-                            at.Salediscperc = item.Salediscperc;
-                            at.ItemId = itemItems.Id;
-                            at.Remarks = item.Remarks;
-                            at.Qty = item.Qty;
-                            bMSContext.AlternateItem.Add(at);
-                            bMSContext.SaveChanges();
-                        }
-                        return JsonConvert.SerializeObject(new { id = itemItems.Id });
-                    }
+                    return JsonConvert.SerializeObject(new { msg = "An item with this name already exists." });
                 }
 
-                catch (Exception ex)
+                var Itemschk = bMSContext.Item.SingleOrDefault(u => u.Id == Items.Id);
+                if (Itemschk != null)
                 {
-                    JsonConvert.SerializeObject(new { msg = ex.Message });
+                    // Update existing item
+                    Itemschk.AliasName = Items.AliasName;
+                    Itemschk.ItemName = Items.ItemName;
+                    Itemschk.PurchasePrice = Items.PurchasePrice;
+                    Itemschk.SalePrice = Items.SalePrice;
+                    Itemschk.CategoryId = Items.CategoryId;
+                    Itemschk.ClassId = Items.ClassId;
+                    Itemschk.ManufacturerId = Items.ManufacturerId;
+                    Itemschk.Remarks = Items.Remarks;
+                    Itemschk.RecentPurchase = Items.RecentPurchase;
+                    Itemschk.BrandId = Items.BrandId;
+                    Itemschk.Discflat = Items.Discflat;
+                    Itemschk.Lockdisc = Items.Lockdisc;
+                    Itemschk.UpdatedAt = DateTime.Now;
+                    Itemschk.UpdatedBy = Items.UpdatedBy;
+                    bMSContext.Item.Update(Itemschk);
+                    bMSContext.SaveChanges();
+
+                    var delAltItem = bMSContext.AlternateItem.Where(u => u.ItemId == Items.Id).ToList();
+                    if (delAltItem.Any())
+                    {
+                        bMSContext.AlternateItem.RemoveRange(delAltItem);
+                        bMSContext.SaveChanges();
+                    }
+
+                    foreach (var item in Items.alternateItem)
+                    {
+                        AlternateItem at = new AlternateItem
+                        {
+                            AliasName = item.AliasName,
+                            Salediscflat = item.Salediscflat,
+                            Salediscperc = item.Salediscperc,
+                            ItemId = Items.Id,
+                            Remarks = item.Remarks,
+                            Qty = item.Qty
+                        };
+                        bMSContext.AlternateItem.Add(at);
+                    }
+                    bMSContext.SaveChanges();
+
+                    return JsonConvert.SerializeObject(new { id = Itemschk.Id });
                 }
-                return JsonConvert.SerializeObject(new { msg = "Message" });
+                else
+                {
+                    // Add new item
+                    Item itemItems = new Item
+                    {
+                        AliasName = Items.AliasName,
+                        ItemName = Items.ItemName,
+                        PurchasePrice = Items.PurchasePrice,
+                        SalePrice = Items.SalePrice,
+                        CategoryId = Items.CategoryId,
+                        Lockdisc = Items.Lockdisc,
+                        ClassId = Items.ClassId,
+                        ManufacturerId = Items.ManufacturerId,
+                        Remarks = Items.Remarks,
+                        RecentPurchase = Items.RecentPurchase,
+                        BrandId = Items.BrandId,
+                        Discflat = Items.Discflat,
+                        CreatedAt = DateTime.Now,
+                        CreatedBy = Items.CreatedBy
+                    };
+                    bMSContext.Item.Add(itemItems);
+                    bMSContext.SaveChanges();
+
+                    foreach (var item in Items.alternateItem)
+                    {
+                        AlternateItem at = new AlternateItem
+                        {
+                            AliasName = item.AliasName,
+                            Salediscflat = item.Salediscflat,
+                            Salediscperc = item.Salediscperc,
+                            ItemId = itemItems.Id,
+                            Remarks = item.Remarks,
+                            Qty = item.Qty
+                        };
+                        bMSContext.AlternateItem.Add(at);
+                    }
+                    bMSContext.SaveChanges();
+
+                    return JsonConvert.SerializeObject(new { id = itemItems.Id });
+                }
             }
             catch (Exception ex)
             {
-                return null;
+                return JsonConvert.SerializeObject(new { msg = ex.Message });
             }
         }
+
 
         [HttpGet]
         [Route("/api/deleteItemById")]
