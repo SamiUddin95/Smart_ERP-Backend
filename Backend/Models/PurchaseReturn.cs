@@ -49,15 +49,15 @@ namespace Backend.Models
         public decimal? Disc { get; set; }
         [Column("FLAT_DISC")]
         public decimal? FlatDisc { get; set; }
-        [Column("CREATED_AT", TypeName = "datetime")]
-        public DateTime CreatedAt { get; set; }
-        [Column("UPDATED_AT", TypeName = "datetime")]
+        [Column("CREATED_AT", TypeName = "date")]
+        public DateTime? CreatedAt { get; set; }
+        [Column("UPDATED_AT", TypeName = "date")]
         public DateTime? UpdatedAt { get; set; }
         [Column("CREATED_BY")]
-        [StringLength(255)]
+        [StringLength(50)]
         public string CreatedBy { get; set; }
         [Column("UPDATED_BY")]
-        [StringLength(255)]
+        [StringLength(50)]
         public string UpdatedBy { get; set; }
     }
 }

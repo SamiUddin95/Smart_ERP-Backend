@@ -8,33 +8,32 @@ namespace Backend.Models
     [Table("user")]
     public partial class User
     {
-        [Column("user_id")]
+        [Column("USER_ID")]
         public int UserId { get; set; }
         [Required]
-        [Column("name")]
+        [Column("NAME")]
         [StringLength(100)]
         public string Name { get; set; }
-        [Column("user_type_id")]
+        [Column("USER_TYPE_ID")]
         public int UserTypeId { get; set; }
         [Required]
-        [Column("password")]
+        [Column("PASSWORD")]
         [StringLength(100)]
         public string Password { get; set; }
-        [Column("email")]
+        [Column("EMAIL")]
         [StringLength(100)]
         public string Email { get; set; }
-        [Column("phone")]
-        public int? Phone { get; set; }
-        [Column("address")]
+        [Column("PHONE")]
+        public long? Phone { get; set; }
+        [Column("ADDRESS")]
         public int? Address { get; set; }
-        [Column("gender")]
+        [Column("GENDER")]
         [StringLength(10)]
         public string Gender { get; set; }
-        [Column("is_active")]
+        [Column("IS_ACTIVE")]
         public bool IsActive { get; set; }
-        [Column("joining_date")]
-        [StringLength(50)]
-        public string JoiningDate { get; set; }
+        [Column("JOINING_DATE", TypeName = "datetime")]
+        public DateTime? JoiningDate { get; set; }
         [Column("CREATED_AT", TypeName = "datetime")]
         public DateTime CreatedAt { get; set; }
         [Column("UPDATED_AT", TypeName = "datetime")]

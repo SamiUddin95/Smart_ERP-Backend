@@ -30,7 +30,7 @@ namespace Backend.Models
         public decimal? TotalGst { get; set; }
         [Column("BILL_TOTAL", TypeName = "decimal(10, 2)")]
         public decimal? BillTotal { get; set; }
-        [Column("CREATED_AT", TypeName = "date")]
+        [Column("CREATED_AT", TypeName = "datetime")]
         public DateTime? CreatedAt { get; set; }
         [Column("CREATED_BY")]
         [StringLength(50)]
@@ -38,17 +38,19 @@ namespace Backend.Models
         [Column("UPDATED_AT", TypeName = "datetime")]
         public DateTime? UpdatedAt { get; set; }
         [Column("UPDATED_BY")]
-        [StringLength(255)]
+        [StringLength(50)]
         public string UpdatedBy { get; set; }
         [Column("NET_COST_TOTAL", TypeName = "decimal(19, 2)")]
         public decimal? NetCostTotal { get; set; }
         [Column("NET_SALE_TOTAL", TypeName = "decimal(19, 2)")]
         public decimal? NetSaleTotal { get; set; }
-        [Column("NET_PROFIT_IN_VALUE", TypeName = "decimal(19, 2)")]
-        public decimal? NetProfitInValue { get; set; }
-        [Column("TOTAL_DISC", TypeName = "decimal(19, 2)")]
-        public decimal? TotalDisc { get; set; }
         [Column("NET_QUANTITY")]
         public int? NetQuantity { get; set; }
+        [Column("TOTAL_DISC", TypeName = "decimal(19, 2)")]
+        public decimal? TotalDisc { get; set; }
+        [Column("NET_PROFIT_IN_VALUE", TypeName = "decimal(19, 2)")]
+        public decimal? NetProfitInValue { get; set; }
+        [Column("POSTED_DATE", TypeName = "datetime")]
+        public DateTime? PostedDate { get; set; }
     }
 }

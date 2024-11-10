@@ -29,6 +29,11 @@ namespace Backend.Models
         [Column("UPDATED_BY")]
         [StringLength(255)]
         public string UpdatedBy { get; set; }
+        [Column("MANUFACTURER_ID")]
+        public int? ManufacturerId { get; set; }
+        [Column("REMARKS")]
+        [StringLength(500)]
+        public string Remarks { get; set; }
 
         [InverseProperty("Brand")]
         public ICollection<Item> Item { get; set; }

@@ -66,7 +66,5 @@ namespace Backend.Models
         [ForeignKey("ManufacturerId")]
         [InverseProperty("Item")]
         public ItemManufacturer Manufacturer { get; set; }
-        [InverseProperty("IdNavigation")]
-        public AlternateItem AlternateItem { get; set; }
     }
 }

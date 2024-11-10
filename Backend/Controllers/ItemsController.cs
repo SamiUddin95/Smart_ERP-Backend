@@ -7,6 +7,7 @@ using System.Linq;
 using Backend.Models;
 using Microsoft.AspNetCore.Cors;
 using Newtonsoft.Json;
+using Backend.Model;
 
 namespace Backend.Controllers
 {
@@ -39,6 +40,8 @@ namespace Backend.Controllers
 
                         brandchk.Id = brand.Id;
                         brandchk.Name = brand.Name;
+                        brandchk.Remarks = brand.Remarks;
+                        brandchk.ManufacturerId = brand.ManufacturerId;
                         brand.UpdatedAt = DateTime.Now;
                         brandchk.UpdatedBy = brand.UpdatedBy;
                         bMSContext.ItemBrand.Update(brandchk);
@@ -48,8 +51,9 @@ namespace Backend.Controllers
                     else
                     {
                         ItemBrand brand1 = new ItemBrand();
-                        //brandchk.Id = brand.Id;
                         brand1.Name = brand.Name;
+                        brand1.Remarks = brand.Remarks;
+                        brand1.ManufacturerId = brand.ManufacturerId;
                         brand1.CreatedAt = DateTime.Now;
                         brand1.CreatedBy = brand.CreatedBy;
                         bMSContext.ItemBrand.Add(brand1);
@@ -125,7 +129,8 @@ namespace Backend.Controllers
                         categorychk.Name = itemCategory.Name;
                         categorychk.IsActive = itemCategory.IsActive;
                         categorychk.Priority = itemCategory.Priority;
-                        categorychk.DepartmentId = itemCategory.DepartmentId;
+                        //categorychk.DepartmentId = itemCategory.DepartmentId;
+                        categorychk.DepartmentId = 1;
                         categorychk.Height = itemCategory.Height;
                         categorychk.Width = itemCategory.Width;
                         categorychk.Description = itemCategory.Description;
@@ -142,7 +147,8 @@ namespace Backend.Controllers
                         itemCategory1.Name = itemCategory.Name;
                         itemCategory1.IsActive = itemCategory.IsActive;
                         itemCategory1.Priority = itemCategory.Priority;
-                        itemCategory1.DepartmentId = itemCategory.DepartmentId;
+                        //itemCategory1.DepartmentId = itemCategory.DepartmentId;
+                        itemCategory1.DepartmentId = 1;
                         itemCategory1.Height = itemCategory.Height;
                         itemCategory1.Width = itemCategory.Width;
                         itemCategory1.Description = itemCategory.Description;
@@ -298,7 +304,7 @@ namespace Backend.Controllers
         [Route("/api/getAllItemsdetailsFilterbased")]
         public IEnumerable<Item> getAllItemsdetailsFilterbased(string itemName, string aliasName, decimal purchasePrice, decimal salePrice)
         {
-            var query = bMSContext.Item.AsQueryable(); 
+            var query = bMSContext.Item.AsQueryable();
             if (itemName != "All")
             {
                 query = query.Where(i => i.ItemName.Contains(itemName));
@@ -307,7 +313,7 @@ namespace Backend.Controllers
             if (aliasName != "All")
             {
                 query = query.Where(i => i.AliasName.Contains(aliasName));
-            } 
+            }
             if (purchasePrice > 0)
             {
                 query = query.Where(i => i.PurchasePrice == purchasePrice);
@@ -382,82 +388,99 @@ namespace Backend.Controllers
 
         [HttpPost]
         [Route("/api/createItems")]
-        public object createItems([FromBody] ItemWithAlternates data)
+        public object createItems(ItemModel Items)
         {
 
             try
             {
                 try
                 {
-                    var Itemschk = bMSContext.Item.SingleOrDefault(u => u.Id == data.Item.Id);
+                    var Itemschk = bMSContext.Item.SingleOrDefault(u => u.Id == Items.Id);
                     if (Itemschk != null)
                     {
 
-                        Itemschk.Id = data.Item.Id;
-                        Itemschk.AliasName = data.Item.AliasName;
-                        Itemschk.ItemName = data.Item.ItemName;
-                        Itemschk.PurchasePrice = data.Item.PurchasePrice;
-                        Itemschk.SalePrice = data.Item.SalePrice;
-                        Itemschk.CategoryId = data.Item.CategoryId;
-                        Itemschk.ClassId = data.Item.ClassId;
-                        Itemschk.ManufacturerId = data.Item.ManufacturerId;
-                        Itemschk.Remarks = data.Item.Remarks;
-                        Itemschk.RecentPurchase = data.Item.RecentPurchase;
-                        Itemschk.BrandId = data.Item.BrandId;
-                        Itemschk.Discflat = data.Item.Discflat;
-                        Itemschk.Lockdisc = data.Item.Lockdisc;
+                        Itemschk.Id = Items.Id;
+                        Itemschk.AliasName = Items.AliasName;
+                        Itemschk.ItemName = Items.ItemName;
+                        Itemschk.PurchasePrice = Items.PurchasePrice;
+                        Itemschk.SalePrice = Items.SalePrice;
+                        Itemschk.CategoryId = Items.CategoryId;
+                        Itemschk.ClassId = Items.ClassId;
+                        Itemschk.ManufacturerId = Items.ManufacturerId;
+                        Itemschk.Remarks = Items.Remarks;
+                        Itemschk.RecentPurchase = Items.RecentPurchase;
+                        Itemschk.BrandId = Items.BrandId;
+                        Itemschk.Discflat = Items.Discflat;
+                        Itemschk.Lockdisc = Items.Lockdisc;
                         Itemschk.UpdatedAt = DateTime.Now;
-                        Itemschk.UpdatedBy = data.Item.UpdatedBy;
-
-                        var existingAlternateItems = bMSContext.AlternateItem.Where(a => a.ItemId == Itemschk.Id).ToList();
-                        bMSContext.AlternateItem.RemoveRange(existingAlternateItems); 
-
-                        foreach (var altItem in data.AlternateItems)
-                        {
-                            altItem.ItemId = Itemschk.Id; 
-                            bMSContext.AlternateItem.Add(altItem);
-                        }
-
+                        Itemschk.UpdatedBy = Items.UpdatedBy;
                         bMSContext.Item.Update(Itemschk);
                         bMSContext.SaveChanges();
+                        var delAltItem = bMSContext.AlternateItem.SingleOrDefault(u => u.ItemId == Items.Id);
+                        if (delAltItem != null)
+                        {
+                            bMSContext.AlternateItem.Remove(delAltItem);
+                            bMSContext.SaveChanges();
+                        }
+                        foreach (var item in Items.alternateItem)
+                        {
+                            if (item.AliasName != "")
+                            {
+                                AlternateItem at = new AlternateItem();
+                                at.AliasName = item.AliasName;
+                                at.Salediscflat = item.Salediscflat;
+                                at.Salediscperc = item.Salediscperc;
+                                at.ItemId = item.Id;
+                                at.Remarks = item.Remarks;
+                                at.Qty = item.Qty;
+                                bMSContext.AlternateItem.Add(at);
+                                bMSContext.SaveChanges();
+                            }
+                            
+                        }
                         return JsonConvert.SerializeObject(new { id = Itemschk.Id });
                     }
                     else
                     {
-                        var existingItem = bMSContext.Item.SingleOrDefault(i => i.ItemName == data.Item.ItemName);
+                        var existingItem = bMSContext.Item.SingleOrDefault(i => i.ItemName == Items.ItemName);
 
                         if (existingItem != null)
                         {
                             return JsonConvert.SerializeObject(new { msg = "An item with this name already exists." });
                         }
                         Item itemItems = new Item();
-
-                        itemItems.AliasName = data.Item.AliasName;
-                        itemItems.ItemName = data.Item.ItemName;
-                        itemItems.PurchasePrice = data.Item.PurchasePrice;
-                        itemItems.SalePrice = data.Item.SalePrice;
-                        itemItems.CategoryId = data.Item.CategoryId;
-                        itemItems.ClassId = data.Item.ClassId;
-                        itemItems.ManufacturerId = data.Item.ManufacturerId;
-                        itemItems.Remarks = data.Item.Remarks;
-                        itemItems.RecentPurchase = data.Item.RecentPurchase;
-                        itemItems.BrandId = data.Item.BrandId;
-                        itemItems.Discflat = data.Item.Discflat;
-                        itemItems.Lockdisc = data.Item.Lockdisc;
+                        itemItems.AliasName = Items.AliasName;
+                        itemItems.ItemName = Items.ItemName;
+                        itemItems.PurchasePrice = Items.PurchasePrice;
+                        itemItems.SalePrice = Items.SalePrice;
+                        itemItems.CategoryId = Items.CategoryId;
+                        itemItems.ClassId = Items.ClassId;
+                        itemItems.ManufacturerId = Items.ManufacturerId;
+                        itemItems.Remarks = Items.Remarks;
+                        itemItems.RecentPurchase = Items.RecentPurchase;
+                        itemItems.BrandId = Items.BrandId;
+                        itemItems.Discflat = Items.Discflat;
+                        itemItems.Lockdisc = Items.Lockdisc;
                         itemItems.CreatedAt = DateTime.Now;
-                        itemItems.CreatedBy = data.Item.CreatedBy;
-
+                        itemItems.CreatedBy = Items.CreatedBy;
                         bMSContext.Item.Add(itemItems);
                         bMSContext.SaveChanges();
-
-                        foreach (var altItem in data.AlternateItems)
+                        foreach (var item in Items.alternateItem)
                         {
-                            altItem.ItemId = itemItems.Id;
-                            bMSContext.AlternateItem.Add(altItem);
+                            if (item.AliasName != "")
+                            {
+                                AlternateItem at = new AlternateItem();
+                                at.AliasName = item.AliasName;
+                                at.Salediscflat = item.Salediscflat;
+                                at.Salediscperc = item.Salediscperc;
+                                at.ItemId = itemItems.Id;
+                                at.Remarks = item.Remarks;
+                                at.Qty = item.Qty;
+                                bMSContext.AlternateItem.Add(at);
+                                bMSContext.SaveChanges();
+                            }
+                            
                         }
-
-                        bMSContext.SaveChanges();
-
                         return JsonConvert.SerializeObject(new { id = itemItems.Id });
                     }
                 }
@@ -497,9 +520,44 @@ namespace Backend.Controllers
 
         [HttpGet]
         [Route("/api/getItemById")]
-        public IEnumerable<Item> getItemById(int id)
+        public IEnumerable<dynamic> getItemById(int id)
         {
-            return bMSContext.Item.Where(u => u.Id == id).ToList();
+            var item = bMSContext.Item.Select(it => new
+            {
+                id = it.Id,
+                aliasName = it.AliasName,
+                brandId = it.BrandId,
+                manufacturerId = it.ManufacturerId,
+                salePrice = it.SalePrice,
+                remarks = it.Remarks,
+                itemName = it.ItemName,
+                categoryId = it.CategoryId,
+                classId = it.ClassId,
+                purchasePrice = it.PurchasePrice,
+                recentPurchase = it.RecentPurchase,
+                discflat = it.Discflat,
+                lockdisc = it.Lockdisc
+
+            }).Where(u => u.id == id).ToList();
+            var altItem = bMSContext.AlternateItem
+                .Select(alt => new
+                {
+                    id = alt.Id,
+                    itemId = alt.ItemId,
+                    aliasName = alt.AliasName,
+                    qty = alt.Qty,
+                    saleDiscPerc = alt.Salediscperc,
+                    saleDiscFlat = alt.Salediscflat,
+                    remarks = alt.Remarks,
+                }).Where(x => x.itemId == id).ToList();
+
+            var result = new
+            {
+                item = item,
+                altItem = altItem
+            };
+
+            yield return JsonConvert.SerializeObject(result);
         }
         #endregion
 
@@ -609,9 +667,4 @@ namespace Backend.Controllers
             return bMSContext.Active.ToList();
         }
     }
-}
-public class ItemWithAlternates
-{
-    public Item Item { get; set; }
-    public List<AlternateItem> AlternateItems { get; set; }
 }

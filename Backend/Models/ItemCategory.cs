@@ -21,11 +21,12 @@ namespace Backend.Models
         public string Name { get; set; }
         [Column("IS_ACTIVE")]
         public int IsActive { get; set; }
+        [Required]
         [Column("PRIORITY")]
         [StringLength(50)]
         public string Priority { get; set; }
         [Column("DEPARTMENT_ID")]
-        public int DepartmentId { get; set; }
+        public int? DepartmentId { get; set; }
         [Column("HEIGHT")]
         public int? Height { get; set; }
         [Column("WIDTH")]

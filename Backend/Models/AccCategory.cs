@@ -32,5 +32,10 @@ namespace Backend.Models
         [Column("UPDATED_BY")]
         [StringLength(255)]
         public string UpdatedBy { get; set; }
+        [Column("REMARKS")]
+        [StringLength(500)]
+        public string Remarks { get; set; }
+        [Column("CAT_NUMBER")]
+        public int? CatNumber { get; set; }
     }
 }

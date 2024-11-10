@@ -55,6 +55,9 @@ namespace Backend.Models
         [Column("UPDATED_BY")]
         [StringLength(255)]
         public string UpdatedBy { get; set; }
+        [Column("ITEM_NAME")]
+        [StringLength(100)]
+        public string ItemName { get; set; }
         [Column("NET_QUANTITY")]
         public int? NetQuantity { get; set; }
         [Column("SUB_TOTAL", TypeName = "decimal(19, 2)")]
@@ -63,8 +66,5 @@ namespace Backend.Models
         public decimal? TotalIncDisc { get; set; }
         [Column("TOTAL_INC_GST", TypeName = "decimal(19, 2)")]
         public decimal? TotalIncGst { get; set; }
-        [Column("ITEM_NAME")]
-        [StringLength(100)]
-        public string ItemName { get; set; }
     }
 }
