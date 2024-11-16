@@ -5,6 +5,11 @@ namespace Backend.Models
 {
     public partial class Item
     {
+        public Item()
+        {
+            ParentItem = new HashSet<ParentItem>();
+        }
+
         public int Id { get; set; }
         public string AliasName { get; set; }
         public string ItemName { get; set; }
@@ -29,5 +34,6 @@ namespace Backend.Models
         public ItemCategory Category { get; set; }
         public ItemClass Class { get; set; }
         public ItemManufacturer Manufacturer { get; set; }
+        public ICollection<ParentItem> ParentItem { get; set; }
     }
 }
