@@ -390,10 +390,10 @@ namespace Backend.Controllers
         [Route("/api/createItems")]
         public object createItems(ItemModel Items)
         {
-
             try
             {
-                try
+                var existingItem = bMSContext.Item.SingleOrDefault(i => i.ItemName == Items.ItemName && i.Id != Items.Id);
+                if (existingItem != null)
                 {
                     var Itemschk = bMSContext.Item.SingleOrDefault(u => u.Id == Items.Id);
                     if (Itemschk != null)
@@ -424,19 +424,15 @@ namespace Backend.Controllers
                         }
                         foreach (var item in Items.alternateItem)
                         {
-                            if (item.AliasName != "")
-                            {
-                                AlternateItem at = new AlternateItem();
-                                at.AliasName = item.AliasName;
-                                at.Salediscflat = item.Salediscflat;
-                                at.Salediscperc = item.Salediscperc;
-                                at.ItemId = item.Id;
-                                at.Remarks = item.Remarks;
-                                at.Qty = item.Qty;
-                                bMSContext.AlternateItem.Add(at);
-                                bMSContext.SaveChanges();
-                            }
-                            
+                            AlternateItem at = new AlternateItem();
+                            at.AliasName = item.AliasName;
+                            at.Salediscflat = item.Salediscflat;
+                            at.Salediscperc = item.Salediscperc;
+                            at.ItemId = item.Id;
+                            at.Remarks = item.Remarks;
+                            at.Qty = item.Qty;
+                            bMSContext.AlternateItem.Add(at);
+                            bMSContext.SaveChanges();
                         }
                         return JsonConvert.SerializeObject(new { id = Itemschk.Id });
                     }
@@ -448,7 +444,7 @@ namespace Backend.Controllers
                         {
                             return JsonConvert.SerializeObject(new { msg = "An item with this name already exists." });
                         }
-                        Item itemItems = new Item();
+                        Item itemItems = new Item(); 
                         itemItems.AliasName = Items.AliasName;
                         itemItems.ItemName = Items.ItemName;
                         itemItems.PurchasePrice = Items.PurchasePrice;
@@ -467,19 +463,15 @@ namespace Backend.Controllers
                         bMSContext.SaveChanges();
                         foreach (var item in Items.alternateItem)
                         {
-                            if (item.AliasName != "")
-                            {
-                                AlternateItem at = new AlternateItem();
-                                at.AliasName = item.AliasName;
-                                at.Salediscflat = item.Salediscflat;
-                                at.Salediscperc = item.Salediscperc;
-                                at.ItemId = itemItems.Id;
-                                at.Remarks = item.Remarks;
-                                at.Qty = item.Qty;
-                                bMSContext.AlternateItem.Add(at);
-                                bMSContext.SaveChanges();
-                            }
-                            
+                            AlternateItem at = new AlternateItem();
+                            at.AliasName = item.AliasName;
+                            at.Salediscflat = item.Salediscflat;
+                            at.Salediscperc = item.Salediscperc;
+                            at.ItemId = itemItems.Id;
+                            at.Remarks = item.Remarks;
+                            at.Qty = item.Qty;
+                            bMSContext.AlternateItem.Add(at);
+                            bMSContext.SaveChanges();
                         }
                         return JsonConvert.SerializeObject(new { id = itemItems.Id });
                     }
@@ -493,9 +485,10 @@ namespace Backend.Controllers
             }
             catch (Exception ex)
             {
-                return null;
+                return JsonConvert.SerializeObject(new { msg = ex.Message });
             }
         }
+
 
         [HttpGet]
         [Route("/api/deleteItemById")]
