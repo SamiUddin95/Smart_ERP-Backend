@@ -831,6 +831,7 @@ namespace Backend.Controllers
         [Route("/api/getItemById")]
         public IEnumerable<dynamic> getItemById(int id)
         {
+
             var item = bMSContext.Item.Select(it => new
             {
                 id = it.Id,
@@ -859,14 +860,68 @@ namespace Backend.Controllers
                     saleDiscFlat = alt.Salediscflat,
                     remarks = alt.Remarks,
                 }).Where(x => x.itemId == id).ToList();
+            var parentItem = bMSContext.ParentItem
+                .Select(parent => new
+                {
+                    id = parent.Id,
+                    itemId = parent.ItemId,
+                    barcode = parent.Barcode,
+                    parentName = parent.ParentName,
+                    uom = parent.Uom,
+                    weight = parent.Weight,
+                    netCost = parent.NetCost,
+                    salePrice = parent.SalePrice,
+                    discPerc = parent.DiscPerc,
+                    discValue = parent.DiscValue,
+                    misc = parent.Misc,
+                    netSalePrice = parent.NetSalePrice,
+                    profit = parent.Profit,
+                    manualSalePrice = parent.ManualSalePrice,
+                }).Where(x=>x.itemId == id).ToList();
 
-            var result = new
+            if (parentItem.Count > 0)
             {
-                item = item,
-                altItem = altItem
-            };
+                var childItem = bMSContext.ChildItem
+                .Select(parent => new
+                {
+                    id = parent.Id,
+                    parentId = parent.ParentItemId,
+                    barcode = parent.Barcode,
+                    childName = parent.ChildName,
+                    uom = parent.Uom,
+                    weight = parent.Weight,
+                    netCost = parent.NetCost,
+                    salePrice = parent.SalePrice,
+                    discPerc = parent.DiscPerc,
+                    discValue = parent.DiscValue,
+                    misc = parent.Misc,
+                    netSalePrice = parent.NetSalePrice,
+                    profit = parent.Profit,
+                    manualSalePrice = parent.ManualSalePrice,
+                }).Where(x => x.parentId == parentItem[0].id).ToList();
 
-            yield return JsonConvert.SerializeObject(result);
+                var result = new
+                {
+                    item = item,
+                    altItem = altItem,
+                    parentItem = parentItem,
+                    childItem = childItem
+                };
+                yield return JsonConvert.SerializeObject(result);
+            }
+            else
+            {
+                var result = new
+                {
+                    item = item,
+                    altItem = altItem,
+                    parentItem = parentItem
+                };
+                yield return JsonConvert.SerializeObject(result);
+            }
+         
+
+           
         }
         #endregion
 
