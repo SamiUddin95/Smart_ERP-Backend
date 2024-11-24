@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks; 
+using System.Threading.Tasks;
 using Backend.Models;
 using Microsoft.AspNetCore.Cors;
 using Newtonsoft.Json;
@@ -13,26 +13,26 @@ namespace Backend.Controllers
     [EnableCors("AllowCors"), Route("[controller]")]
     public class AccountController : Controller
     {
-        ERPContext bMSContext = new ERPContext(); 
+        ERPContext bMSContext = new ERPContext();
         [HttpGet]
         [Route("/api/getAllAccountCategory")]
         public IEnumerable<dynamic> getAllAccountCategory()
         {
             var result = (from acc in bMSContext.AccCategory
-                         join act in bMSContext.AccType on acc.AccountTypeId equals act.Id
-                         select new
-                         {
-                             AccCategory = acc.Name,
-                             AccType = act.Name,
-                             Id = acc.Id,
-                             Priority = acc.Priority,
-                             ManualCode = acc.ManualCode,
-                             name=acc.Name
-                             
-                         }).ToList();
+                          join act in bMSContext.AccType on acc.AccountTypeId equals act.Id
+                          select new
+                          {
+                              AccCategory = acc.Name,
+                              AccType = act.Name,
+                              Id = acc.Id,
+                              Priority = acc.Priority,
+                              ManualCode = acc.ManualCode,
+                              name = acc.Name
+
+                          }).ToList();
 
             return result;
-        }  
+        }
         [HttpPost]
         [Route("/api/createAccountCategory")]
         public object createAccountCategory(AccCategory accCategory)
@@ -46,8 +46,8 @@ namespace Backend.Controllers
                     if (accCatChk != null)
                     {
 
-                        accCatChk.Id = accCategory.Id; 
-                        accCatChk.AccountTypeId = accCategory.AccountTypeId; 
+                        accCatChk.Id = accCategory.Id;
+                        accCatChk.AccountTypeId = accCategory.AccountTypeId;
                         accCatChk.Name = accCategory.Name;
                         accCatChk.Remarks = accCategory.Remarks;
                         accCatChk.CatNumber = accCategory.CatNumber;
@@ -397,22 +397,22 @@ namespace Backend.Controllers
             var result = (from acc in bMSContext.Account
                           join acgrp in bMSContext.AccGroup on acc.GroupId equals acgrp.Id
                           join accat in bMSContext.AccCategory on acc.AccountCategoryId equals accat.Id
-                          where (groupId == 0 ||acc.GroupId==groupId)
-                          where (categoryId==0 ||acc.GroupId==groupId)
-                          where (accNo==0 ||acc.AccountNumber==accNo)
+                          where (groupId == 0 || acc.GroupId == groupId)
+                          where (categoryId == 0 || acc.GroupId == groupId)
+                          where (accNo == 0 || acc.AccountNumber == accNo)
                           where (Name == "All" || acc.Name == Name)
                           select new
                           {
-                              accCategoryId=acgrp.Name,
-                              accGroupId=acgrp.Name,
-                              accountNumber=acc.AccountNumber,
-                              accountTypeId=accat.Name,
-                              kindCode=acc.KindCode,
-                              taxAmount=acc.TaxAmount,
-                              taxLimit=acc.TaxLimit,
-                              id=acc.Id,
-                              name=acc.Name,
-                              manualCode=acc.ManualCode,
+                              accCategoryId = acgrp.Name,
+                              accGroupId = acgrp.Name,
+                              accountNumber = acc.AccountNumber,
+                              accountTypeId = accat.Name,
+                              kindCode = acc.KindCode,
+                              taxAmount = acc.TaxAmount,
+                              taxLimit = acc.TaxLimit,
+                              id = acc.Id,
+                              name = acc.Name,
+                              manualCode = acc.ManualCode,
                           }
                         ).ToList();
             //var query = bMSContext.Account.AsQueryable();
@@ -541,7 +541,7 @@ namespace Backend.Controllers
                         {
                             newAccountNumber = latestAccount.AccountNumber + 1;
                         }
-                        Account account = new Account(); 
+                        Account account = new Account();
                         account.AccountCategoryId = acc.AccountCategoryId;
                         account.AccountNumber = newAccountNumber;
                         account.AccountTypeId = acc.AccountTypeId;

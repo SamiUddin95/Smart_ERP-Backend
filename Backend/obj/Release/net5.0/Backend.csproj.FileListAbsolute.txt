@@ -105,4 +105,3 @@ D:\ERP\Smart_ERP-Backend\Backend\obj\Release\net5.0\staticwebassets\msbuild.buil
 D:\ERP\Smart_ERP-Backend\Backend\obj\Release\net5.0\staticwebassets\msbuild.buildMultiTargeting.Backend.props
 D:\ERP\Smart_ERP-Backend\Backend\obj\Release\net5.0\staticwebassets\msbuild.buildTransitive.Backend.props
 D:\ERP\Smart_ERP-Backend\Backend\obj\Release\net5.0\refint\Backend.dll
-D:\ERP\Smart_ERP-Backend\Backend\bin\Release\net5.0\appsettings.json
