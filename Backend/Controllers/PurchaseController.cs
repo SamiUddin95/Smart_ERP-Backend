@@ -72,8 +72,7 @@ namespace Backend.Controllers
                                 GstByPercent = detail.GstByPercent,
                                 GstByValue = detail.GstByValue,
                                 TotalIncDisc = detail.TotalIncDisc,
-                                TotalIncGst = detail.TotalIncGst,
-
+                                TotalIncGst = detail.TotalIncGst, 
                                 NetRate = detail.NetRate,
                                 NetQuantity = detail.NetQuantity,
                                 SubTotal = detail.SubTotal,
@@ -107,8 +106,8 @@ namespace Backend.Controllers
                         existingPurchase.NetQuantity = purchModel.NetQuantity;
                         existingPurchase.TotalDisc = purchModel.TotalDisc;
                         existingPurchase.NetProfitInValue = purchModel.netProfitInValue;
-                        existingPurchase.UpdatedAt = DateTime.Now;
-                        existingPurchase.PostedDate = DateTime.Now;
+                        existingPurchase.UpdatedAt = DateTime.Now.Date;
+                        existingPurchase.PostedDate = DateTime.Now.Date;
                         existingPurchase.UpdatedBy = purchModel.CreatedBy;
                         bMSContext.Purchase.Update(existingPurchase);
                         bMSContext.SaveChanges();
@@ -148,8 +147,8 @@ namespace Backend.Controllers
                                     CreatedBy = detail.CreatedBy
                                 };
                                 bMSContext.PurchaseDetail.Add(purchDetail);
+                                bMSContext.SaveChanges();
                             }
-                            bMSContext.SaveChanges();
                         }
                     }
                 }
@@ -159,6 +158,42 @@ namespace Backend.Controllers
                 return JsonConvert.SerializeObject(new { msg = ex.Message });
             }
             return JsonConvert.SerializeObject(new { msg = "Purchase processed successfully" });
+        }
+
+        [HttpGet]
+        [Route("/api/postPurchase")]
+        public object postPurchase(string barCodes,string currentStock,string lastNetSalePrice,string lastNetCost)
+        {
+            try 
+            {
+                string[] barCodeArray = barCodes.Split(',');
+                string[] currentStockArray = currentStock.Split(',');
+                string[] lastNetSalePriceArray = lastNetSalePrice.Split(',');
+                string[] lastNetCostArray = lastNetCost.Split(',');
+                int length = Math.Min(barCodeArray.Length, Math.Min(currentStockArray.Length,
+                    Math.Min(lastNetSalePriceArray.Length, lastNetCostArray.Length)));
+                for (int i = 0; i < length; i++)
+                {
+                    var barcode = barCodeArray[i];
+                    var stock = (int)Math.Floor(double.Parse(currentStockArray[i]));
+                    var salePrice = (int)Math.Floor(double.Parse(lastNetSalePriceArray[i])); 
+                    var cost = (int)Math.Floor(double.Parse(lastNetCostArray[i])); 
+
+
+                    var itemDtl = bMSContext.Item.Where(x => x.AliasName == barcode).FirstOrDefault();
+                    if (itemDtl != null)
+                    {
+                        itemDtl.CurrentStock = Convert.ToInt16(stock);
+                        itemDtl.PurchasePrice = Convert.ToInt16(cost);
+                        itemDtl.SalePrice = Convert.ToInt16(salePrice);
+                        bMSContext.Item.Update(itemDtl);
+                        bMSContext.SaveChanges();
+                    }
+                }
+            }
+            catch(Exception ex) 
+            { }
+            return JsonConvert.SerializeObject(new { msg = "Items Posted successfully" });
         }
         [HttpGet]
         [Route("/api/getAllPurchases")]
