@@ -121,3 +121,8 @@ Backend/Models/ERPContext.cs
 /Backend/obj/Release/net5.0/Backend.dll
 /Backend/obj/Release/net5.0/PubTmp/Out/Backend.pdb
 /.gitignore
+/Backend/Controllers/AccountController.cs
+*.json
+/Backend/obj/Release/net5.0/Backend.csproj.CoreCompileInputs.cache
+/Backend/obj/Release/net5.0/Backend.csproj.FileListAbsolute.txt
+/Backend.zip
