@@ -19,9 +19,18 @@ namespace Backend.Controllers
 
         [HttpGet]
         [Route("/api/getItemDetailbyBarCode")]
-        public IEnumerable<Item> getItemDetailbyBarCode(string barCode)
+        public IEnumerable<dynamic> getItemDetailbyBarCode(string barCode)
         {
-            return bMSContext.Item.Where(u => u.AliasName == barCode).ToList();
+            var item= bMSContext.Item.Where(u => u.AliasName == barCode).ToList();
+            if (item.Count()>0)
+                return item;
+            else
+            {
+                var altItem = bMSContext.AlternateItem.Where(u => u.AliasName == barCode).ToList();
+                return altItem;
+
+            }
+
         }
 
         [HttpPost]
