@@ -430,11 +430,13 @@ namespace Backend.Controllers
                     {
                         AlternateItem at = new AlternateItem
                         {
-                            AliasName = item.AliasName,
-                            Salediscflat = item.Salediscflat,
-                            Salediscperc = item.Salediscperc,
+                            AlternateItemName = item.AlternateItemName,
+                            Saledisc = item.Saledisc,
+                            Saleprice = item.Saleprice,
                             ItemId = Items.Id,
                             Remarks = item.Remarks,
+                            Barcode = item.Barcode,
+                            Netsaleprice = item.NetSalePrice,
                             Qty = item.Qty
                         };
                         bMSContext.AlternateItem.Add(at);
@@ -470,11 +472,13 @@ namespace Backend.Controllers
                     {
                         AlternateItem at = new AlternateItem
                         {
-                            AliasName = item.AliasName,
-                            Salediscflat = item.Salediscflat,
-                            Salediscperc = item.Salediscperc,
+                            AlternateItemName = item.AlternateItemName,
+                            Saledisc = item.Saledisc,
+                            Saleprice = item.Saleprice,
                             ItemId = itemItems.Id,
                             Remarks = item.Remarks,
+                            Barcode = item.Barcode,
+                            Netsaleprice = item.NetSalePrice,
                             Qty = item.Qty
                         };
                         bMSContext.AlternateItem.Add(at);
@@ -498,7 +502,7 @@ namespace Backend.Controllers
             {
                 try
                 {
-                    var parentchk = bMSContext.ParentItem.SingleOrDefault(u => u.Id == parentChildModel.Id);
+                    var parentchk = bMSContext.ParentItem.SingleOrDefault(u => u.ItemId == parentChildModel.Id);
                     if (parentchk != null)
                     {
                         parentchk.Barcode = parentChildModel.Barcode;
@@ -518,7 +522,7 @@ namespace Backend.Controllers
                         bMSContext.ParentItem.Update(parentchk);
                         bMSContext.SaveChanges();
 
-                        var delChlItem = bMSContext.ChildItem.Where(u => u.ParentItemId == parentChildModel.Id).ToList();
+                        var delChlItem = bMSContext.ChildItem.Where(u => u.ParentItemId == parentchk.Id).ToList();
                         if (delChlItem.Any())
                         {
                             bMSContext.ChildItem.RemoveRange(delChlItem);
@@ -528,7 +532,7 @@ namespace Backend.Controllers
                         {
                             ChildItem at = new ChildItem
                             {
-                                ParentItemId = parentChildModel.Id,
+                                ParentItemId = parentchk.Id,
                                 Barcode = childitem.Barcode,
                                 ChildName = childitem.ChildName,
                                 Uom = childitem.Uom,
@@ -854,10 +858,12 @@ namespace Backend.Controllers
                 {
                     id = alt.Id,
                     itemId = alt.ItemId,
-                    aliasName = alt.AliasName,
                     qty = alt.Qty,
-                    saleDiscPerc = alt.Salediscperc,
-                    saleDiscFlat = alt.Salediscflat,
+                    salePrice = alt.Saleprice,
+                    saleDisc = alt.Saledisc,
+                    alternateItemName = alt.AlternateItemName,
+                    barcode = alt.Barcode,
+                    netSalePrice = alt.Netsaleprice,
                     remarks = alt.Remarks,
                 }).Where(x => x.itemId == id).ToList();
             var parentItem = bMSContext.ParentItem
