@@ -32,8 +32,13 @@ namespace Backend.Model
     {
         public int Id { get; set; }
         public int ItemId { get; set; }
+        public string Barcode { get; set; }
+        public decimal NetSalePrice { get; set; }
         public string AliasName { get; set; }
+        public string AlternateItemName { get; set; }
         public decimal Qty { get; set; }
+        public decimal Saledisc { get; set; }
+        public decimal Saleprice { get; set; } 
         public decimal? Salediscperc { get; set; }
         public decimal? Salediscflat { get; set; }
         public string Remarks { get; set; }

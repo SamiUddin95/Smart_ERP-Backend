@@ -431,11 +431,13 @@ namespace Backend.Controllers
                     {
                         AlternateItem at = new AlternateItem
                         {
-                            AliasName = item.AliasName,
-                            Salediscflat = item.Salediscflat,
-                            Salediscperc = item.Salediscperc,
+                            AlternateItemName = item.AlternateItemName,
+                            Saledisc = item.Saledisc,
+                            Saleprice = item.Saleprice,
                             ItemId = Items.Id,
                             Remarks = item.Remarks,
+                            Barcode = item.Barcode,
+                            Netsaleprice = item.NetSalePrice,
                             Qty = item.Qty
                         };
                         bMSContext.AlternateItem.Add(at);
@@ -472,11 +474,13 @@ namespace Backend.Controllers
                     {
                         AlternateItem at = new AlternateItem
                         {
-                            AliasName = item.AliasName,
-                            Salediscflat = item.Salediscflat,
-                            Salediscperc = item.Salediscperc,
+                            AlternateItemName = item.AlternateItemName,
+                            Saledisc = item.Saledisc,
+                            Saleprice = item.Saleprice,
                             ItemId = itemItems.Id,
                             Remarks = item.Remarks,
+                            Barcode = item.Barcode,
+                            Netsaleprice = item.NetSalePrice,
                             Qty = item.Qty
                         };
                         bMSContext.AlternateItem.Add(at);
