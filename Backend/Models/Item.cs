@@ -58,6 +58,8 @@ namespace Backend.Models
         [Column("UPDATED_BY")]
         [StringLength(255)]
         public string UpdatedBy { get; set; }
+        [Column("CURRENT_STOCK")]
+        public int? CurrentStock { get; set; }
 
         [ForeignKey("BrandId")]
         [InverseProperty("Item")]
