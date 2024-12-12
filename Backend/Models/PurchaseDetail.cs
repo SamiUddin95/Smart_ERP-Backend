@@ -32,5 +32,6 @@ namespace Backend.Models
         public decimal? SubTotal { get; set; }
         public decimal? TotalIncDisc { get; set; }
         public decimal? TotalIncGst { get; set; }
+        public decimal? NetSaleTotal { get; set; }
     }
 }

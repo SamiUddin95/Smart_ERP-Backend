@@ -40,6 +40,7 @@ namespace Backend.Model
         public decimal? GstByPercent { get; set; }
         public decimal? GstByValue { get; set; } 
         public decimal? TotalIncDisc { get; set; }
+        public decimal? NetSaleTotal { get; set; }
         public decimal? TotalIncGst { get; set; }
         public decimal? NetRate { get; set; }
         public int? NetQuantity { get; set; }
