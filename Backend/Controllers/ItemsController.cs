@@ -498,127 +498,98 @@ namespace Backend.Controllers
 
         [HttpPost]
         [Route("/api/createChildParentItem")]
-        public object createChildParentItem(ParentChildModel parentChildModel)
+        public object CreateChildParentItem(ChildModel childModel)
         {
             try
             {
-                try
+                // Check if the Item exists in the database
+                var item = bMSContext.Item.SingleOrDefault(u => u.Id == childModel.ItemId);
+
+                if (item != null)
                 {
-                    var parentchk = bMSContext.ParentItem.SingleOrDefault(u => u.ItemId == parentChildModel.Id);
-                    if (parentchk != null)
+                    // If the Item exists, delete associated child items
+                    var existingChildItems = bMSContext.ChildItem.Where(u => u.ItemId == item.Id).ToList();
+                    if (existingChildItems.Any())
                     {
-                        parentchk.Barcode = parentChildModel.Barcode;
-                        parentchk.ParentName = parentChildModel.ParentName;
-                        parentchk.Uom = parentChildModel.Uom;
-                        parentchk.Weight = parentChildModel.Weight;
-                        parentchk.NetCost = parentChildModel.NetCost;
-                        parentchk.SalePrice = parentChildModel.SalePrice;
-                        parentchk.DiscPerc = parentChildModel.DiscPerc;
-                        parentchk.DiscValue = parentChildModel.DiscValue;
-                        parentchk.Misc = parentChildModel.Misc;
-                        parentchk.NetSalePrice = parentChildModel.NetSalePrice;
-                        parentchk.ManualSalePrice = parentChildModel.ManualSalePrice;
-                        parentchk.Profit = parentChildModel.Profit;
-                        parentchk.UpdatedAt = DateTime.Now;
-                        parentchk.UpdatedBy = parentChildModel.UpdatedBy;
-                        bMSContext.ParentItem.Update(parentchk);
+                        bMSContext.ChildItem.RemoveRange(existingChildItems);
                         bMSContext.SaveChanges();
-
-                        var delChlItem = bMSContext.ChildItem.Where(u => u.ParentItemId == parentchk.Id).ToList();
-                        if (delChlItem.Any())
-                        {
-                            bMSContext.ChildItem.RemoveRange(delChlItem);
-                            bMSContext.SaveChanges();
-                        }
-                        foreach (var childitem in parentChildModel.childItem)
-                        {
-                            ChildItem at = new ChildItem
-                            {
-                                ParentItemId = parentchk.Id,
-                                Barcode = childitem.Barcode,
-                                ChildName = childitem.ChildName,
-                                Uom = childitem.Uom,
-                                Weight = childitem.Weight,
-                                NetCost = childitem.NetCost,
-                                SalePrice = childitem.SalePrice,
-                                DiscPerc = childitem.DiscPerc,
-                                DiscValue = childitem.DiscValue,
-                                Misc = childitem.Misc,
-                                NetSalePrice = childitem.NetSalePrice,
-                                ManualSalePrice = childitem.ManualSalePrice,
-                                Profit = childitem.Profit,
-                                UpdatedAt = DateTime.Now,
-                                UpdatedBy = childitem.UpdatedBy
-                            };
-                            bMSContext.ChildItem.Update(at);
-                        }
-                        bMSContext.SaveChanges();
-                        return JsonConvert.SerializeObject(new { id = parentchk.Id });
                     }
-                    else
+
+                    // Add or update child items
+                    foreach (var childitem in childModel.ChildItems)
                     {
-                        var getItemId = 0;
-                        if (parentChildModel.ParentName != null)
+                        var newChildItem = new ChildItem
                         {
-                            getItemId = bMSContext.Item.Where(x => x.ItemName == parentChildModel.ParentName).FirstOrDefault().Id;
-                        }
-                        ParentItem parentItem1 = new ParentItem();
-                        parentItem1.ItemId = getItemId;
-                        parentItem1.Barcode = parentChildModel.Barcode;
-                        parentItem1.ParentName = parentChildModel.ParentName;
-                        parentItem1.Uom = parentChildModel.Uom;
-                        parentItem1.Weight = parentChildModel.Weight;
-                        parentItem1.NetCost = parentChildModel.NetCost;
-                        parentItem1.SalePrice = parentChildModel.SalePrice;
-                        parentItem1.DiscPerc = parentChildModel.DiscPerc;
-                        parentItem1.DiscValue = parentChildModel.DiscValue;
-                        parentItem1.Misc = parentChildModel.Misc;
-                        parentItem1.NetSalePrice = parentChildModel.NetSalePrice;
-                        parentItem1.ManualSalePrice = parentChildModel.ManualSalePrice;
-                        parentItem1.Profit = parentChildModel.Profit;
-                        parentItem1.CreatedAt = DateTime.Now;
-                        parentItem1.CreatedBy = parentChildModel.CreatedBy;
-                        bMSContext.ParentItem.Add(parentItem1);
-                        bMSContext.SaveChanges();
+                            ItemId = item.Id,
+                            Barcode = childitem.Barcode,
+                            ChildName = childitem.ChildName,
+                            Uom = childitem.Uom,
+                            Weight = childitem.Weight,
+                            NetCost = childitem.NetCost,
+                            SalePrice = childitem.SalePrice,
+                            DiscPerc = childitem.DiscPerc,
+                            DiscValue = childitem.DiscValue,
+                            Misc = childitem.Misc,
+                            NetSalePrice = childitem.NetSalePrice,
+                            Cost = childitem.Cost,
+                            Profit = childitem.Profit,
+                            UpdatedAt = DateTime.Now,
+                            UpdatedBy = childitem.UpdatedBy
+                        };
 
-                        foreach (var childitem in parentChildModel.childItem)
-                        {
-                            ChildItem at = new ChildItem
-                            {
-                                ParentItemId = parentItem1.Id,
-                                Barcode = childitem.Barcode,
-                                ChildName = childitem.ChildName,
-                                Uom = childitem.Uom,
-                                Weight = childitem.Weight,
-                                NetCost = childitem.NetCost,
-                                SalePrice = childitem.SalePrice,
-                                DiscPerc = childitem.DiscPerc,
-                                DiscValue = childitem.DiscValue,
-                                Misc = childitem.Misc,
-                                NetSalePrice = childitem.NetSalePrice,
-                                ManualSalePrice = childitem.ManualSalePrice,
-                                Profit = childitem.Profit,
-                                CreatedAt = DateTime.Now,
-                                CreatedBy = childitem.CreatedBy
-                            };
-                            bMSContext.ChildItem.Add(at);
-                        }
-                        bMSContext.SaveChanges();
-                        return JsonConvert.SerializeObject(new { id = parentItem1.Id });
+                        bMSContext.ChildItem.Add(newChildItem); // Use Add instead of Update for new entities
                     }
+
+                    bMSContext.SaveChanges();
+                    return JsonConvert.SerializeObject(new { id = item.Id });
                 }
-
-                catch (Exception ex)
+                else
                 {
-                    JsonConvert.SerializeObject(new { msg = ex.Message });
+                    // Handle the case where the Item does not exist
+                    int getItemId = 0;
+                    if (childModel.ItemId.HasValue)
+                    {
+                        var itemRecord = bMSContext.Item.FirstOrDefault(x => x.Id == childModel.ItemId.Value);
+                        if (itemRecord != null)
+                        {
+                            getItemId = itemRecord.Id;
+                        }
+                    }
+
+                    foreach (var childitem in childModel.ChildItems)
+                    {
+                        var newChildItem = new ChildItem
+                        {
+                            ItemId = getItemId,
+                            Barcode = childitem.Barcode,
+                            ChildName = childitem.ChildName,
+                            Uom = childitem.Uom,
+                            Weight = childitem.Weight,
+                            NetCost = childitem.NetCost,
+                            SalePrice = childitem.SalePrice,
+                            DiscPerc = childitem.DiscPerc,
+                            DiscValue = childitem.DiscValue,
+                            Misc = childitem.Misc,
+                            NetSalePrice = childitem.NetSalePrice,
+                            Cost = childitem.Cost,
+                            Profit = childitem.Profit,
+                            CreatedAt = DateTime.Now,
+                            CreatedBy = childitem.CreatedBy
+                        };
+
+                        bMSContext.ChildItem.Add(newChildItem);
+                    }
+
+                    bMSContext.SaveChanges();
+                    return JsonConvert.SerializeObject(new { id = getItemId });
                 }
-                return JsonConvert.SerializeObject(new { msg = "Message" });
             }
             catch (Exception ex)
             {
-                return BadRequest(new { msg = ex.Message });
+                // Log the error and return the exception message
+                return JsonConvert.SerializeObject(new { msg = ex.Message });
             }
-        } 
+        }
         [HttpGet]
         [Route("/api/deleteItemById")]
         public object deleteItemById(int id)
@@ -676,32 +647,14 @@ namespace Backend.Controllers
                     netSalePrice = alt.Netsaleprice,
                     remarks = alt.Remarks,
                 }).Where(x => x.itemId == id).ToList();
-            var parentItem = bMSContext.ParentItem
-                .Select(parent => new
-                {
-                    id = parent.Id,
-                    itemId = parent.ItemId,
-                    barcode = parent.Barcode,
-                    parentName = parent.ParentName,
-                    uom = parent.Uom,
-                    weight = parent.Weight,
-                    netCost = parent.NetCost,
-                    salePrice = parent.SalePrice,
-                    discPerc = parent.DiscPerc,
-                    discValue = parent.DiscValue,
-                    misc = parent.Misc,
-                    netSalePrice = parent.NetSalePrice,
-                    profit = parent.Profit,
-                    manualSalePrice = parent.ManualSalePrice,
-                }).Where(x=>x.itemId == id).ToList();
-
-            if (parentItem.Count > 0)
+           
+            if (item.Count > 0)
             {
                 var childItem = bMSContext.ChildItem
                 .Select(parent => new
                 {
                     id = parent.Id,
-                    parentId = parent.ParentItemId,
+                    parentId = parent.ItemId,
                     barcode = parent.Barcode,
                     childName = parent.ChildName,
                     uom = parent.Uom,
@@ -713,14 +666,13 @@ namespace Backend.Controllers
                     misc = parent.Misc,
                     netSalePrice = parent.NetSalePrice,
                     profit = parent.Profit,
-                    manualSalePrice = parent.ManualSalePrice,
-                }).Where(x => x.parentId == parentItem[0].id).ToList();
+                    cost = parent.Cost,
+                }).Where(x => x.parentId == item[0].id).ToList();
 
                 var result = new
                 {
                     item = item,
                     altItem = altItem,
-                    parentItem = parentItem,
                     childItem = childItem
                 };
                 yield return JsonConvert.SerializeObject(result);
@@ -730,8 +682,7 @@ namespace Backend.Controllers
                 var result = new
                 {
                     item = item,
-                    altItem = altItem,
-                    parentItem = parentItem
+                    altItem = altItem
                 };
                 yield return JsonConvert.SerializeObject(result);
             }

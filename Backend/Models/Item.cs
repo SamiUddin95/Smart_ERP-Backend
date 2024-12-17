@@ -10,7 +10,7 @@ namespace Backend.Models
     {
         public Item()
         {
-            ParentItem = new HashSet<ParentItem>();
+            ChildItem = new HashSet<ChildItem>();
         }
 
         [Column("ID")]
@@ -74,6 +74,6 @@ namespace Backend.Models
         [InverseProperty("Item")]
         public ItemManufacturer Manufacturer { get; set; }
         [InverseProperty("Item")]
-        public ICollection<ParentItem> ParentItem { get; set; }
+        public ICollection<ChildItem> ChildItem { get; set; }
     }
 }

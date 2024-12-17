@@ -8,11 +8,6 @@ namespace Backend.Models
     [Table("PARENT_ITEM")]
     public partial class ParentItem
     {
-        public ParentItem()
-        {
-            ChildItem = new HashSet<ChildItem>();
-        }
-
         [Column("ID")]
         public long Id { get; set; }
         [Column("ITEM_ID")]
@@ -60,7 +55,5 @@ namespace Backend.Models
         [ForeignKey("ItemId")]
         [InverseProperty("ParentItem")]
         public Item Item { get; set; }
-        [InverseProperty("ParentItem")]
-        public ICollection<ChildItem> ChildItem { get; set; }
     }
 }

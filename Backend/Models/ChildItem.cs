@@ -8,10 +8,8 @@ namespace Backend.Models
     [Table("CHILD_ITEM")]
     public partial class ChildItem
     {
-        [Column("ID")]
-        public long Id { get; set; }
-        [Column("PARENT_ITEM_ID")]
-        public long? ParentItemId { get; set; }
+        [Column("ITEM_ID")]
+        public int ItemId { get; set; }
         [Required]
         [Column("BARCODE")]
         [StringLength(255)]
@@ -39,8 +37,8 @@ namespace Backend.Models
         public decimal? NetSalePrice { get; set; }
         [Column("PROFIT", TypeName = "decimal(10, 2)")]
         public decimal? Profit { get; set; }
-        [Column("MANUAL_SALE_PRICE", TypeName = "decimal(10, 2)")]
-        public decimal? ManualSalePrice { get; set; }
+        [Column(TypeName = "decimal(10, 2)")]
+        public decimal? Cost { get; set; }
         [Column("CREATED_AT", TypeName = "datetime")]
         public DateTime? CreatedAt { get; set; }
         [Column("UPDATED_AT", TypeName = "datetime")]
@@ -51,9 +49,11 @@ namespace Backend.Models
         [Column("UPDATED_BY")]
         [StringLength(255)]
         public string UpdatedBy { get; set; }
+        [Column("ID")]
+        public long Id { get; set; }
 
-        [ForeignKey("ParentItemId")]
+        [ForeignKey("ItemId")]
         [InverseProperty("ChildItem")]
-        public ParentItem ParentItem { get; set; }
+        public Item Item { get; set; }
     }
 }
