@@ -431,7 +431,7 @@ namespace Backend.Controllers
                     {
                         AlternateItem at = new AlternateItem
                         {
-                            AlternateItemName = item.AlternateItemName,
+                            AlternateItemName = item.AliasName,
                             Saledisc = item.Saledisc,
                             Saleprice = item.Saleprice,
                             ItemId = Items.Id,
@@ -664,16 +664,18 @@ namespace Backend.Controllers
 
             }).Where(u => u.id == id).ToList();
             var altItem = bMSContext.AlternateItem
-                .Select(alt => new
-                {
-                    id = alt.Id,
-                    itemId = alt.ItemId,
-                    aliasName = alt.AliasName,
-                    qty = alt.Qty,
-                    saleDiscPerc = alt.Salediscperc,
-                    saleDiscFlat = alt.Salediscflat,
-                    remarks = alt.Remarks,
-                }).Where(x => x.itemId == id).ToList();
+     .Select(alt => new
+     {
+         id = alt.Id,
+         itemId = alt.ItemId,
+         qty = alt.Qty,
+         salePrice = alt.Saleprice,
+         saleDisc = alt.Saledisc,
+         alternateItemName = alt.AlternateItemName,
+         barcode = alt.Barcode,
+         netSalePrice = alt.Netsaleprice,
+         remarks = alt.Remarks,
+     }).Where(x => x.itemId == id).ToList();
             var parentItem = bMSContext.ParentItem
                 .Select(parent => new
                 {
