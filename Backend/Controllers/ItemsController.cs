@@ -431,9 +431,9 @@ namespace Backend.Controllers
                     {
                         AlternateItem at = new AlternateItem
                         {
-                            AliasName = item.AliasName,
-                            Salediscflat = item.Salediscflat,
-                            Salediscperc = item.Salediscperc,
+                            AlternateItemName = item.AlternateItemName,
+                            Saledisc = item.Saledisc,
+                            Saleprice = item.Saleprice,
                             ItemId = Items.Id,
                             Remarks = item.Remarks,
                             Barcode = item.Barcode,
@@ -639,32 +639,16 @@ namespace Backend.Controllers
                 {
                     id = alt.Id,
                     itemId = alt.ItemId,
-                    aliasName = alt.AliasName,
                     qty = alt.Qty,
-                    saleDiscPerc = alt.Salediscperc,
-                    saleDiscFlat = alt.Salediscflat,
+                    salePrice = alt.Saleprice,
+                    saleDisc = alt.Saledisc,
+                    alternateItemName = alt.AlternateItemName,
+                    barcode = alt.Barcode,
+                    netSalePrice = alt.Netsaleprice,
                     remarks = alt.Remarks,
                 }).Where(x => x.itemId == id).ToList();
-            var parentItem = bMSContext.ParentItem
-                .Select(parent => new
-                {
-                    id = parent.Id,
-                    itemId = parent.ItemId,
-                    barcode = parent.Barcode,
-                    parentName = parent.ParentName,
-                    uom = parent.Uom,
-                    weight = parent.Weight,
-                    netCost = parent.NetCost,
-                    salePrice = parent.SalePrice,
-                    discPerc = parent.DiscPerc,
-                    discValue = parent.DiscValue,
-                    misc = parent.Misc,
-                    netSalePrice = parent.NetSalePrice,
-                    profit = parent.Profit,
-                    manualSalePrice = parent.ManualSalePrice,
-                }).Where(x=>x.itemId == id).ToList();
 
-            if (parentItem.Count > 0)
+            if (item.Count > 0)
             {
                 var childItem = bMSContext.ChildItem
                 .Select(parent => new
@@ -702,9 +686,9 @@ namespace Backend.Controllers
                 };
                 yield return JsonConvert.SerializeObject(result);
             }
-         
 
-           
+
+
         }
         #endregion
 

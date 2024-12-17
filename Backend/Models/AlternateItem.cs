@@ -12,10 +12,23 @@ namespace Backend.Models
         public int Id { get; set; }
         [Column("ITEM_ID")]
         public int ItemId { get; set; }
-        public string AliasName { get; set; }
+        [Required]
+        [Column("ALTERNATE_ITEM_NAME")]
+        [StringLength(250)]
+        public string AlternateItemName { get; set; }
+        [Column("QTY")]
         public decimal Qty { get; set; }
-        public decimal? Salediscperc { get; set; }
-        public decimal? Salediscflat { get; set; }
+        [Column("SALEPRICE")]
+        public decimal? Saleprice { get; set; }
+        [Column("SALEDISC")]
+        public decimal? Saledisc { get; set; }
+        [Column("REMARKS")]
+        [StringLength(250)]
         public string Remarks { get; set; }
+        [Column("BARCODE")]
+        [StringLength(50)]
+        public string Barcode { get; set; }
+        [Column("NETSALEPRICE")]
+        public decimal? Netsaleprice { get; set; }
     }
 }

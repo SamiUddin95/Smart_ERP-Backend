@@ -26,7 +26,7 @@ namespace Backend.Controllers
                 return item;
             else
             {
-                var altItem = bMSContext.AlternateItem.Where(u => u.AliasName == barCode).ToList();
+                var altItem = bMSContext.AlternateItem.Where(u => u.AlternateItemName == barCode).ToList();
                 return altItem;
 
             }
