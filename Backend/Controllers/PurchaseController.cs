@@ -26,7 +26,7 @@ namespace Backend.Controllers
                 return item;
             else
             {
-                var altItem = bMSContext.AlternateItem.Where(u => u.AlternateItemName == barCode).ToList();
+                var altItem = bMSContext.AlternateItem.Where(u => u.AliasName == barCode).ToList();
                 return altItem;
 
             }
@@ -81,7 +81,8 @@ namespace Backend.Controllers
                                 GstByPercent = detail.GstByPercent,
                                 GstByValue = detail.GstByValue,
                                 TotalIncDisc = detail.TotalIncDisc,
-                                TotalIncGst = detail.TotalIncGst, 
+                                TotalIncGst = detail.TotalIncGst,
+                                NetSaleTotal = detail.NetSaleTotal,
                                 NetRate = detail.NetRate,
                                 NetQuantity = detail.NetQuantity,
                                 SubTotal = detail.SubTotal,
@@ -141,10 +142,10 @@ namespace Backend.Controllers
                                     DiscountByPercent = detail.DiscountByPercent,
                                     DiscountByValue = detail.DiscountByValue,
                                     GstByPercent = detail.GstByPercent,
-                                    GstByValue = detail.GstByValue,
-                                    //TotalWithGst = detail.TotalWithGst,
+                                    GstByValue = detail.GstByValue, 
                                     TotalIncDisc = detail.TotalIncDisc,
                                     TotalIncGst = detail.TotalIncGst,
+                                    NetSaleTotal = detail.NetSaleTotal,
                                     NetRate = detail.NetRate,
                                     NetQuantity = detail.NetQuantity,
                                     SubTotal = detail.SubTotal,

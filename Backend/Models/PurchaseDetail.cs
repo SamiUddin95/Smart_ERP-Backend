@@ -66,5 +66,6 @@ namespace Backend.Models
         public decimal? TotalIncDisc { get; set; }
         [Column("TOTAL_INC_GST", TypeName = "decimal(19, 2)")]
         public decimal? TotalIncGst { get; set; }
+        public decimal? NetSaleTotal { get; set; }
     }
 }
