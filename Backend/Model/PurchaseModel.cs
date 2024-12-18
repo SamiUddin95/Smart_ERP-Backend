@@ -19,6 +19,7 @@ namespace Backend.Model
         public decimal? TotalDisc { get; set; }
         public decimal? TotalGst { get; set; }
         public decimal? netCostTotal { get; set; }
+        public decimal? totalSalePrice { get; set; }
         public decimal? netSaleTotal { get; set; }
         public decimal? netProfitInValue { get; set; }
         public int? NetQuantity { get; set; }
@@ -49,6 +50,7 @@ namespace Backend.Model
         public decimal? SalePrice { get; set; }
         public decimal? SaleDiscountByValue { get; set; }
         public decimal? NetSalePrice { get; set; }
+        public decimal? TotalSalePrice { get; set; }
         public string CreatedBy { get; set; }
 
         //changes

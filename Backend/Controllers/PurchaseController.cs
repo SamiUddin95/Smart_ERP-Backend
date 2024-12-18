@@ -26,7 +26,7 @@ namespace Backend.Controllers
                 return item;
             else
             {
-                var altItem = bMSContext.AlternateItem.Where(u => u.AlternateItemName == barCode).ToList();
+                var altItem = bMSContext.AlternateItem.Where(u => u.Barcode == barCode).ToList();
                 return altItem;
 
             }
@@ -90,6 +90,7 @@ namespace Backend.Controllers
                                 SalePrice = detail.SalePrice,
                                 SaleDiscountByValue = detail.SaleDiscountByValue,
                                 NetSalePrice = detail.NetSalePrice,
+                                TotalSalePrice = detail.TotalSalePrice,
                                 CreatedAt = DateTime.Now,
                                 CreatedBy = detail.CreatedBy
                             };
@@ -153,6 +154,7 @@ namespace Backend.Controllers
                                     SalePrice = detail.SalePrice,
                                     SaleDiscountByValue = detail.SaleDiscountByValue,
                                     NetSalePrice = detail.NetSalePrice,
+                                    TotalSalePrice = detail.TotalSalePrice,
                                     CreatedAt = DateTime.Now,
                                     CreatedBy = detail.CreatedBy
                                 };
@@ -172,7 +174,8 @@ namespace Backend.Controllers
 
         [HttpGet]
         [Route("/api/postPurchase")]
-        public object postPurchase(string barCodes,string currentStock,string lastNetSalePrice,string lastNetCost)
+        public object postPurchase(string barCodes,string currentStock,string lastNetSalePrice,
+            string lastNetCost,string saleDisc,string netSaleePrice)
         {
             try 
             {
@@ -180,14 +183,21 @@ namespace Backend.Controllers
                 string[] currentStockArray = currentStock.Split(',');
                 string[] lastNetSalePriceArray = lastNetSalePrice.Split(',');
                 string[] lastNetCostArray = lastNetCost.Split(',');
-                int length = Math.Min(barCodeArray.Length, Math.Min(currentStockArray.Length,
-                    Math.Min(lastNetSalePriceArray.Length, lastNetCostArray.Length)));
+                string[] saleDiscArray = saleDisc.Split(',');
+                string[] netSalePriceArray = netSaleePrice.Split(',');
+                int length = new int[] { barCodeArray.Length,
+                    currentStockArray.Length,lastNetSalePriceArray.Length,lastNetCostArray.Length,
+                    saleDiscArray.Length, netSalePriceArray.Length
+                    }.Min();
+
                 for (int i = 0; i < length; i++)
                 {
                     var barcode = barCodeArray[i];
                     var stock = (int)Math.Floor(double.Parse(currentStockArray[i]));
                     var salePrice = (int)Math.Floor(double.Parse(lastNetSalePriceArray[i])); 
                     var cost = (int)Math.Floor(double.Parse(lastNetCostArray[i])); 
+                    var disc = (int)Math.Floor(double.Parse(saleDiscArray[i])); 
+                    var netSalePrice = (int)Math.Floor(double.Parse(netSalePriceArray[i]));
 
 
                     var itemDtl = bMSContext.Item.Where(x => x.AliasName == barcode).FirstOrDefault();
@@ -196,14 +206,17 @@ namespace Backend.Controllers
                         itemDtl.CurrentStock = Convert.ToInt16(stock);
                         itemDtl.PurchasePrice = Convert.ToInt16(cost);
                         itemDtl.SalePrice = Convert.ToInt16(salePrice);
+                        itemDtl.Discflat = Convert.ToInt16(saleDisc);
+                        itemDtl.NetSalePrice = Convert.ToInt16(netSalePrice);
                         bMSContext.Item.Update(itemDtl);
                         bMSContext.SaveChanges();
+
                     }
                 }
             }
             catch(Exception ex) 
             { }
-            return JsonConvert.SerializeObject(new { msg = "Items Posted successfully" });
+            return JsonConvert.SerializeObject(new { status="OK",msg = "Items Posted successfully" });
         }
         [HttpGet]
         [Route("/api/getAllPurchases")]
@@ -263,7 +276,6 @@ namespace Backend.Controllers
         [Route("/api/getPurchaseById")]
         public IEnumerable<dynamic> getPurchaseById(int id)
         {
-            // Query to fetch data from Purchase table
             var purchase = bMSContext.Purchase
                 .Select(p => new
                 {
@@ -277,7 +289,8 @@ namespace Backend.Controllers
                     totalDiscount = p.TotalDiscount,
                     totalGst = p.TotalGst,
                     billTotal = p.BillTotal,
-                    netQuantity = p.NetQuantity
+                    netQuantity = p.NetQuantity,
+                    totalSalePrice=p.TotalSalePrice
 
                 })
                 .Where(x => x.id == id)
@@ -308,6 +321,7 @@ namespace Backend.Controllers
                     marginPercent = pDtl.MarginPercent,
                     salePrice = pDtl.SalePrice,
                     saleDiscountByValue = pDtl.SaleDiscountByValue,
+                    totalSalePrice = pDtl.TotalSalePrice,
                     netSalePrice = pDtl.NetSalePrice
                 })
                 .Where(x => x.purchaseId == id)

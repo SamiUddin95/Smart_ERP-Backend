@@ -431,7 +431,7 @@ namespace Backend.Controllers
                     {
                         AlternateItem at = new AlternateItem
                         {
-                            AlternateItemName = item.AlternateItemName,
+                            AlternateItemName = item.AliasName,
                             Saledisc = item.Saledisc,
                             Saleprice = item.Saleprice,
                             ItemId = Items.Id,
@@ -474,7 +474,7 @@ namespace Backend.Controllers
                     {
                         AlternateItem at = new AlternateItem
                         {
-                            AlternateItemName = item.AlternateItemName,
+                            AlternateItemName = item.AliasName,
                             Saledisc = item.Saledisc,
                             Saleprice = item.Saleprice,
                             ItemId = itemItems.Id,
@@ -629,6 +629,7 @@ namespace Backend.Controllers
                 classId = it.ClassId,
                 purchasePrice = it.PurchasePrice,
                 recentPurchase = it.RecentPurchase,
+                netSalePrice = it.NetSalePrice,
                 currentStock = it.CurrentStock,
                 discflat = it.Discflat,
                 lockdisc = it.Lockdisc
