@@ -33,6 +33,18 @@ namespace Backend.Controllers
 
         }
 
+
+        [HttpGet]
+        [Route("/api/getChildItemDetailbyBarCode")]
+        public IEnumerable<dynamic> getChildItemDetailbyBarCode(string barCode)
+        {
+            var item = bMSContext.ChildItem.Where(u => u.Barcode.Contains(barCode)).ToList();
+            if (item.Count() > 0)
+                return item;
+            else
+                return null;
+
+        }
         [HttpPost]
         [Route("/api/createPurchase")]
         public object CreateOrUpdatePurchase(PurchaseModel purchModel)
