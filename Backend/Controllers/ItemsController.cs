@@ -400,8 +400,7 @@ namespace Backend.Controllers
 
                 var Itemschk = bMSContext.Item.SingleOrDefault(u => u.Id == Items.Id);
                 if (Itemschk != null)
-                {
-                    // Update existing item
+                { 
                     Itemschk.AliasName = Items.AliasName;
                     Itemschk.ItemName = Items.ItemName;
                     Itemschk.PurchasePrice = Items.PurchasePrice;
@@ -431,7 +430,7 @@ namespace Backend.Controllers
                     {
                         AlternateItem at = new AlternateItem
                         {
-                            AlternateItemName = item.AliasName,
+                            AlternateItemName = item.AlternateItemName,
                             Saledisc = item.Saledisc,
                             Saleprice = item.Saleprice,
                             ItemId = Items.Id,
@@ -447,8 +446,7 @@ namespace Backend.Controllers
                     return JsonConvert.SerializeObject(new { id = Itemschk.Id });
                 }
                 else
-                {
-                    // Add new item
+                { 
                     Item itemItems = new Item
                     {
                         AliasName = Items.AliasName,
@@ -474,7 +472,7 @@ namespace Backend.Controllers
                     {
                         AlternateItem at = new AlternateItem
                         {
-                            AlternateItemName = item.AliasName,
+                            AlternateItemName = item.AlternateItemName,
                             Saledisc = item.Saledisc,
                             Saleprice = item.Saleprice,
                             ItemId = itemItems.Id,
@@ -501,13 +499,11 @@ namespace Backend.Controllers
         public object CreateChildParentItem(ChildModel childModel)
         {
             try
-            {
-                // Check if the Item exists in the database
+            { 
                 var item = bMSContext.Item.SingleOrDefault(u => u.Id == childModel.ItemId);
 
                 if (item != null)
-                {
-                    // If the Item exists, delete associated child items
+                { 
                     var existingChildItems = bMSContext.ChildItem.Where(u => u.ItemId == item.Id).ToList();
                     if (existingChildItems.Any())
                     {
@@ -537,15 +533,14 @@ namespace Backend.Controllers
                             UpdatedBy = childitem.UpdatedBy
                         };
 
-                        bMSContext.ChildItem.Add(newChildItem); // Use Add instead of Update for new entities
+                        bMSContext.ChildItem.Add(newChildItem);
                     }
 
                     bMSContext.SaveChanges();
                     return JsonConvert.SerializeObject(new { id = item.Id });
                 }
                 else
-                {
-                    // Handle the case where the Item does not exist
+                { 
                     int getItemId = 0;
                     if (childModel.ItemId.HasValue)
                     {
