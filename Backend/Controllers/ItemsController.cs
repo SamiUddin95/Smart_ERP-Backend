@@ -431,7 +431,7 @@ namespace Backend.Controllers
                     {
                         AlternateItem at = new AlternateItem
                         {
-                            AlternateItemName = item.AliasName,
+                            AlternateItemName = item.AlternateItemName,
                             Saledisc = item.Saledisc,
                             Saleprice = item.Saleprice,
                             ItemId = Items.Id,
@@ -474,7 +474,7 @@ namespace Backend.Controllers
                     {
                         AlternateItem at = new AlternateItem
                         {
-                            AlternateItemName = item.AliasName,
+                            AlternateItemName = item.AlternateItemName,
                             Saledisc = item.Saledisc,
                             Saleprice = item.Saleprice,
                             ItemId = itemItems.Id,
