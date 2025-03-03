@@ -23,16 +23,41 @@ namespace Backend.Controllers
         {
             var item= bMSContext.Item.Where(u => u.AliasName == barCode).ToList();
             if (item.Count()>0)
-                return item;
-            else
-            {
-                var altItem = bMSContext.AlternateItem.Where(u => u.Barcode == barCode).ToList();
+                return item; 
+            var altItem = bMSContext.AlternateItem.Where(u => u.Barcode == barCode).ToList();
+            if(altItem.Count()>0)
                 return altItem;
-
-            }
-
+            var childItem = bMSContext.ChildItem.Where(u => u.Barcode == barCode).ToList();
+            if(childItem.Count()>0)
+                return childItem;
+            return null;
         }
 
+
+        [HttpGet]
+        [Route("/api/getAllItemDetailbyBarCode")]
+        public IEnumerable<dynamic> getAllItemDetailbyBarCode(string barCode)
+        {
+            var items = bMSContext.Item
+                        .Where(u => u.ItemName.Contains(barCode))
+                        .Select(u => new PurchaseItemSearchModel { barCode=u.AliasName,itemName = u.ItemName })
+                        .ToList(); 
+            var altItems = bMSContext.AlternateItem
+                        .Where(u => u.AlternateItemName.Contains(barCode))
+                        .Select(u => new PurchaseItemSearchModel { barCode = u.Barcode, itemName = u.AlternateItemName })
+                        .ToList(); 
+            var childItems = bMSContext.ChildItem
+                        .Where(u => u.ChildName.Contains(barCode))
+                        .Select(u => new PurchaseItemSearchModel { barCode = u.Barcode, itemName = u.ChildName})
+                        .ToList(); 
+            var allItems = items
+                .Concat(altItems)
+                .Concat(childItems)
+                .ToList();
+            return allItems;
+
+
+        }
         [HttpPost]
         [Route("/api/createPurchase")]
         public object CreateOrUpdatePurchase(PurchaseModel purchModel)
