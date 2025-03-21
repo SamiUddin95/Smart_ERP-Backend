@@ -5,12 +5,13 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Backend.Models
 {
-    [Table("GROUP_PERMISSION")]
-    public partial class GroupPermission
+    [Table("PERMISSION")]
+    public partial class Permission
     {
-        [Column("GROUP_ID")]
-        public int GroupId { get; set; }
+        [Column("ID")]
+        public long Id { get; set; }
         [Column("PERMISSION_ID")]
-        public int PermissionId { get; set; }
+        [StringLength(500)]
+        public string PermissionId { get; set; }
     }
 }

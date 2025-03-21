@@ -98,7 +98,20 @@ namespace Backend.Controllers
                     }
                     else
                     {
+                        var latestSNo = bMSContext.Party
+                      .OrderByDescending(a => a.Sno)
+                      .FirstOrDefault();
+
+                        long? newSNoNumber = 1;
+
+                        if (latestSNo != null)
+                        {
+                            newSNoNumber = latestSNo.Sno + 1;
+                        }
+
                         Party newParty = new Party();
+
+                        newParty.Sno = newSNoNumber;
                         newParty.PartyName = par.PartyName;
                         newParty.MobileNo = par.MobileNo;
                         newParty.Address = par.Address;

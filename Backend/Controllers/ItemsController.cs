@@ -50,7 +50,18 @@ namespace Backend.Controllers
                     }
                     else
                     {
+                        var latestSNo = bMSContext.ItemBrand
+                        .OrderByDescending(a => a.Sno)
+                        .FirstOrDefault();
+
+                        long? newSNoNumber = 1;
+
+                        if (latestSNo != null)
+                        {
+                            newSNoNumber = latestSNo.Sno + 1;
+                        }
                         ItemBrand brand1 = new ItemBrand();
+                        brand1.Sno = newSNoNumber;
                         brand1.Name = brand.Name;
                         brand1.Remarks = brand.Remarks;
                         brand1.ManufacturerId = brand.ManufacturerId;
@@ -142,8 +153,19 @@ namespace Backend.Controllers
                     }
                     else
                     {
+                        var latestSNo = bMSContext.ItemCategory
+                        .OrderByDescending(a => a.Sno)
+                        .FirstOrDefault();
+
+                        long? newSNoNumber = 1;
+
+                        if (latestSNo != null)
+                        {
+                            newSNoNumber = latestSNo.Sno + 1;
+                        }
                         ItemCategory itemCategory1 = new ItemCategory();
                         //brandchk.Id = brand.Id;
+                        itemCategory1.Sno = newSNoNumber;
                         itemCategory1.Name = itemCategory.Name;
                         itemCategory1.IsActive = itemCategory.IsActive;
                         itemCategory1.Priority = itemCategory.Priority;
@@ -215,7 +237,6 @@ namespace Backend.Controllers
         [Route("/api/createClass")]
         public object createClass(ItemClass itemClass)
         {
-
             try
             {
                 try
@@ -228,6 +249,7 @@ namespace Backend.Controllers
                         classchk.Name = itemClass.Name;
                         classchk.DepartmentId = itemClass.DepartmentId;
                         classchk.CategoryId = itemClass.CategoryId;
+                        classchk.Remarks = itemClass.Remarks;
                         classchk.UpdatedAt = DateTime.Now;
                         classchk.UpdatedBy = itemClass.UpdatedBy;
                         bMSContext.ItemClass.Update(classchk);
@@ -236,11 +258,24 @@ namespace Backend.Controllers
                     }
                     else
                     {
+                        var latestSNo = bMSContext.ItemClass
+                       .OrderByDescending(a => a.Sno)
+                       .FirstOrDefault();
+
+                        long? newSNoNumber = 1;
+
+                        if (latestSNo != null)
+                        {
+                            newSNoNumber = latestSNo.Sno + 1;
+                        }
+
                         ItemClass itemClass1 = new ItemClass();
 
+                        itemClass1.Sno = newSNoNumber;
                         itemClass1.Name = itemClass.Name;
                         itemClass1.DepartmentId = itemClass.DepartmentId;
                         itemClass1.CategoryId = itemClass.CategoryId;
+                        itemClass1.Remarks = itemClass.Remarks;
                         itemClass1.CreatedAt = DateTime.Now;
                         itemClass1.CreatedBy = itemClass.CreatedBy;
                         bMSContext.ItemClass.Add(itemClass1);
@@ -302,7 +337,7 @@ namespace Backend.Controllers
 
         [HttpGet]
         [Route("/api/getAllItemsdetailsFilterbased")]
-        public IEnumerable<Item> getAllItemsdetailsFilterbased(string itemName, string aliasName, decimal purchasePrice, decimal salePrice)
+        public IEnumerable<Item> getAllItemsdetailsFilterbased(string itemName, string aliasName, decimal purchasePrice, decimal salePrice, long sno)
         {
             var query = bMSContext.Item.AsQueryable();
             if (itemName != "All")
@@ -323,26 +358,37 @@ namespace Backend.Controllers
             {
                 query = query.Where(i => i.SalePrice == salePrice);
             }
-
-            return query.ToList();
-        }
-
-        [HttpGet]
-        [Route("/api/getAllBrandsdetailsFilterbased")]
-        public IEnumerable<ItemBrand> getAllBrandsdetailsFilterbased(string brandName)
-        {
-            var query = bMSContext.ItemBrand.AsQueryable();
-            if (brandName != "All")
+            if (sno > 0)
             {
-                query = query.Where(i => i.Name.Contains(brandName));
+                query = query.Where(i => i.Sno == sno);
             }
 
             return query.ToList();
         }
 
         [HttpGet]
+        [Route("/api/getAllBrandsdetailsFilterbased")]
+        public IEnumerable<ItemBrand> getAllBrandsdetailsFilterbased(string brandName, long sno, string remarks)
+        {
+            var query = bMSContext.ItemBrand.AsQueryable();
+            if (brandName != "All")
+            {
+                query = query.Where(i => i.Name.Contains(brandName));
+            }
+            if (remarks != "All")
+            {
+                query = query.Where(i => i.Remarks.Contains(remarks));
+            }
+            if (sno > 0)
+            {
+                query = query.Where(i => i.Sno == sno);
+            }
+            return query.ToList();
+        }
+
+        [HttpGet]
         [Route("/api/getAllCategorydetailsFilterbased")]
-        public IEnumerable<ItemCategory> getAllCategorydetailsFilterbased(string Name, string description)
+        public IEnumerable<ItemCategory> getAllCategorydetailsFilterbased(string Name, string description, long sno)
         {
             var query = bMSContext.ItemCategory.AsQueryable();
             if (Name != "All")
@@ -354,25 +400,35 @@ namespace Backend.Controllers
             {
                 query = query.Where(i => i.Description.Contains(description));
             }
-
+            if (sno > 0)
+            {
+                query = query.Where(i => i.Sno == sno);
+            }
             return query.ToList();
         }
         [HttpGet]
         [Route("/api/getAllClassdetailsFilterbased")]
-        public IEnumerable<ItemClass> getAllClassdetailsFilterbased(string className)
+        public IEnumerable<ItemClass> getAllClassdetailsFilterbased(string className, long sno, string remarks)
         {
             var query = bMSContext.ItemClass.AsQueryable();
             if (className != "All")
             {
                 query = query.Where(i => i.Name.Contains(className));
             }
-
+            if (sno > 0)
+            {
+                query = query.Where(i => i.Sno == sno);
+            }
+            if (remarks != "All")
+            {
+                query = query.Where(i => i.Remarks.Contains(remarks));
+            }
             return query.ToList();
         }
 
         [HttpGet]
         [Route("/api/getAllManufacturedetailsFilterbased")]
-        public IEnumerable<ItemManufacturer> getAllManufacturedetailsFilterbased(string name, string email)
+        public IEnumerable<ItemManufacturer> getAllManufacturedetailsFilterbased(string name, string email,long sno, string address)
         {
             var query = bMSContext.ItemManufacturer.AsQueryable();
             if (name != "All")
@@ -382,6 +438,14 @@ namespace Backend.Controllers
             if (email != "All")
             {
                 query = query.Where(i => i.Email.Contains(email));
+            }
+            if (sno > 0)
+            {
+                query = query.Where(i => i.Sno == sno);
+            }
+            if (address != "All")
+            {
+                query = query.Where(i => i.Address.Contains(address));
             }
             return query.ToList();
         }
@@ -400,7 +464,7 @@ namespace Backend.Controllers
 
                 var Itemschk = bMSContext.Item.SingleOrDefault(u => u.Id == Items.Id);
                 if (Itemschk != null)
-                { 
+                {
                     Itemschk.AliasName = Items.AliasName;
                     Itemschk.ItemName = Items.ItemName;
                     Itemschk.PurchasePrice = Items.PurchasePrice;
@@ -446,9 +510,21 @@ namespace Backend.Controllers
                     return JsonConvert.SerializeObject(new { id = Itemschk.Id });
                 }
                 else
-                { 
+                {
+                    var latestSNo = bMSContext.Item
+                       .OrderByDescending(a => a.Sno)
+                       .FirstOrDefault();
+
+                    long? newSNoNumber = 1;
+
+                    if (latestSNo != null)
+                    {
+                        newSNoNumber = latestSNo.Sno + 1;
+                    }
+
                     Item itemItems = new Item
                     {
+                        Sno = newSNoNumber,
                         AliasName = Items.AliasName,
                         ItemName = Items.ItemName,
                         PurchasePrice = Items.PurchasePrice,
@@ -494,16 +570,17 @@ namespace Backend.Controllers
             }
         }
 
+
         [HttpPost]
         [Route("/api/createChildParentItem")]
         public object CreateChildParentItem(ChildModel childModel)
         {
             try
-            { 
+            {
                 var item = bMSContext.Item.SingleOrDefault(u => u.Id == childModel.ItemId);
 
                 if (item != null)
-                { 
+                {
                     var existingChildItems = bMSContext.ChildItem.Where(u => u.ItemId == item.Id).ToList();
                     if (existingChildItems.Any())
                     {
@@ -540,7 +617,7 @@ namespace Backend.Controllers
                     return JsonConvert.SerializeObject(new { id = item.Id });
                 }
                 else
-                { 
+                {
                     int getItemId = 0;
                     if (childModel.ItemId.HasValue)
                     {
@@ -627,7 +704,8 @@ namespace Backend.Controllers
                 netSalePrice = it.NetSalePrice,
                 currentStock = it.CurrentStock,
                 discflat = it.Discflat,
-                lockdisc = it.Lockdisc
+                lockdisc = it.Lockdisc,
+                sno = it.Sno
 
             }).Where(u => u.id == id).ToList();
             var altItem = bMSContext.AlternateItem
@@ -724,8 +802,20 @@ namespace Backend.Controllers
                     }
                     else
                     {
+                        var latestSNo = bMSContext.ItemManufacturer
+                       .OrderByDescending(a => a.Sno)
+                       .FirstOrDefault();
+
+                        long? newSNoNumber = 1;
+
+                        if (latestSNo != null)
+                        {
+                            newSNoNumber = latestSNo.Sno + 1;
+                        }
+
                         ItemManufacturer itemManufacturer1 = new ItemManufacturer();
 
+                        itemManufacturer1.Sno = newSNoNumber;
                         itemManufacturer1.Name = itemManufacturer.Name;
                         itemManufacturer1.Telephoneno = itemManufacturer.Telephoneno;
                         itemManufacturer1.Telephoneno2 = itemManufacturer.Telephoneno2;
