@@ -307,7 +307,7 @@ namespace Backend.Controllers
             var query = bMSContext.Item.AsQueryable();
             if (itemName != "All")
             {
-                query = query.Where(i => i.ItemName.Contains(itemName));
+                query = query.Where(i => i.AliasName.Contains(itemName));
             }
 
             if (aliasName != "All")

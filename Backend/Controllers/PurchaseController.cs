@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Cors;
 using Newtonsoft.Json;
 using Microsoft.AspNetCore.Authentication;
 using Backend.Model;
+using System.Numerics;
 
 namespace Backend.Controllers
 {
@@ -16,7 +17,12 @@ namespace Backend.Controllers
     public class PurchaseController
     {
         ERPContext bMSContext = new ERPContext();
-
+        [HttpGet]
+        [Route("/api/getPurchaseMaxSerialNo")]
+        public int getAllMaxSerialNo()
+        {
+            return bMSContext.Purchase.Select(x => x.Id).DefaultIfEmpty(0).Max() + 1;
+        }
         [HttpGet]
         [Route("/api/getItemDetailbyBarCode")]
         public IEnumerable<dynamic> getItemDetailbyBarCode(string barCode)
