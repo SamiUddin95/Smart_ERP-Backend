@@ -127,3 +127,5 @@ Backend/Models/ERPContext.cs
 /Backend/obj/Release/net5.0/Backend.csproj.FileListAbsolute.txt
 /Backend.zip
 /Backend/bin/Release/net5.0/appsettings.json
+/Backend/Controllers/StockController.cs
+/Backend/Controllers/SaleController.cs
