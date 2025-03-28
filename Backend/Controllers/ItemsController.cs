@@ -8,6 +8,8 @@ using Backend.Models;
 using Microsoft.AspNetCore.Cors;
 using Newtonsoft.Json;
 using Backend.Model;
+using System.IO;
+using Backend.Model;
 
 namespace Backend.Controllers
 {
@@ -125,28 +127,36 @@ namespace Backend.Controllers
 
         [HttpPost]
         [Route("/api/createCategory")]
-        public object createCategory(ItemCategory itemCategory)
+        public object createCategory([FromForm] ItemCategoryDto itemCategoryDto)
         {
 
             try
             {
                 try
                 {
-                    var categorychk = bMSContext.ItemCategory.SingleOrDefault(u => u.Id == itemCategory.Id);
+                    var categorychk = bMSContext.ItemCategory.SingleOrDefault(u => u.Id == itemCategoryDto.Id);
                     if (categorychk != null)
                     {
 
-                        categorychk.Id = itemCategory.Id;
-                        categorychk.Name = itemCategory.Name;
-                        categorychk.IsActive = itemCategory.IsActive;
-                        categorychk.Priority = itemCategory.Priority;
+                        categorychk.Id = itemCategoryDto.Id;
+                        categorychk.Name = itemCategoryDto.Name;
+                        categorychk.IsActive = itemCategoryDto.IsActive;
+                        categorychk.Priority = itemCategoryDto.Priority;
                         //categorychk.DepartmentId = itemCategory.DepartmentId;
                         categorychk.DepartmentId = 1;
-                        categorychk.Height = itemCategory.Height;
-                        categorychk.Width = itemCategory.Width;
-                        categorychk.Description = itemCategory.Description;
+                        categorychk.Height = itemCategoryDto.Height;
+                        categorychk.Width = itemCategoryDto.Width;
+                        categorychk.Description = itemCategoryDto.Description;
                         categorychk.UpdatedAt = DateTime.Now;
-                        categorychk.UpdatedBy = itemCategory.UpdatedBy;
+                        categorychk.UpdatedBy = itemCategoryDto.UpdatedBy;
+                        if (itemCategoryDto.Picture != null && itemCategoryDto.Picture.Length > 0)
+                        {
+                            using (var memoryStream = new MemoryStream())
+                            {
+                                itemCategoryDto.Picture.CopyTo(memoryStream);
+                                categorychk.Picture = memoryStream.ToArray(); // Convert to byte[]
+                            }
+                        }
                         bMSContext.ItemCategory.Update(categorychk);
                         bMSContext.SaveChanges();
                         return JsonConvert.SerializeObject(new { id = categorychk.Id });
@@ -166,16 +176,26 @@ namespace Backend.Controllers
                         ItemCategory itemCategory1 = new ItemCategory();
                         //brandchk.Id = brand.Id;
                         itemCategory1.Sno = newSNoNumber;
-                        itemCategory1.Name = itemCategory.Name;
-                        itemCategory1.IsActive = itemCategory.IsActive;
-                        itemCategory1.Priority = itemCategory.Priority;
+                        itemCategory1.Name = itemCategoryDto.Name;
+                        itemCategory1.IsActive = itemCategoryDto.IsActive;
+                        itemCategory1.Priority = itemCategoryDto.Priority;
                         //itemCategory1.DepartmentId = itemCategory.DepartmentId;
                         itemCategory1.DepartmentId = 1;
-                        itemCategory1.Height = itemCategory.Height;
-                        itemCategory1.Width = itemCategory.Width;
-                        itemCategory1.Description = itemCategory.Description;
+                        itemCategory1.Height = itemCategoryDto.Height;
+                        itemCategory1.Width = itemCategoryDto.Width;
+                        itemCategory1.Description = itemCategoryDto.Description;
                         itemCategory1.CreatedAt = DateTime.Now;
-                        itemCategory1.CreatedBy = itemCategory.CreatedBy;
+                        itemCategory1.CreatedBy = itemCategoryDto.CreatedBy;
+
+                        if (itemCategoryDto.Picture != null && itemCategoryDto.Picture.Length > 0)
+                        {
+                            using (var memoryStream = new MemoryStream())
+                            {
+                                itemCategoryDto.Picture.CopyTo(memoryStream);
+                                itemCategory1.Picture = memoryStream.ToArray(); // Convert to byte[]
+                            }
+                        }
+
                         bMSContext.ItemCategory.Add(itemCategory1);
                         bMSContext.SaveChanges();
                         return JsonConvert.SerializeObject(new { id = itemCategory1.Id });
@@ -217,9 +237,36 @@ namespace Backend.Controllers
 
         [HttpGet]
         [Route("/api/getCategoryById")]
-        public IEnumerable<ItemCategory> getCategoryById(int id)
+        //public IEnumerable<ItemCategory> getCategoryById(int id)
+        //{
+        //    return bMSContext.ItemCategory.Where(u => u.Id == id).ToList();
+        //}
+        public IActionResult GetCategoryById(int id)
         {
-            return bMSContext.ItemCategory.Where(u => u.Id == id).ToList();
+            var category = bMSContext.ItemCategory.FirstOrDefault(u => u.Id == id);
+            if (category == null)
+            {
+                return NotFound();
+            }
+
+            // Convert byte[] to base64 string for the picture
+            var categoryDto = new ItemCategoryResponseDto
+            {
+                Id = category.Id,
+                Sno = category.Sno,
+                Name = category.Name,
+                IsActive = category.IsActive,
+                Priority = category.Priority,
+                DepartmentId = category.DepartmentId,
+                Height = category.Height,
+                Width = category.Width,
+                Description = category.Description,
+                Picture = category.Picture != null ? Convert.ToBase64String(category.Picture) : null,
+                CreatedAt = category.CreatedAt,
+                CreatedBy = category.CreatedBy
+            };
+
+            return Ok(categoryDto);
         }
 
         #endregion
@@ -777,7 +824,7 @@ namespace Backend.Controllers
 
         [HttpPost]
         [Route("/api/createManufacturer")]
-        public object createManufacturer(ItemManufacturer itemManufacturer)
+        public object createManufacturer([FromForm] ManufactureDTO itemManufacturer)
         {
 
             try
@@ -796,6 +843,14 @@ namespace Backend.Controllers
                         Manufacturerchk.Address = itemManufacturer.Address;
                         Manufacturerchk.UpdatedAt = DateTime.Now;
                         Manufacturerchk.UpdatedBy = itemManufacturer.UpdatedBy;
+                        if (itemManufacturer.Picture != null && itemManufacturer.Picture.Length > 0)
+                        {
+                            using (var memoryStream = new MemoryStream())
+                            {
+                                itemManufacturer.Picture.CopyTo(memoryStream);
+                                Manufacturerchk.Picture = memoryStream.ToArray(); 
+                            }
+                        }
                         bMSContext.ItemManufacturer.Update(Manufacturerchk);
                         bMSContext.SaveChanges();
                         return JsonConvert.SerializeObject(new { id = Manufacturerchk.Id });
@@ -820,9 +875,17 @@ namespace Backend.Controllers
                         itemManufacturer1.Telephoneno = itemManufacturer.Telephoneno;
                         itemManufacturer1.Telephoneno2 = itemManufacturer.Telephoneno2;
                         itemManufacturer1.Email = itemManufacturer.Email;
-                        itemManufacturer.Address = itemManufacturer.Address;
-                        itemManufacturer.CreatedAt = DateTime.Now;
-                        itemManufacturer.CreatedBy = itemManufacturer.CreatedBy;
+                        itemManufacturer1.Address = itemManufacturer.Address;
+                        itemManufacturer1.CreatedAt = DateTime.Now;
+                        itemManufacturer1.CreatedBy = itemManufacturer.CreatedBy;
+                        if (itemManufacturer.Picture != null && itemManufacturer.Picture.Length > 0)
+                        {
+                            using (var memoryStream = new MemoryStream())
+                            {
+                                itemManufacturer.Picture.CopyTo(memoryStream);
+                                itemManufacturer1.Picture = memoryStream.ToArray();
+                            }
+                        }
                         bMSContext.ItemManufacturer.Add(itemManufacturer1);
                         bMSContext.SaveChanges();
                         return JsonConvert.SerializeObject(new { id = itemManufacturer1.Id });
@@ -864,9 +927,31 @@ namespace Backend.Controllers
 
         [HttpGet]
         [Route("/api/getManufacturerById")]
-        public IEnumerable<ItemManufacturer> getManufacturerById(int id)
+        public IActionResult getManufacturerById(int id)
         {
-            return bMSContext.ItemManufacturer.Where(u => u.Id == id).ToList();
+            var manufacture = bMSContext.ItemManufacturer.FirstOrDefault(u => u.Id == id);
+            //return bMSContext.ItemManufacturer.Where(u => u.Id == id).ToList();
+            if (manufacture == null)
+            {
+                return NotFound();
+            }
+
+            var manufactureDTO = new ManufactureResponseDTO
+            {
+                Id = manufacture.Id,
+                Sno = manufacture.Sno,
+                Name = manufacture.Name,
+                Telephoneno = manufacture.Telephoneno,
+                Telephoneno2 = manufacture.Telephoneno2,
+                Email = manufacture.Email,
+                Address = manufacture.Address,
+                Picture = manufacture.Picture != null ? Convert.ToBase64String(manufacture.Picture) : null,
+                CreatedAt = manufacture.CreatedAt,
+                CreatedBy = manufacture.CreatedBy
+            };
+
+            return Ok(manufactureDTO);
+
         }
         #endregion
 
@@ -883,5 +968,9 @@ namespace Backend.Controllers
         {
             return bMSContext.Active.ToList();
         }
+
+
     }
 }
+
+
