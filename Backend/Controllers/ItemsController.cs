@@ -296,7 +296,7 @@ namespace Backend.Controllers
                         classchk.Name = itemClass.Name;
                         classchk.DepartmentId = itemClass.DepartmentId;
                         classchk.CategoryId = itemClass.CategoryId;
-                        classchk.Remarks = itemClass.Remarks;
+                        //classchk.Remarks = itemClass.Remarks;
                         classchk.UpdatedAt = DateTime.Now;
                         classchk.UpdatedBy = itemClass.UpdatedBy;
                         bMSContext.ItemClass.Update(classchk);
@@ -322,7 +322,7 @@ namespace Backend.Controllers
                         itemClass1.Name = itemClass.Name;
                         itemClass1.DepartmentId = itemClass.DepartmentId;
                         itemClass1.CategoryId = itemClass.CategoryId;
-                        itemClass1.Remarks = itemClass.Remarks;
+                        //itemClass1.Remarks = itemClass.Remarks;
                         itemClass1.CreatedAt = DateTime.Now;
                         itemClass1.CreatedBy = itemClass.CreatedBy;
                         bMSContext.ItemClass.Add(itemClass1);
@@ -468,7 +468,7 @@ namespace Backend.Controllers
             }
             if (remarks != "All")
             {
-                query = query.Where(i => i.Remarks.Contains(remarks));
+                //query = query.Where(i => i.Remarks.Contains(remarks));
             }
             return query.ToList();
         }
