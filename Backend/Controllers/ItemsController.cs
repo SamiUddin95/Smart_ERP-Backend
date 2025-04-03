@@ -499,10 +499,14 @@ namespace Backend.Controllers
 
         [HttpPost]
         [Route("/api/createItems")]
-        public object createItems(ItemModel Items)
+        public object createItems([FromForm]  ItemRequestDTO Items)
         {
             try
             {
+                if (!string.IsNullOrEmpty(Request.Form["alternateItem"]))
+                {
+                    Items.alternateItem = JsonConvert.DeserializeObject<List<AlternateRequestDTO>>(Request.Form["alternateItem"]);
+                }
                 var existingItem = bMSContext.Item.SingleOrDefault(i => i.ItemName == Items.ItemName && i.Id != Items.Id);
                 if (existingItem != null)
                 {
@@ -516,6 +520,7 @@ namespace Backend.Controllers
                     Itemschk.ItemName = Items.ItemName;
                     Itemschk.PurchasePrice = Items.PurchasePrice;
                     Itemschk.SalePrice = Items.SalePrice;
+                    Itemschk.NetSalePrice = Items.NetSalePrice;
                     Itemschk.CategoryId = Items.CategoryId;
                     Itemschk.ClassId = Items.ClassId;
                     Itemschk.ManufacturerId = Items.ManufacturerId;
@@ -527,6 +532,15 @@ namespace Backend.Controllers
                     Itemschk.Lockdisc = Items.Lockdisc;
                     Itemschk.UpdatedAt = DateTime.Now;
                     Itemschk.UpdatedBy = Items.UpdatedBy;
+                    if (Items.Picture != null && Items.Picture.Length > 0)
+                    {
+                        using (var memoryStream = new MemoryStream())
+                        {
+                            Items.Picture.CopyTo(memoryStream);
+                            Itemschk.Picture = memoryStream.ToArray(); // Convert to byte[]
+                        }
+                    }
+
                     bMSContext.Item.Update(Itemschk);
                     bMSContext.SaveChanges();
 
@@ -576,6 +590,7 @@ namespace Backend.Controllers
                         ItemName = Items.ItemName,
                         PurchasePrice = Items.PurchasePrice,
                         SalePrice = Items.SalePrice,
+                        NetSalePrice = Items.NetSalePrice,
                         CategoryId = Items.CategoryId,
                         Lockdisc = Items.Lockdisc,
                         ClassId = Items.ClassId,
@@ -588,6 +603,15 @@ namespace Backend.Controllers
                         CreatedAt = DateTime.Now,
                         CreatedBy = Items.CreatedBy
                     };
+                    if (Items.Picture != null && Items.Picture.Length > 0)
+                    {
+                        using (var memoryStream = new MemoryStream())
+                        {
+                            Items.Picture.CopyTo(memoryStream);
+                            itemItems.Picture = memoryStream.ToArray(); // Convert to byte[]
+                        }
+                    }
+
                     bMSContext.Item.Add(itemItems);
                     bMSContext.SaveChanges();
 
@@ -752,7 +776,8 @@ namespace Backend.Controllers
                 currentStock = it.CurrentStock,
                 discflat = it.Discflat,
                 lockdisc = it.Lockdisc,
-                sno = it.Sno
+                sno = it.Sno,
+                Picture = it.Picture != null ? Convert.ToBase64String(it.Picture) : null,
 
             }).Where(u => u.id == id).ToList();
             var altItem = bMSContext.AlternateItem
