@@ -7,13 +7,14 @@ using Backend.Models;
 using Microsoft.AspNetCore.Cors;
 using Newtonsoft.Json;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.EntityFrameworkCore;
 
 
 namespace Backend.Controllers
 {
     [ApiController]
     [EnableCors("AllowCors"), Route("[controller]")]
-    public class PurchaseOrderController
+    public class PurchaseOrderController : ControllerBase
     {
         ERPContext bMSContext = new ERPContext();
         [HttpGet]
@@ -160,6 +161,55 @@ namespace Backend.Controllers
         public IEnumerable<PurchaseOpeningPurchase> getOpenPurchaseById(int id)
         {
             return bMSContext.PurchaseOpeningPurchase.Where(u => u.Id == id).ToList();
+        }
+
+
+        [HttpGet]
+        [Route("/api/SupplierWise")]
+        public IActionResult SupplierWise(string tableName)
+        {
+
+            switch (tableName)
+            {
+                case "Brand":
+                    var brands = bMSContext.ItemBrand
+                        .Select(b => new { b.Id, b.Name })
+                        .ToList();
+                    return Ok(brands);
+
+                case "Party":
+                    var parties = bMSContext.Party
+                        .Select(p => new { p.Id, p.PartyName })
+                        .ToList();
+                    return Ok(parties);
+
+                case "Manufacture":
+                    var manufacture = bMSContext.ItemManufacturer
+                        .Select(b => new { b.Id, b.Name })
+                        .ToList();
+                    return Ok(manufacture);
+
+                case "Class":
+                    var itemClass = bMSContext.ItemClass
+                        .Select(p => new { p.Id, p.Name })
+                        .ToList();
+                    return Ok(itemClass);
+
+                case "Category":
+                    var category = bMSContext.ItemCategory
+                        .Select(p => new { p.Id, p.Name })
+                        .ToList();
+                    return Ok(category);
+
+                default:
+                    return null;
+            }
+        }
+        [HttpGet]
+        [Route("/api/getLocation")]
+        public IEnumerable<Location> getLocation()
+        {
+            return bMSContext.Location.ToList();
         }
     }
 }

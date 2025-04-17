@@ -411,7 +411,8 @@ namespace Backend.Controllers
                               endDate = po.EndDate,
                               startDate = po.StartDate,
                               zeroQty = po.ZeroQty,
-                              purOrderTerm = po.PurOrderTerm
+                              purOrderTerm = po.PurOrderTerm,
+                              location=po.LocationId,
                           }).ToList();
             return result;
         }
@@ -434,6 +435,7 @@ namespace Backend.Controllers
                     pOrder.EndDate = purchOrderModel.EndDate.ToString();
                     pOrder.StartDate = purchOrderModel.StartDate.ToString();
                     pOrder.InvTotal = purchOrderModel.InvTotal;
+                    pOrder.LocationId = purchOrderModel.Location;
                     pOrder.CreatedAt = DateTime.Now.Date.ToString();
                     pOrder.CreatedBy = purchOrderModel.Createdby;
                     bMSContext.PurchaseOrder.Add(pOrder);
@@ -474,6 +476,7 @@ namespace Backend.Controllers
                         data[0].EndDate = purchOrderModel.EndDate.ToString();
                         data[0].StartDate = purchOrderModel.StartDate.ToString();
                         data[0].InvTotal = purchOrderModel.InvTotal;
+                        data[0].LocationId = purchOrderModel.Location;
                         data[0].UpdatedAt = DateTime.Now;
                         data[0].UpdatedBy = purchOrderModel.Updatedby;
                         bMSContext.PurchaseOrder.Update(data[0]);
@@ -573,7 +576,8 @@ namespace Backend.Controllers
                   projectionDays = po.ProjectionDays,
                   disc = po.Disc,
                   invTotal = po.InvTotal,
-                  createdAt = po.CreatedAt
+                  createdAt = po.CreatedAt,
+                  location = po.LocationId,
               }).Where(x => x.id == id).ToList();
             var purchaseOrderDetails = bMSContext.PurchaseOrderDetail
                 .Select(poDtl => new
@@ -600,6 +604,41 @@ namespace Backend.Controllers
 
             yield return JsonConvert.SerializeObject(result);
         }
+
+        [HttpGet]
+        [Route("/api/GetPurchaseOrdersByDateRange")]
+        public IEnumerable<dynamic> GetPurchaseOrdersByDateRange(string startDate, string endDate)
+        {
+           
+            var conStartdate = Convert.ToDateTime(startDate);
+            var conEnddate = Convert.ToDateTime(endDate);
+            var purchaseOrderDetails = bMSContext.PurchaseOrderDetail
+                .Where(poDtl => poDtl.CreatedAt >= conStartdate && poDtl.CreatedAt <= conEnddate)
+                .Select(poDtl => new
+                {
+                    id = poDtl.Id,
+                    orderId = poDtl.OrderId,
+                    barCode = poDtl.BarCode,
+                    itemId = poDtl.ItemId,
+                    itemName = poDtl.ItemName,
+                    soldQty = poDtl.SoldQty,
+                    rtnQty = poDtl.RtnQty,
+                    netSaleQty = poDtl.NetSaleQty,
+                    currentStock = poDtl.CurrentStock,
+                    requiredQty = poDtl.RequiredQty,
+                    rate = poDtl.Rate,
+                    total = poDtl.Total
+                }).ToList();
+
+            var result = new
+            {
+                //purchaseOrders = purchaseOrders,
+                purchaseOrderDetails = purchaseOrderDetails
+            };
+
+            yield return JsonConvert.SerializeObject(result);
+        }
+
 
         [HttpGet]
         [Route("/api/getAllPurchaseReturn")]

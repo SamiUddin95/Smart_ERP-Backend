@@ -20,6 +20,7 @@ namespace Backend.Model
         public string CreatedAt { get; set; }
         public string Createdby { get; set; }
         public string Updatedby { get; set; }
+        public int? Location {  get; set; }
         public List<PurchaseOrderDetailModel> purcOrderDtlModel {get;set;}
 
 
