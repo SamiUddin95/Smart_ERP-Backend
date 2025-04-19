@@ -11,6 +11,7 @@ namespace Backend.Models
         public Location()
         {
             PurchaseOrder = new HashSet<PurchaseOrder>();
+            TillLocation = new HashSet<TillLocation>();
         }
 
         [Column("ID")]
@@ -44,5 +45,7 @@ namespace Backend.Models
 
         [InverseProperty("Location")]
         public ICollection<PurchaseOrder> PurchaseOrder { get; set; }
+        [InverseProperty("Location")]
+        public ICollection<TillLocation> TillLocation { get; set; }
     }
 }

@@ -1,4 +1,5 @@
-﻿using Backend.Models;
+﻿using Backend.Model;
+using Backend.Models;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
@@ -16,7 +17,7 @@ namespace Backend.Controllers
 
         [HttpPost]
         [Route("/api/createLocation")]
-        public object createLocation(Location location)
+        public object createLocation(LocationModelDTO location)
         {
 
             try
@@ -37,6 +38,30 @@ namespace Backend.Controllers
                         locchk.UpdatedBy = location.UpdatedBy;
                         bMSContext.Location.Update(locchk);
                         bMSContext.SaveChanges();
+
+                        var delTill = bMSContext.TillLocation.Where(u => u.Id == location.Id).ToList();
+                        if (delTill.Any())
+                        {
+                            bMSContext.TillLocation.RemoveRange(delTill);
+                            bMSContext.SaveChanges();
+                        }
+                        long? lastTillNumber = bMSContext.TillLocation
+                        .OrderByDescending(t => t.TillNumber)
+                        .Select(t => t.TillNumber)
+                        .FirstOrDefault();
+                        foreach (var item in location.tillLocation)
+                        {
+                            lastTillNumber++;
+                            TillLocation at = new TillLocation
+                            {
+                                LocationId = location.Id,
+                                TillNumber = lastTillNumber,
+                                Name = item.Name
+                            };
+                            bMSContext.TillLocation.Add(at);
+                        }
+                        bMSContext.SaveChanges();
+
                         return JsonConvert.SerializeObject(new { id = locchk.Id });
                     }
                     else
@@ -61,6 +86,24 @@ namespace Backend.Controllers
                         location1.CreatedAt = DateTime.Now;
                         location1.CreatedBy = location.CreatedBy;
                         bMSContext.Location.Add(location1);
+                        bMSContext.SaveChanges();
+
+
+                        long? lastTillNumber = bMSContext.TillLocation
+                        .OrderByDescending(t => t.TillNumber)
+                        .Select(t => t.TillNumber)
+                        .FirstOrDefault();
+                        foreach (var item in location.tillLocation)
+                        {
+                            lastTillNumber++;
+                            TillLocation at = new TillLocation
+                            {
+                                LocationId = location1.Id,
+                                TillNumber = lastTillNumber,
+                                Name = item.Name
+                            };
+                            bMSContext.TillLocation.Add(at);
+                        }
                         bMSContext.SaveChanges();
                         return JsonConvert.SerializeObject(new { id = location1.Id });
                     }
@@ -101,9 +144,29 @@ namespace Backend.Controllers
 
         [HttpGet]
         [Route("/api/getLocationById")]
-        public IEnumerable<Location> getLocationById(int id)
+        public object getLocationById(int id)
         {
-            return bMSContext.Location.Where(u => u.Id == id).ToList();
+            var location = bMSContext.Location
+                .Where(l => l.Id == id)
+                .Select(l => new
+                {
+                    l.Id,
+                    l.Name,
+                    l.Address,
+                    l.Phonenumber,
+                    l.Email,
+                    l.RoyalityPercent,
+                    TillData = bMSContext.TillLocation
+                                .Where(t => t.LocationId == l.Id)
+                                .Select(t => new
+                                {
+                                    t.TillNumber,
+                                    t.Name
+                                }).ToList()
+                })
+                .FirstOrDefault();
+
+            return location;
         }
 
         [HttpGet]

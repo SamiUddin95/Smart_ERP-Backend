@@ -10,6 +10,7 @@ using Newtonsoft.Json;
 using Backend.Model;
 using System.IO;
 using Backend.Model;
+using Microsoft.EntityFrameworkCore;
 
 namespace Backend.Controllers
 {
@@ -508,9 +509,15 @@ namespace Backend.Controllers
                     Items.alternateItem = JsonConvert.DeserializeObject<List<AlternateRequestDTO>>(Request.Form["alternateItem"]);
                 }
                 var existingItem = bMSContext.Item.SingleOrDefault(i => i.ItemName == Items.ItemName && i.Id != Items.Id);
+                var existingAliasName = bMSContext.Item.SingleOrDefault(i => i.AliasName == Items.AliasName && i.Id != Items.Id);
                 if (existingItem != null)
                 {
-                    return JsonConvert.SerializeObject(new { msg = "An item with this name already exists." });
+                    return JsonConvert.SerializeObject(new { msg = "An Item with this name already exists." });
+                }
+                
+                if (existingAliasName != null)
+                {
+                    return JsonConvert.SerializeObject(new { msg = "An Alias name with this name already exists." });
                 }
 
                 var Itemschk = bMSContext.Item.SingleOrDefault(u => u.Id == Items.Id);
@@ -994,6 +1001,48 @@ namespace Backend.Controllers
             return bMSContext.Active.ToList();
         }
 
+        [HttpPost]
+        [Route("/api/checkDuplicate")]
+        public IActionResult CheckDuplicate([FromBody] DuplicateCheckRequest request)
+        {
+            bool isDuplicate = false;
+            int? duplicateId = null; // For returning the ID of the duplicate if found
+
+            if (request.FieldName == "aliasName")
+            {
+                var duplicateItem = bMSContext.Item.FirstOrDefault(i => i.AliasName == request.Value);
+                if (duplicateItem != null)
+                {
+                    isDuplicate = true;
+                    duplicateId = duplicateItem.Id; // Assign the Id of the duplicate item
+                }
+            }
+            else if (request.FieldName == "itemName")
+            {
+                var duplicateItem = bMSContext.Item.FirstOrDefault(i => i.ItemName == request.Value);
+                if (duplicateItem != null)
+                {
+                    isDuplicate = true;
+                    duplicateId = duplicateItem.Id; // Assign the Id of the duplicate item
+                }
+            }
+
+            return Ok(new { isDuplicate, id = duplicateId }); // Return both isDuplicate and the duplicate item Id
+        }
+
+        [HttpPost]
+        [Route("/api/CheckAlternateDuplicate")]
+        public IActionResult CheckAlternateDuplicate([FromBody] DuplicateCheckRequest request)
+        {
+            bool isDuplicate = false;
+
+            if (request.FieldName == "barcode")
+            {
+                isDuplicate = bMSContext.Item.Any(i => i.AliasName == request.Value);
+            }
+
+            return Ok(new { isDuplicate });
+        }
 
     }
 }

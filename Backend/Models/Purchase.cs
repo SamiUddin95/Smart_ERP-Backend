@@ -54,7 +54,11 @@ namespace Backend.Models
         public DateTime? PostedDate { get; set; }
         [Column("TOTAL_SALE_PRICE", TypeName = "decimal(10, 2)")]
         public decimal? TotalSalePrice { get; set; }
+        [Column("POSTED_BY")]
+        [StringLength(50)]
         public string PostedBy { get; set; }
+        [Column("POST_UNPOST_STATUS")]
+        [StringLength(50)]
         public string PostUnpostStatus { get; set; }
     }
 }
