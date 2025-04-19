@@ -317,7 +317,7 @@ namespace Backend.Controllers
             }
             catch (Exception ex)
             { }
-            return JsonConvert.SerializeObject(new { status = "OK", msg = "Items Posted successfully" });
+            return JsonConvert.SerializeObject(new { status = "OK", msg = "Items Un Posted successfully" });
         }
 
         [HttpGet]
@@ -596,6 +596,8 @@ namespace Backend.Controllers
                               zeroQty = po.ZeroQty,
                               purOrderTerm = po.PurOrderTerm,
                               location=po.LocationId,
+                              postedDate=po.PostedDate,
+                              status=po.Status,
                           }).ToList();
             return result;
         }
@@ -621,6 +623,7 @@ namespace Backend.Controllers
                     pOrder.LocationId = purchOrderModel.Location;
                     pOrder.CreatedAt = DateTime.Now.Date.ToString();
                     pOrder.CreatedBy = purchOrderModel.Createdby;
+                    pOrder.Status = "UnPost";
                     bMSContext.PurchaseOrder.Add(pOrder);
                     bMSContext.SaveChanges();
                     if (purchOrderModel.purcOrderDtlModel.Count() > 0)
@@ -662,6 +665,7 @@ namespace Backend.Controllers
                         data[0].LocationId = purchOrderModel.Location;
                         data[0].UpdatedAt = DateTime.Now;
                         data[0].UpdatedBy = purchOrderModel.Updatedby;
+                        data[0].Status = "UnPost";
                         bMSContext.PurchaseOrder.Update(data[0]);
                         bMSContext.SaveChanges();
                         var dataPurDtl = bMSContext.PurchaseOrderDetail.Where(x => x.OrderId == purchOrderModel.Id).ToList();

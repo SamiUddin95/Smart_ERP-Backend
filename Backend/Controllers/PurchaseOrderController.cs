@@ -211,5 +211,115 @@ namespace Backend.Controllers
         {
             return bMSContext.Location.ToList();
         }
+
+        [HttpGet]
+        [Route("/api/postPurchaseOrder")]
+        public object postPurchase(int purchaseId, string postedBy, string barCodes, string currentStock, string lastNetSalePrice,
+    string lastNetCost, string saleDisc, string netSaleePrice)
+        {
+            try
+            {
+                string[] barCodeArray = barCodes.Split(',');
+                string[] currentStockArray = currentStock.Split(',');
+                string[] lastNetSalePriceArray = lastNetSalePrice.Split(',');
+                string[] lastNetCostArray = lastNetCost.Split(',');
+                string[] saleDiscArray = saleDisc.Split(',');
+                string[] netSalePriceArray = netSaleePrice.Split(',');
+                int length = new int[] { barCodeArray.Length,
+                    currentStockArray.Length,lastNetSalePriceArray.Length,lastNetCostArray.Length,
+                    saleDiscArray.Length, netSalePriceArray.Length
+                    }.Min();
+                var postedDate = bMSContext.PurchaseOrder.Where(x => x.Id == purchaseId).FirstOrDefault();
+                if (postedDate != null)
+                {
+                    postedDate.PostedDate = DateTime.Now.Date;
+                    postedDate.PostedBy = postedBy;
+                    postedDate.Status = "Posted";
+                    bMSContext.PurchaseOrder.Update(postedDate);
+                    bMSContext.SaveChanges();
+                }
+                for (int i = 0; i < length; i++)
+                {
+                    var barcode = barCodeArray[i];
+                    var stock = (int)Math.Floor(double.Parse(currentStockArray[i]));
+                    var salePrice = (int)Math.Floor(double.Parse(lastNetSalePriceArray[i]));
+                    var cost = (int)Math.Floor(double.Parse(lastNetCostArray[i]));
+                    var disc = (int)Math.Floor(double.Parse(saleDiscArray[i]));
+                    var netSalePrice = (int)Math.Floor(double.Parse(netSalePriceArray[i]));
+
+
+                    var itemDtl = bMSContext.Item.Where(x => x.AliasName == barcode).FirstOrDefault();
+                    if (itemDtl != null)
+                    {
+                        itemDtl.CurrentStock = Convert.ToInt16(stock);
+                        itemDtl.PurchasePrice = Convert.ToInt16(cost);
+                        itemDtl.SalePrice = Convert.ToInt16(salePrice);
+                        itemDtl.Discflat = Convert.ToInt16(saleDisc);
+                        itemDtl.NetSalePrice = Convert.ToInt16(netSalePrice);
+                        bMSContext.Item.Update(itemDtl);
+                        bMSContext.SaveChanges();
+
+                    }
+                }
+            }
+            catch (Exception ex)
+            { }
+            return JsonConvert.SerializeObject(new { status = "OK", msg = "Items Posted successfully" });
+        }
+
+        [HttpGet]
+        [Route("/api/unPostPurchaseOrder")]
+        public object unPostPurchase(int purchaseId, string postedBy, string barCodes, string currentStock, string lastNetSalePrice,
+            string lastNetCost, string saleDisc, string netSaleePrice)
+        {
+            try
+            {
+                string[] barCodeArray = barCodes.Split(',');
+                string[] currentStockArray = currentStock.Split(',');
+                string[] lastNetSalePriceArray = lastNetSalePrice.Split(',');
+                string[] lastNetCostArray = lastNetCost.Split(',');
+                string[] saleDiscArray = saleDisc.Split(',');
+                string[] netSalePriceArray = netSaleePrice.Split(',');
+                int length = new int[] { barCodeArray.Length,
+                    currentStockArray.Length,lastNetSalePriceArray.Length,lastNetCostArray.Length,
+                    saleDiscArray.Length, netSalePriceArray.Length
+                    }.Min();
+                var postedDate = bMSContext.PurchaseOrder.Where(x => x.Id == purchaseId).FirstOrDefault();
+                if (postedDate != null)
+                {
+                    postedDate.PostedDate = DateTime.Now.Date;
+                    postedDate.PostedBy = null;
+                    postedDate.Status = "UnPost";
+                    bMSContext.PurchaseOrder.Update(postedDate);
+                    bMSContext.SaveChanges();
+                }
+                for (int i = 0; i < length; i++)
+                {
+                    var barcode = barCodeArray[i];
+                    var stock = (int)Math.Floor(double.Parse(currentStockArray[i]));
+                    var salePrice = (int)Math.Floor(double.Parse(lastNetSalePriceArray[i]));
+                    var cost = (int)Math.Floor(double.Parse(lastNetCostArray[i]));
+                    var disc = (int)Math.Floor(double.Parse(saleDiscArray[i]));
+                    var netSalePrice = (int)Math.Floor(double.Parse(netSalePriceArray[i]));
+
+
+                    var itemDtl = bMSContext.Item.Where(x => x.AliasName == barcode).FirstOrDefault();
+                    if (itemDtl != null)
+                    {
+                        itemDtl.CurrentStock = Convert.ToInt16(stock);
+                        itemDtl.PurchasePrice = Convert.ToInt16(cost);
+                        itemDtl.SalePrice = Convert.ToInt16(salePrice);
+                        itemDtl.Discflat = Convert.ToInt16(saleDisc);
+                        itemDtl.NetSalePrice = Convert.ToInt16(netSalePrice);
+                        bMSContext.Item.Update(itemDtl);
+                        bMSContext.SaveChanges();
+
+                    }
+                }
+            }
+            catch (Exception ex)
+            { }
+            return JsonConvert.SerializeObject(new { status = "OK", msg = "Items Un Posted successfully" });
+        }
     }
 }
