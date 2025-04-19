@@ -23,7 +23,7 @@ namespace Backend.Model
         public decimal? netSaleTotal { get; set; }
         public decimal? netProfitInValue { get; set; }
         public int? NetQuantity { get; set; }
-        public decimal? TotalSalePrice {  get; set; }
+        //public decimal? TotalSalePrice {  get; set; }
         public List<PurchaseDetailModel> PurchaseDetailModel { get; set; }
 
     }

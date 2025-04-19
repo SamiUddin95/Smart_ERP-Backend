@@ -25,6 +25,12 @@ namespace Backend.Controllers
             return bMSContext.Purchase.Select(x => x.Id).DefaultIfEmpty(0).Max() + 1;
         }
         [HttpGet]
+        [Route("/api/getPurchaseReturnMaxSerialNo")]
+        public long getPurchaseReturnMaxSerialNo()
+        {
+            return bMSContext.PurchaseReturn.Select(x => x.Id).DefaultIfEmpty(0).Max() + 1;
+        }
+        [HttpGet]
         [Route("/api/getItemDetailbyBarCode")]
         public IEnumerable<dynamic> getItemDetailbyBarCode(string barCode)
         {
@@ -206,7 +212,7 @@ namespace Backend.Controllers
 
         [HttpGet]
         [Route("/api/postPurchase")]
-        public object postPurchase(string barCodes,string currentStock,string lastNetSalePrice,
+        public object postPurchase(int purchaseId,string postedBy, string barCodes,string currentStock,string lastNetSalePrice,
             string lastNetCost,string saleDisc,string netSaleePrice)
         {
             try 
@@ -221,7 +227,15 @@ namespace Backend.Controllers
                     currentStockArray.Length,lastNetSalePriceArray.Length,lastNetCostArray.Length,
                     saleDiscArray.Length, netSalePriceArray.Length
                     }.Min();
-
+                var postedDate = bMSContext.Purchase.Where(x => x.Id == purchaseId).FirstOrDefault();
+                if (postedDate != null)
+                {
+                    postedDate.PostedDate = DateTime.Now.Date;
+                    postedDate.PostedBy = postedBy;
+                    postedDate.PostUnpostStatus = "Y";
+                    bMSContext.Purchase.Update(postedDate);
+                    bMSContext.SaveChanges();
+                }
                 for (int i = 0; i < length; i++)
                 {
                     var barcode = barCodeArray[i];
@@ -250,6 +264,172 @@ namespace Backend.Controllers
             { }
             return JsonConvert.SerializeObject(new { status="OK",msg = "Items Posted successfully" });
         }
+
+        [HttpGet]
+        [Route("/api/unPostPurchase")]
+        public object unPostPurchase(int purchaseId, string postedBy, string barCodes, string currentStock, string lastNetSalePrice,
+            string lastNetCost, string saleDisc, string netSaleePrice)
+        {
+            try
+            {
+                string[] barCodeArray = barCodes.Split(',');
+                string[] currentStockArray = currentStock.Split(',');
+                string[] lastNetSalePriceArray = lastNetSalePrice.Split(',');
+                string[] lastNetCostArray = lastNetCost.Split(',');
+                string[] saleDiscArray = saleDisc.Split(',');
+                string[] netSalePriceArray = netSaleePrice.Split(',');
+                int length = new int[] { barCodeArray.Length,
+                    currentStockArray.Length,lastNetSalePriceArray.Length,lastNetCostArray.Length,
+                    saleDiscArray.Length, netSalePriceArray.Length
+                    }.Min();
+                var postedDate = bMSContext.Purchase.Where(x => x.Id == purchaseId).FirstOrDefault();
+                if (postedDate != null)
+                {
+                    postedDate.PostedDate = DateTime.Now.Date;
+                    postedDate.PostedBy = null;
+                    postedDate.PostUnpostStatus = "N";
+                    bMSContext.Purchase.Update(postedDate);
+                    bMSContext.SaveChanges();
+                }
+                for (int i = 0; i < length; i++)
+                {
+                    var barcode = barCodeArray[i];
+                    var stock = (int)Math.Floor(double.Parse(currentStockArray[i]));
+                    var salePrice = (int)Math.Floor(double.Parse(lastNetSalePriceArray[i]));
+                    var cost = (int)Math.Floor(double.Parse(lastNetCostArray[i]));
+                    var disc = (int)Math.Floor(double.Parse(saleDiscArray[i]));
+                    var netSalePrice = (int)Math.Floor(double.Parse(netSalePriceArray[i]));
+
+
+                    var itemDtl = bMSContext.Item.Where(x => x.AliasName == barcode).FirstOrDefault();
+                    if (itemDtl != null)
+                    {
+                        itemDtl.CurrentStock = Convert.ToInt16(stock);
+                        itemDtl.PurchasePrice = Convert.ToInt16(cost);
+                        itemDtl.SalePrice = Convert.ToInt16(salePrice);
+                        itemDtl.Discflat = Convert.ToInt16(saleDisc);
+                        itemDtl.NetSalePrice = Convert.ToInt16(netSalePrice);
+                        bMSContext.Item.Update(itemDtl);
+                        bMSContext.SaveChanges();
+
+                    }
+                }
+            }
+            catch (Exception ex)
+            { }
+            return JsonConvert.SerializeObject(new { status = "OK", msg = "Items Posted successfully" });
+        }
+
+        [HttpGet]
+        [Route("/api/postPurchaseReturn")]
+        public object postPurchaseReturn(int purchaseId, string postedBy, string barCodes, string currentStock, string lastNetSalePrice,
+    string lastNetCost, string saleDisc, string netSaleePrice)
+        {
+            try
+            {
+                string[] barCodeArray = barCodes.Split(',');
+                string[] currentStockArray = currentStock.Split(',');
+                string[] lastNetSalePriceArray = lastNetSalePrice.Split(',');
+                string[] lastNetCostArray = lastNetCost.Split(',');
+                string[] saleDiscArray = saleDisc.Split(',');
+                string[] netSalePriceArray = netSaleePrice.Split(',');
+                int length = new int[] { barCodeArray.Length,
+                    currentStockArray.Length,lastNetSalePriceArray.Length,lastNetCostArray.Length,
+                    saleDiscArray.Length, netSalePriceArray.Length
+                    }.Min();
+                var postedDate = bMSContext.PurchaseReturn.Where(x => x.Id == purchaseId).FirstOrDefault();
+                if (postedDate != null)
+                {
+                    postedDate.PostedDate = DateTime.Now.Date;
+                    postedDate.PostedBy = postedBy;
+                    postedDate.PostUnpostStatus = "N";
+                    bMSContext.PurchaseReturn.Update(postedDate);
+                    bMSContext.SaveChanges();
+                }
+                for (int i = 0; i < length; i++)
+                {
+                    var barcode = barCodeArray[i];
+                    var stock = (int)Math.Floor(double.Parse(currentStockArray[i]));
+                    var salePrice = (int)Math.Floor(double.Parse(lastNetSalePriceArray[i]));
+                    var cost = (int)Math.Floor(double.Parse(lastNetCostArray[i]));
+                    var disc = (int)Math.Floor(double.Parse(saleDiscArray[i]));
+                    var netSalePrice = (int)Math.Floor(double.Parse(netSalePriceArray[i]));
+
+
+                    var itemDtl = bMSContext.Item.Where(x => x.AliasName == barcode).FirstOrDefault();
+                    if (itemDtl != null)
+                    {
+                        itemDtl.CurrentStock = Convert.ToInt16(stock);
+                        itemDtl.PurchasePrice = Convert.ToInt16(cost);
+                        itemDtl.SalePrice = Convert.ToInt16(salePrice);
+                        itemDtl.Discflat = Convert.ToInt16(saleDisc);
+                        itemDtl.NetSalePrice = Convert.ToInt16(netSalePrice);
+                        bMSContext.Item.Update(itemDtl);
+                        bMSContext.SaveChanges();
+
+                    }
+                }
+            }
+            catch (Exception ex)
+            { }
+            return JsonConvert.SerializeObject(new { status = "OK", msg = "Items Posted successfully" });
+        }
+
+        [HttpGet]
+        [Route("/api/unPostPurchaseReturn")]
+        public object unPostPurchaseReturn(int purchaseId, string postedBy, string barCodes, string currentStock, string lastNetSalePrice,
+            string lastNetCost, string saleDisc, string netSaleePrice)
+        {
+            try
+            {
+                string[] barCodeArray = barCodes.Split(',');
+                string[] currentStockArray = currentStock.Split(',');
+                string[] lastNetSalePriceArray = lastNetSalePrice.Split(',');
+                string[] lastNetCostArray = lastNetCost.Split(',');
+                string[] saleDiscArray = saleDisc.Split(',');
+                string[] netSalePriceArray = netSaleePrice.Split(',');
+                int length = new int[] { barCodeArray.Length,
+                    currentStockArray.Length,lastNetSalePriceArray.Length,lastNetCostArray.Length,
+                    saleDiscArray.Length, netSalePriceArray.Length
+                    }.Min();
+                var postedDate = bMSContext.Purchase.Where(x => x.Id == purchaseId).FirstOrDefault();
+                if (postedDate != null)
+                {
+                    postedDate.PostedDate = DateTime.Now.Date;
+                    postedDate.PostedBy = null;
+                    postedDate.PostUnpostStatus = "N";
+                    bMSContext.Purchase.Update(postedDate);
+                    bMSContext.SaveChanges();
+                }
+                for (int i = 0; i < length; i++)
+                {
+                    var barcode = barCodeArray[i];
+                    var stock = (int)Math.Floor(double.Parse(currentStockArray[i]));
+                    var salePrice = (int)Math.Floor(double.Parse(lastNetSalePriceArray[i]));
+                    var cost = (int)Math.Floor(double.Parse(lastNetCostArray[i]));
+                    var disc = (int)Math.Floor(double.Parse(saleDiscArray[i]));
+                    var netSalePrice = (int)Math.Floor(double.Parse(netSalePriceArray[i]));
+
+
+                    var itemDtl = bMSContext.Item.Where(x => x.AliasName == barcode).FirstOrDefault();
+                    if (itemDtl != null)
+                    {
+                        itemDtl.CurrentStock = Convert.ToInt16(stock);
+                        itemDtl.PurchasePrice = Convert.ToInt16(cost);
+                        itemDtl.SalePrice = Convert.ToInt16(salePrice);
+                        itemDtl.Discflat = Convert.ToInt16(saleDisc);
+                        itemDtl.NetSalePrice = Convert.ToInt16(netSalePrice);
+                        bMSContext.Item.Update(itemDtl);
+                        bMSContext.SaveChanges();
+
+                    }
+                }
+            }
+            catch (Exception ex)
+            { }
+            return JsonConvert.SerializeObject(new { status = "OK", msg = "Items Posted successfully" });
+        }
+
         [HttpGet]
         [Route("/api/getAllPurchases")]
         public IEnumerable<dynamic> getAllPurchase(string dateFrom, string dateTo, string postedDate, string postedBy, int partyId, string invNo)
@@ -298,7 +478,9 @@ namespace Backend.Controllers
                               createdBy = purchase.CreatedBy,
                               createdAt = purchase.CreatedAt,
                               updatedAt = purchase.UpdatedAt,
-                              postedDate = purchase.PostedDate
+                              postedDate = purchase.PostedDate,
+                              postedBy = purchase.PostedBy,
+                              postUnPostStatus = purchase.PostUnpostStatus
                           }).ToList();
 
             return result;
@@ -698,7 +880,11 @@ namespace Backend.Controllers
                               id = po.Id,
                               disc = po.Disc,
                               flatDisc = po.FlatDisc,
-                              itemType = po.ItemType
+                              itemType = po.ItemType,
+                              postedDate=po.PostedDate,
+                              postedBy=po.PostedBy,
+                              remarks=po.Remarks,
+                              PostUnpostStatus = po.PostUnpostStatus
                           }).ToList();
             return result;
         }
@@ -731,6 +917,7 @@ namespace Backend.Controllers
                     pOrder.Disc = purchOrderModel.Disc;
                     pOrder.CreatedAt = DateTime.Now;
                     pOrder.CreatedBy = purchOrderModel.Createdby;
+                    pOrder.Remarks = purchOrderModel.Remarks;
                     bMSContext.PurchaseReturn.Add(pOrder);
                     bMSContext.SaveChanges();
                     if (purchOrderModel.purcOrderDtlModel.Count() > 0)
@@ -779,6 +966,7 @@ namespace Backend.Controllers
                         data.FlatDisc = purchOrderModel.flatDisc;
                         data.UpdatedAt = DateTime.Now;
                         data.UpdatedBy = purchOrderModel.Updatedby;
+                        data.Remarks = purchOrderModel.Remarks;
                         bMSContext.PurchaseReturn.Update(data);
                         bMSContext.SaveChanges();
                         var dataPurcReturnDtl = bMSContext.PurchaseReturnDetail.Where(x => x.OrderReturnId == data.Id).ToList();
@@ -864,6 +1052,7 @@ namespace Backend.Controllers
                looseQty = po.LooseQty,
                orderNo = po.OrderNo,
                totalStock = po.TotalStock,
+               remarks = po.Remarks,
                userId = po.UserId,
            }).Where(x => x.id == id).ToList();
             var purchaseOrderDetails = bMSContext.PurchaseReturnDetail

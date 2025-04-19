@@ -59,5 +59,9 @@ namespace Backend.Models
         [Column("UPDATED_BY")]
         [StringLength(50)]
         public string UpdatedBy { get; set; }
+        public string Remarks { get; set; }
+        public DateTime? PostedDate { get; set; }
+        public string PostUnpostStatus { get; set; }
+        public string PostedBy { get; set; }
     }
 }

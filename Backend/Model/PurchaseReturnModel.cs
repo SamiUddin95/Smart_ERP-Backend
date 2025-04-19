@@ -14,6 +14,7 @@ namespace Backend.Model
         public int UserId { get; set; }
         public string PurSno { get; set; }
         public string ItemType { get; set; }
+        public string Remarks { get; set; }
         public int TotalQty { get; set; }
         public int LooseQty { get; set; }
         public int BonusQty { get; set; }
