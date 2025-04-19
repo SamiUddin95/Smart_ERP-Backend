@@ -28,5 +28,9 @@ namespace Backend.Models
         public DateTime? UpdatedAt { get; set; }
         public string CreatedBy { get; set; }
         public string UpdatedBy { get; set; }
+        public string Remarks { get; set; }
+        public DateTime? PostedDate { get; set; }
+        public string PostUnpostStatus { get; set; }
+        public string PostedBy { get; set; }
     }
 }

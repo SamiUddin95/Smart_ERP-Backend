@@ -26,5 +26,7 @@ namespace Backend.Models
         public decimal? NetProfitInValue { get; set; }
         public DateTime? PostedDate { get; set; }
         public decimal? TotalSalePrice { get; set; }
+        public string PostedBy { get; set; }
+        public string PostUnpostStatus { get; set; }
     }
 }
