@@ -9,6 +9,7 @@ using Newtonsoft.Json;
 using Microsoft.AspNetCore.Authentication;
 using Backend.Model;
 using System.Numerics;
+using System.Globalization;
 
 namespace Backend.Controllers
 {
@@ -607,12 +608,18 @@ namespace Backend.Controllers
 
         [HttpGet]
         [Route("/api/GetPurchaseOrdersByDateRange")]
-        public IEnumerable<dynamic> GetPurchaseOrdersByDateRange(string startDate, string endDate)
+        public IEnumerable<dynamic> GetPurchaseOrdersByDateRange(string startDate, string endDate, string zeroQty)
         {
-           
-            var conStartdate = Convert.ToDateTime(startDate);
-            var conEnddate = Convert.ToDateTime(endDate);
-            var purchaseOrderDetails = bMSContext.PurchaseOrderDetail
+
+            //var conStartdate = Convert.ToDateTime(startDate);
+            //var conEnddate = Convert.ToDateTime(endDate);
+            var conStartdate = DateTime.ParseExact(startDate, "yyyy-MM-dd", CultureInfo.InvariantCulture);
+            var conEnddate = DateTime.ParseExact(endDate, "yyyy-MM-dd", CultureInfo.InvariantCulture)
+                                      .AddDays(1)
+                                      .AddTicks(-1);
+            if (zeroQty == null || zeroQty == "yes")
+            {
+                var purchaseOrderDetails = bMSContext.PurchaseOrderDetail
                 .Where(poDtl => poDtl.CreatedAt >= conStartdate && poDtl.CreatedAt <= conEnddate)
                 .Select(poDtl => new
                 {
@@ -629,14 +636,43 @@ namespace Backend.Controllers
                     rate = poDtl.Rate,
                     total = poDtl.Total
                 }).ToList();
+                var result = new
+                {
+                    //purchaseOrders = purchaseOrders,
+                    purchaseOrderDetails = purchaseOrderDetails
+                };
 
-            var result = new
+                yield return JsonConvert.SerializeObject(result);
+            }
+            else if (zeroQty == "no")
             {
-                //purchaseOrders = purchaseOrders,
-                purchaseOrderDetails = purchaseOrderDetails
-            };
+                var purchaseOrderDetails = bMSContext.PurchaseOrderDetail
+                .Where(poDtl => poDtl.CreatedAt >= conStartdate && poDtl.CreatedAt <= conEnddate && poDtl.NetSaleQty != 0 && poDtl.NetSaleQty != null)
+                .Select(poDtl => new
+                {
+                    id = poDtl.Id,
+                    orderId = poDtl.OrderId,
+                    barCode = poDtl.BarCode,
+                    itemId = poDtl.ItemId,
+                    itemName = poDtl.ItemName,
+                    soldQty = poDtl.SoldQty,
+                    rtnQty = poDtl.RtnQty,
+                    netSaleQty = poDtl.NetSaleQty,
+                    currentStock = poDtl.CurrentStock,
+                    requiredQty = poDtl.RequiredQty,
+                    rate = poDtl.Rate,
+                    total = poDtl.Total
+                }).ToList();
+                var result = new
+                {
+                    //purchaseOrders = purchaseOrders,
+                    purchaseOrderDetails = purchaseOrderDetails
+                };
 
-            yield return JsonConvert.SerializeObject(result);
+                yield return JsonConvert.SerializeObject(result);
+            }
+
+
         }
 
 
