@@ -7,7 +7,8 @@ namespace Backend.Model
     public class PurchaseOrderModel
     {
         public long Id { get; set; }
-        public int PartyId { get; set; } 
+        public int PartyId { get; set; }
+        public string PartyType { get; set; }
         public string ProjectionDays { get; set; }
         public decimal InvTotal { get; set; }
         public decimal Disc  { get; set; }

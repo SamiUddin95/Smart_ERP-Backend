@@ -2,6 +2,7 @@
 using Backend.Models;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -39,30 +40,68 @@ namespace Backend.Controllers
                         bMSContext.Location.Update(locchk);
                         bMSContext.SaveChanges();
 
-                        var delTill = bMSContext.TillLocation.Where(u => u.Id == location.Id).ToList();
-                        if (delTill.Any())
+                        //var delTill = bMSContext.TillLocation.Where(u => u.LocationId == location.Id).ToList();
+                        //if (delTill.Any())
+                        //{
+                        //    bMSContext.TillLocation.RemoveRange(delTill);
+                        //    bMSContext.SaveChanges();
+                        //}
+                        var gettillnumber = bMSContext.TillLocation.Where(x => x.LocationId == location.Id).LastOrDefault();
+                        //long? lastTillNumber = bMSContext.TillLocation
+                        //.OrderByDescending(t => t.TillNumber)
+                        //.Select(t => t.TillNumber)
+                        //.FirstOrDefault();
+                        if (gettillnumber == null)
                         {
-                            bMSContext.TillLocation.RemoveRange(delTill);
-                            bMSContext.SaveChanges();
-                        }
-                        long? lastTillNumber = bMSContext.TillLocation
-                        .OrderByDescending(t => t.TillNumber)
-                        .Select(t => t.TillNumber)
-                        .FirstOrDefault();
-                        foreach (var item in location.tillLocation)
-                        {
-                            lastTillNumber++;
-                            TillLocation at = new TillLocation
+                            long? lastTillNumber = 1;
+                            foreach (var item in location.tillLocation)
                             {
-                                LocationId = location.Id,
-                                TillNumber = lastTillNumber,
-                                Name = item.Name
-                            };
-                            bMSContext.TillLocation.Add(at);
-                        }
-                        bMSContext.SaveChanges();
+                                TillLocation at = new TillLocation
+                                {
+                                    LocationId = location.Id,
+                                    TillNumber = lastTillNumber,
+                                    Name = item.Name
+                                };
+                                bMSContext.TillLocation.Add(at);
+                                lastTillNumber++;
+                            }
+                            bMSContext.SaveChanges();
 
-                        return JsonConvert.SerializeObject(new { id = locchk.Id });
+                            return JsonConvert.SerializeObject(new { id = locchk.Id });
+                        }
+                        else
+                        {
+                            long? lastTillNumber = bMSContext.TillLocation
+                            .Where(x => x.LocationId == location.Id)
+                            .Select(x => x.TillNumber)
+                            .DefaultIfEmpty(0)
+                            .Max();
+                            long? nextTillNumber = lastTillNumber + 1;
+                            foreach (var item in location.tillLocation)
+                            {
+                                // You could also compare by name, ID, or other property
+                                bool alreadyExists = bMSContext.TillLocation.Any(t =>
+                                    t.LocationId == location.Id &&
+                                    t.Name == item.Name); // or TillNumber == item.TillNumber
+
+                                if (!alreadyExists)
+                                {
+                                    TillLocation newTill = new TillLocation
+                                    {
+                                        LocationId = location.Id,
+                                        TillNumber = nextTillNumber,
+                                        Name = item.Name
+                                    };
+
+                                    bMSContext.TillLocation.Add(newTill);
+                                    nextTillNumber++;
+                                }
+                            }
+                            bMSContext.SaveChanges();
+
+                            return JsonConvert.SerializeObject(new { id = locchk.Id });
+                        }
+                        
                     }
                     else
                     {
@@ -89,13 +128,13 @@ namespace Backend.Controllers
                         bMSContext.SaveChanges();
 
 
-                        long? lastTillNumber = bMSContext.TillLocation
-                        .OrderByDescending(t => t.TillNumber)
-                        .Select(t => t.TillNumber)
-                        .FirstOrDefault();
+                        //long? lastTillNumber = bMSContext.TillLocation.Where(x=>x.LocationId == location1.Id)
+                        //.OrderByDescending(t => t.TillNumber)
+                        //.Select(t => t.TillNumber)
+                        //.FirstOrDefault();
+                        long? lastTillNumber = 1;
                         foreach (var item in location.tillLocation)
                         {
-                            lastTillNumber++;
                             TillLocation at = new TillLocation
                             {
                                 LocationId = location1.Id,
@@ -103,6 +142,7 @@ namespace Backend.Controllers
                                 Name = item.Name
                             };
                             bMSContext.TillLocation.Add(at);
+                            lastTillNumber++;
                         }
                         bMSContext.SaveChanges();
                         return JsonConvert.SerializeObject(new { id = location1.Id });
@@ -141,6 +181,24 @@ namespace Backend.Controllers
             }
             return null;
         }
+
+        [HttpGet]
+        [Route("/api/deleteTillById")]
+        public IActionResult DeleteTill(string tillName)
+        {
+            var till = bMSContext.TillLocation.FirstOrDefault(t => t.Name == tillName);
+            if (till == null)
+            {
+                return NotFound(new { message = "Till not found." });
+            }
+
+            bMSContext.TillLocation.Remove(till);
+            bMSContext.SaveChanges();
+
+            return Ok(new { message = "Till deleted successfully." });
+        }
+
+
 
         [HttpGet]
         [Route("/api/getLocationById")]

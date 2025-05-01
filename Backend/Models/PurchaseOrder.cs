@@ -51,6 +51,17 @@ namespace Backend.Models
         public string UpdatedBy { get; set; }
         [Column("LOCATION_ID")]
         public int? LocationId { get; set; }
+        [Column("POSTED_DATE", TypeName = "datetime")]
+        public DateTime? PostedDate { get; set; }
+        [Column("POSTED_BY")]
+        [StringLength(50)]
+        public string PostedBy { get; set; }
+        [Column("STATUS")]
+        [StringLength(50)]
+        public string Status { get; set; }
+        [Column("PARTY_TYPE")]
+        [StringLength(50)]
+        public string PartyType { get; set; }
 
         [ForeignKey("LocationId")]
         [InverseProperty("PurchaseOrder")]
