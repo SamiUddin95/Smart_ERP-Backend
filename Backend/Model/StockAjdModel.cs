@@ -7,20 +7,18 @@ namespace Backend.Model
     {
         public int Id { get; set; }
         public int? UserId { get; set; }
-        public string Location { get; set; }
-        public string Date { get; set; }
+        public int Location { get; set; }
         public string Remarks { get; set; }
         public string UpdatedBy { get; set; }
         public bool? Status { get; set; }
         public int? StockInHand { get; set; }
-        public int? StockInShelf { get; set; }
+        public int? StockOnShelf { get; set; }
         public decimal? StockInHandAmount { get; set; }
-        public decimal? StockInShelfAmount { get; set; }
-        public int? DifferQty { get; set; }
-        public decimal? DfferQtyAmount { get; set; }
-        public decimal? TotalAmountIncrease { get; set; }
-        public decimal? TotalAmountDecrease { get; set; }
-
+        public decimal? StockOnShelfAmount { get; set; }
+        public decimal? TotalAdjustmentQty { get; set; }
+        public decimal? AdjustmentAmount { get; set; }
+        public int? PartyId { get; set; }
+        public string PartyName { get; set; }
         public List<StockAdjDetail> stckAdjDtl { get; set; }
 
     } 
@@ -30,11 +28,9 @@ namespace Backend.Model
         public long? StckAdjId { get; set; }
         public string BarCode { get; set; }
         public string ItemName { get; set; }
-        public string Location { get; set; }
-        public string Batch { get; set; }
-        public string Expiry { get; set; }
         public int? StockInHand { get; set; }
-        public int? StockInShelf { get; set; }
+        public int? StockOnShelf { get; set; }
+        public int? AjustmentQty { get; set; }
         public decimal? PurchasePrice { get; set; }
         public decimal? SalePrice { get; set; }
         public decimal? Total { get; set; }

@@ -59,6 +59,7 @@ namespace Backend.Controllers
                           select new
                           {
                               pd.NetQuantity,
+                              pd.SalePrice,
                               Item = i,
                               PurchaseDetail = pd
                           }).ToList();

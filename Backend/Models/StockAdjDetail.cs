@@ -18,26 +18,17 @@ namespace Backend.Models
         [Column("ITEM_NAME")]
         [StringLength(100)]
         public string ItemName { get; set; }
-        [Column("LOCATION")]
-        [StringLength(100)]
-        public string Location { get; set; }
-        [Column("BATCH")]
-        [StringLength(100)]
-        public string Batch { get; set; }
-        [Column("EXPIRY")]
-        [StringLength(100)]
-        public string Expiry { get; set; }
         [Column("STOCK_IN_HAND")]
         public int? StockInHand { get; set; }
-        [Column("STOCK_IN_SHELF")]
-        public int? StockInShelf { get; set; }
+        [Column("STOCK_ON_SHELF")]
+        public int? StockOnShelf { get; set; }
+        [Column("ADJUSTMENT_QTY")]
+        public int? AdjustmentQty { get; set; }
         [Column("PURCHASE_PRICE")]
         public decimal? PurchasePrice { get; set; }
         [Column("SALE_PRICE")]
         public decimal? SalePrice { get; set; }
         [Column("TOTAL")]
         public decimal? Total { get; set; }
-        [Column("ADJUSTMENT_QTY")]
-        public int? AdjustmentQty { get; set; }
     }
 }
