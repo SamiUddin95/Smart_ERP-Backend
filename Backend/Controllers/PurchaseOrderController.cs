@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Cors;
 using Newtonsoft.Json;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.EntityFrameworkCore;
-
+using System.Reflection;
 
 namespace Backend.Controllers
 {
@@ -16,6 +16,11 @@ namespace Backend.Controllers
     [EnableCors("AllowCors"), Route("[controller]")]
     public class PurchaseOrderController : ControllerBase
     {
+        private readonly FileLogger _logger;
+        public PurchaseOrderController(FileLogger logger)
+        {
+            _logger = logger;
+        }
         ERPContext bMSContext = new ERPContext();
         [HttpGet]
         [Route("/api/getAllOpeningPurchase")]
@@ -235,6 +240,7 @@ namespace Backend.Controllers
                     postedDate.PostedDate = DateTime.Now.Date;
                     postedDate.PostedBy = postedBy;
                     postedDate.Status = "Posted";
+                    postedDate.DeliveryStatus = "Received";
                     bMSContext.PurchaseOrder.Update(postedDate);
                     bMSContext.SaveChanges();
                 }
@@ -290,6 +296,7 @@ namespace Backend.Controllers
                     postedDate.PostedDate = DateTime.Now.Date;
                     postedDate.PostedBy = null;
                     postedDate.Status = "UnPost";
+                    postedDate.DeliveryStatus = "Pending";
                     bMSContext.PurchaseOrder.Update(postedDate);
                     bMSContext.SaveChanges();
                 }
@@ -320,6 +327,57 @@ namespace Backend.Controllers
             catch (Exception ex)
             { }
             return JsonConvert.SerializeObject(new { status = "OK", msg = "Items Un Posted successfully" });
+        }
+
+
+        [HttpGet]
+        [Route("/api/getAllPurchaseOrderDashboard")]
+        public IEnumerable<dynamic> getAllPurchaseOrderDashboard()
+        {
+            var purchaseOrderDashBoard = (from po in bMSContext.PurchaseOrder
+                                          join p in bMSContext.Party on po.PartyId equals p.Id
+                                          join l in bMSContext.Location on po.LocationId equals l.Id
+                                          select new
+                                          {
+                                              Id = po.Id,
+                                              Location = l.Name,
+                                              DeliveryDate = po.DeliveryDate,
+                                              Party = p.PartyName,
+                                              InvoiceTotal = po.InvTotal,
+                                              DeliveryStatus = po.DeliveryStatus
+                                          }
+                        )
+                        //.Where(x=>x.DeliveryStatus=="Received")
+                        .ToList().OrderByDescending(x => x.DeliveryDate);
+
+            return purchaseOrderDashBoard;
+
+        }
+
+
+
+        [HttpGet]
+        [Route("/api/changeDeliveryStatus")]
+        public IEnumerable<dynamic> changeDeliveryStatus(string ids)
+        {
+            try
+            {
+                string[] idsArray = ids.Split(',', StringSplitOptions.RemoveEmptyEntries);
+                var idList = idsArray.Select(id => Convert.ToInt64(id)).ToList();
+                var receivedData = bMSContext.PurchaseOrder.Where(x => idList.Contains(x.Id)).ToList();
+                foreach (var order in receivedData)
+                {
+                    order.DeliveryStatus = "Delivered";
+                }
+                bMSContext.SaveChanges();
+                return idsArray;
+            }
+
+            catch(Exception ex)
+            {
+                _logger.LogError(MethodBase.GetCurrentMethod()?.Name, ex);
+                return null;
+            }
         }
     }
 }

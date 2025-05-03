@@ -845,6 +845,40 @@ namespace Backend.Controllers
         }
         #endregion
 
+        [HttpGet]
+        [Route("/api/getItemDetailbyBarCodeAndName")]
+        public IEnumerable<dynamic> getItemDetailbyBarCodeAndName(string name,string barCode,string searchType)
+        {
+            if(searchType=="barCode")
+            {
+                var item = bMSContext.Item.Where(u => u.AliasName == barCode).ToList();
+                if (item.Count() > 0)
+                    return item;
+                var altItem = bMSContext.AlternateItem.Where(u => u.Barcode == barCode).ToList();
+                if (altItem.Count() > 0)
+                    return altItem;
+                var childItem = bMSContext.ChildItem.Where(u => u.Barcode == barCode).ToList();
+                if (childItem.Count() > 0)
+                    return childItem;
+                return null;
+            }
+            if (searchType == "name")
+            {
+                var item = bMSContext.Item.Where(u => u.ItemName == barCode).ToList();
+                if (item.Count() > 0)
+                    return item;
+                var altItem = bMSContext.AlternateItem.Where(u => u.AlternateItemName == barCode).ToList();
+                if (altItem.Count() > 0)
+                    return altItem;
+                var childItem = bMSContext.ChildItem.Where(u => u.ChildName == barCode).ToList();
+                if (childItem.Count() > 0)
+                    return childItem;
+                return null;
+            }
+            return null;
+
+        }
+
         #region Manufacturer
 
         [HttpGet]
