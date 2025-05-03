@@ -44,7 +44,39 @@ namespace Backend.Controllers
             var childItem = bMSContext.ChildItem.Where(u => u.Barcode == barCode).ToList();
             if(childItem.Count()>0)
                 return childItem;
+
             return null;
+
+        }
+
+        [HttpGet]
+        [Route("/api/getPurchaseDetailbyBarCode")]
+        public IEnumerable<dynamic> getPurchaseDetailbyBarCode(string barCode)
+        {
+            var result = (from i in bMSContext.Item
+                          join pd in bMSContext.PurchaseDetail
+                          on i.AliasName equals pd.Barcode
+                          where pd.Barcode == barCode
+                          select new
+                          {
+                              pd.NetQuantity,
+                              pd.SalePrice,
+                              Item = i,
+                              PurchaseDetail = pd
+                          }).ToList();
+            //var item = bMSContext.Item.Where(u => u.AliasName == barCode).ToList();
+            if (result.Count() > 0)
+                return result;
+            var altItem = bMSContext.AlternateItem.Where(u => u.Barcode == barCode).ToList();
+            if (altItem.Count() > 0)
+                return altItem;
+            var childItem = bMSContext.ChildItem.Where(u => u.Barcode == barCode).ToList();
+            if (childItem.Count() > 0)
+                return childItem;
+
+
+            return null;
+
         }
 
 
@@ -581,24 +613,51 @@ namespace Backend.Controllers
         [Route("/api/getAllPurchaseOrder")]
         public IEnumerable<dynamic> getAllPurchaseOrder()
         {
+            //var result = (from po in bMSContext.PurchaseOrder
+            //              join p in bMSContext.Party on po.PartyId equals p.Id
+            //              select new
+            //              {
+            //                  partyId = p.PartyName,
+            //                  dateOfInvoice = po.DateOfInvoice,
+            //                  remarks = po.Remarks,
+            //                  createdAt = po.CreatedAt,
+            //                  id = po.Id,
+            //                  invTotal = po.InvTotal,
+            //                  disc = po.Disc,
+            //                  endDate = po.EndDate,
+            //                  startDate = po.StartDate,
+            //                  zeroQty = po.ZeroQty,
+            //                  purOrderTerm = po.PurOrderTerm,
+            //                  location=po.LocationId,
+            //                  postedDate=po.PostedDate,
+            //                  status=po.Status,
+            //              }).ToList();
             var result = (from po in bMSContext.PurchaseOrder
-                          join p in bMSContext.Party on po.PartyId equals p.Id
                           select new
                           {
-                              partyId = p.PartyName,
-                              dateOfInvoice = po.DateOfInvoice,
-                              remarks = po.Remarks,
-                              createdAt = po.CreatedAt,
-                              id = po.Id,
-                              invTotal = po.InvTotal,
-                              disc = po.Disc,
-                              endDate = po.EndDate,
-                              startDate = po.StartDate,
-                              zeroQty = po.ZeroQty,
-                              purOrderTerm = po.PurOrderTerm,
-                              location=po.LocationId,
-                              postedDate=po.PostedDate,
-                              status=po.Status,
+                              po.Id,
+                              po.DateOfInvoice,
+                              po.Remarks,
+                              po.CreatedAt,
+                              po.InvTotal,
+                              po.Disc,
+                              po.EndDate,
+                              po.StartDate,
+                              po.ZeroQty,
+                              po.PurOrderTerm,
+                              po.LocationId,
+                              po.PostedDate,
+                              po.Status,
+                              po.PartyId,
+                              po.PartyType,
+
+                              PartyName =
+                                  po.PartyType == "Party" ? bMSContext.Party.FirstOrDefault(p => p.Id == po.PartyId).PartyName :
+                                  po.PartyType == "Manufacture" ? bMSContext.ItemManufacturer.FirstOrDefault(m => m.Id == po.PartyId).Name :
+                                  po.PartyType == "Brand" ? bMSContext.ItemBrand.FirstOrDefault(b => b.Id == po.PartyId).Name :
+                                  po.PartyType == "Category" ? bMSContext.ItemCategory.FirstOrDefault(m => m.Id == po.PartyId).Name :
+                                  po.PartyType == "Class" ? bMSContext.ItemClass.FirstOrDefault(b => b.Id == po.PartyId).Name :
+                                  null
                           }).ToList();
             return result;
         }
@@ -614,6 +673,7 @@ namespace Backend.Controllers
                 {
                     PurchaseOrder pOrder = new PurchaseOrder();
                     pOrder.PartyId = purchOrderModel.PartyId;
+                    pOrder.PartyType = purchOrderModel.PartyType;
                     pOrder.Remarks = purchOrderModel.Remarks;
                     pOrder.Disc = purchOrderModel.Disc;
                     pOrder.ProjectionDays = purchOrderModel.ProjectionDays;
@@ -656,6 +716,7 @@ namespace Backend.Controllers
                     if (data != null)
                     {
                         data[0].PartyId = purchOrderModel.PartyId;
+                        data[0].PartyType = purchOrderModel.PartyType;
                         data[0].Remarks = purchOrderModel.Remarks;
                         data[0].Disc = purchOrderModel.Disc;
                         data[0].ProjectionDays = purchOrderModel.ProjectionDays;
