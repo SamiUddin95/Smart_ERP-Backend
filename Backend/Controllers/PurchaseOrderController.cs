@@ -224,16 +224,16 @@ namespace Backend.Controllers
         {
             try
             {
-                string[] barCodeArray = barCodes.Split(',');
-                string[] currentStockArray = currentStock.Split(',');
-                string[] lastNetSalePriceArray = lastNetSalePrice.Split(',');
-                string[] lastNetCostArray = lastNetCost.Split(',');
-                string[] saleDiscArray = saleDisc.Split(',');
-                string[] netSalePriceArray = netSaleePrice.Split(',');
-                int length = new int[] { barCodeArray.Length,
-                    currentStockArray.Length,lastNetSalePriceArray.Length,lastNetCostArray.Length,
-                    saleDiscArray.Length, netSalePriceArray.Length
-                    }.Min();
+                //string[] barCodeArray = barCodes.Split(',');
+                //string[] currentStockArray = currentStock.Split(',');
+                //string[] lastNetSalePriceArray = lastNetSalePrice.Split(',');
+                //string[] lastNetCostArray = lastNetCost.Split(',');
+                //string[] saleDiscArray = saleDisc.Split(',');
+                //string[] netSalePriceArray = netSaleePrice.Split(',');
+                //int length = new int[] { barCodeArray.Length,
+                //    currentStockArray.Length,lastNetSalePriceArray.Length,lastNetCostArray.Length,
+                //    saleDiscArray.Length, netSalePriceArray.Length
+                //    }.Min();
                 var postedDate = bMSContext.PurchaseOrder.Where(x => x.Id == purchaseId).FirstOrDefault();
                 if (postedDate != null)
                 {
@@ -244,29 +244,29 @@ namespace Backend.Controllers
                     bMSContext.PurchaseOrder.Update(postedDate);
                     bMSContext.SaveChanges();
                 }
-                for (int i = 0; i < length; i++)
-                {
-                    var barcode = barCodeArray[i];
-                    var stock = (int)Math.Floor(double.Parse(currentStockArray[i]));
-                    var salePrice = (int)Math.Floor(double.Parse(lastNetSalePriceArray[i]));
-                    var cost = (int)Math.Floor(double.Parse(lastNetCostArray[i]));
-                    var disc = (int)Math.Floor(double.Parse(saleDiscArray[i]));
-                    var netSalePrice = (int)Math.Floor(double.Parse(netSalePriceArray[i]));
+                //for (int i = 0; i < length; i++)
+                //{
+                //    var barcode = barCodeArray[i];
+                //    var stock = (int)Math.Floor(double.Parse(currentStockArray[i]));
+                //    var salePrice = (int)Math.Floor(double.Parse(lastNetSalePriceArray[i]));
+                //    var cost = (int)Math.Floor(double.Parse(lastNetCostArray[i]));
+                //    var disc = (int)Math.Floor(double.Parse(saleDiscArray[i]));
+                //    var netSalePrice = (int)Math.Floor(double.Parse(netSalePriceArray[i]));
 
 
-                    var itemDtl = bMSContext.Item.Where(x => x.AliasName == barcode).FirstOrDefault();
-                    if (itemDtl != null)
-                    {
-                        itemDtl.CurrentStock = Convert.ToInt16(stock);
-                        itemDtl.PurchasePrice = Convert.ToInt16(cost);
-                        itemDtl.SalePrice = Convert.ToInt16(salePrice);
-                        itemDtl.Discflat = Convert.ToInt16(saleDisc);
-                        itemDtl.NetSalePrice = Convert.ToInt16(netSalePrice);
-                        bMSContext.Item.Update(itemDtl);
-                        bMSContext.SaveChanges();
+                //    var itemDtl = bMSContext.Item.Where(x => x.AliasName == barcode).FirstOrDefault();
+                //    if (itemDtl != null)
+                //    {
+                //        itemDtl.CurrentStock = Convert.ToInt16(stock);
+                //        itemDtl.PurchasePrice = Convert.ToInt16(cost);
+                //        itemDtl.SalePrice = Convert.ToInt16(salePrice);
+                //        itemDtl.Discflat = Convert.ToInt16(saleDisc);
+                //        itemDtl.NetSalePrice = Convert.ToInt16(netSalePrice);
+                //        bMSContext.Item.Update(itemDtl);
+                //        bMSContext.SaveChanges();
 
-                    }
-                }
+                //    }
+                //}
             }
             catch (Exception ex)
             { }
@@ -334,21 +334,25 @@ namespace Backend.Controllers
         [Route("/api/getAllPurchaseOrderDashboard")]
         public IEnumerable<dynamic> getAllPurchaseOrderDashboard()
         {
-            var purchaseOrderDashBoard = (from po in bMSContext.PurchaseOrder
-                                          join p in bMSContext.Party on po.PartyId equals p.Id
-                                          join l in bMSContext.Location on po.LocationId equals l.Id
-                                          select new
-                                          {
-                                              Id = po.Id,
-                                              Location = l.Name,
-                                              DeliveryDate = po.DeliveryDate,
-                                              Party = p.PartyName,
-                                              InvoiceTotal = po.InvTotal,
-                                              DeliveryStatus = po.DeliveryStatus
-                                          }
-                        )
-                        //.Where(x=>x.DeliveryStatus=="Received")
-                        .ToList().OrderByDescending(x => x.DeliveryDate);
+            var statuses = new[] { "Send", "Delivered" };
+            var purchaseOrderDashBoard = (
+                from po in bMSContext.PurchaseOrder
+                join p in bMSContext.Party on po.PartyId equals p.Id
+                join l in bMSContext.Location on po.LocationId equals l.Id
+                where statuses.Contains(po.DeliveryStatus)
+                select new
+                {
+                    Id = po.Id,
+                    Location = l.Name,
+                    DeliveryDate = po.DeliveryDate,
+                    Party = p.PartyName,
+                    InvoiceTotal = po.InvTotal,
+                    DeliveryStatus = po.DeliveryStatus
+                }
+            )
+            .ToList()
+            .OrderByDescending(x => x.DeliveryDate);
+
 
             return purchaseOrderDashBoard;
 
@@ -367,7 +371,7 @@ namespace Backend.Controllers
                 var receivedData = bMSContext.PurchaseOrder.Where(x => idList.Contains(x.Id)).ToList();
                 foreach (var order in receivedData)
                 {
-                    order.DeliveryStatus = "Delivered";
+                    order.DeliveryStatus = "Send";
                 }
                 bMSContext.SaveChanges();
                 return idsArray;
