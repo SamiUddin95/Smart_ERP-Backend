@@ -27,6 +27,7 @@ namespace Backend.Controllers
             public double? LastNetSalePrice { get; set; }
             public double? LastNetCost { get; set; }
             public double? PurchasePrice { get; set; }
+            public double? saleDiscountByValue { get; set; }
             public double? SalePrice { get; set; }
             public double? SaleDisc { get; set; }
             public double? NetSalePrice { get; set; }
@@ -281,7 +282,7 @@ namespace Backend.Controllers
                         itemDtl.CurrentStock = Convert.ToInt16(Math.Floor(item.CurrentStock ?? 0));
                         itemDtl.PurchasePrice = Convert.ToInt16(Math.Floor(item.PurchasePrice ?? 0));
                         itemDtl.SalePrice = Convert.ToInt16(Math.Floor(item.SalePrice ?? 0));
-                        itemDtl.Discflat = Convert.ToInt16(Math.Floor(item.SaleDisc ?? 0));
+                        itemDtl.Discflat = Convert.ToInt16(Math.Floor(item.saleDiscountByValue ?? 0));
                         itemDtl.NetSalePrice = Convert.ToInt16(Math.Floor(item.NetSalePrice ?? 0));
                         bMSContext.Item.Update(itemDtl);
                         bMSContext.SaveChanges();
