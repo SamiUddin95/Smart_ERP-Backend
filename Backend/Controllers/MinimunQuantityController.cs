@@ -7,6 +7,7 @@ using Backend.Models;
 using Microsoft.AspNetCore.Cors;
 using Newtonsoft.Json;
 using Backend.Model;
+using System.Globalization;
 
 namespace Backend.Controllers
 {
@@ -18,66 +19,156 @@ namespace Backend.Controllers
 
         [HttpPost]
         [Route("/api/createMinimumQty")]
-        public object createMinimumQty(MinimumQty minimumQty)
+        public object createMinimumQty(List<MinimumQty> minimumQtyList)
         {
-
             try
             {
-                try
+                foreach (var minimumQty in minimumQtyList)
                 {
-                    var minmumchk = bMSContext.MinimumQty.SingleOrDefault(u => u.Id == minimumQty.Id);
+                    var minmumchk = bMSContext.MinimumQty
+                        .SingleOrDefault(u => u.Barcode == minimumQty.Barcode); // use Barcode or ID for matching
+
                     if (minmumchk != null)
                     {
-                        minmumchk.Id = minimumQty.Id;
-                        minmumchk.Barcode = minimumQty.Barcode;
                         minmumchk.ItemName = minimumQty.ItemName;
-                        minmumchk.CurrentStock = minimumQty.CurrentStock;   
+                        minmumchk.CurrentStock = minimumQty.CurrentStock;
                         minmumchk.NetRate = minimumQty.NetRate;
                         minmumchk.MinimumQty1 = minimumQty.MinimumQty1;
                         minmumchk.UpdatedAt = DateTime.UtcNow;
                         minmumchk.UpdatedBy = minimumQty.UpdatedBy;
+
                         bMSContext.MinimumQty.Update(minmumchk);
-                        bMSContext.SaveChanges();
-                        return JsonConvert.SerializeObject(new { id = minmumchk.Id });
                     }
                     else
                     {
                         var latestSNo = bMSContext.MinimumQty
-                        .OrderByDescending(a => a.Sno)
-                        .FirstOrDefault();
+                            .OrderByDescending(a => a.Sno)
+                            .FirstOrDefault();
 
-                        long? newSNoNumber = 1;
+                        long? newSNoNumber = (latestSNo != null) ? latestSNo.Sno + 1 : 1;
 
-                        if (latestSNo != null)
+                        MinimumQty qty = new MinimumQty
                         {
-                            newSNoNumber = latestSNo.Sno + 1;
-                        }
-                        MinimumQty qty = new MinimumQty();
-                        qty.Sno = newSNoNumber;
-                        qty.Barcode = minimumQty.Barcode;
-                        qty.ItemName = minimumQty.ItemName;
-                        qty.CurrentStock = minimumQty.CurrentStock;
-                        qty.NetRate = minimumQty.NetRate;
-                        qty.MinimumQty1 = minimumQty.MinimumQty1;
-                        qty.CreatedAt = DateTime.UtcNow;
-                        qty.CreatedBy = minimumQty.UpdatedBy;
+                            Sno = newSNoNumber,
+                            Barcode = minimumQty.Barcode,
+                            ItemName = minimumQty.ItemName,
+                            CurrentStock = minimumQty.CurrentStock,
+                            NetRate = minimumQty.NetRate,
+                            MinimumQty1 = minimumQty.MinimumQty1,
+                            CreatedAt = DateTime.UtcNow,
+                            CreatedBy = minimumQty.UpdatedBy
+                        };
+
                         bMSContext.MinimumQty.Add(qty);
-                        bMSContext.SaveChanges();
-                        
-                        return JsonConvert.SerializeObject(new { id = qty.Id });
                     }
                 }
 
-                catch (Exception ex)
-                {
-                    JsonConvert.SerializeObject(new { msg = ex.Message });
-                }
-                return JsonConvert.SerializeObject(new { msg = "Message" });
+                bMSContext.SaveChanges();
+
+                return JsonConvert.SerializeObject(new { success = true, message = "All items processed successfully." });
             }
             catch (Exception ex)
             {
-                return null;
+                return JsonConvert.SerializeObject(new { success = false, message = ex.Message });
             }
         }
+
+
+        [HttpGet]
+        [Route("/api/GetItemsBySupplier")]
+        public IEnumerable<dynamic> GetItemsBySupplier(int PartyId, string PartyName)
+        {
+            if (PartyName == "Brand")
+            {
+                var getItem = (from item in bMSContext.Item
+                               where item.BrandId == PartyId
+                               select new
+                               {
+                                   id = item.Id,
+                                   barcode = item.AliasName,
+                                   itemName = item.ItemName,
+                                   netCost = item.PurchasePrice,
+                                   currentStock = bMSContext.PurchaseDetail
+                                                   .Where(po => po.ItemName == item.ItemName)
+                                                   .Select(po => po.NetQuantity)
+                                                   .FirstOrDefault()
+                               }).ToList();
+                var result = new
+                {
+                    getItem = getItem
+                };
+
+                yield return JsonConvert.SerializeObject(result);
+            }
+            else if (PartyName == "Class")
+            {
+                var getItem = (from item in bMSContext.Item
+                               where item.ClassId == PartyId
+                               select new
+                               {
+                                   id = item.Id,
+                                   barcode = item.AliasName,
+                                   itemName = item.ItemName,
+                                   netCost = item.PurchasePrice,
+                                   currentStock = bMSContext.PurchaseDetail
+                                                   .Where(po => po.ItemName == item.ItemName)
+                                                   .Select(po => po.NetQuantity)
+                                                   .FirstOrDefault()
+                               }).ToList();
+                var result = new
+                {
+                    getItem = getItem
+                };
+
+                yield return JsonConvert.SerializeObject(result);
+            }
+
+            else if (PartyName == "Category")
+            {
+                var getItem = (from item in bMSContext.Item
+                               where item.CategoryId == PartyId
+                               select new
+                               {
+                                   id = item.Id,
+                                   barcode = item.AliasName,
+                                   itemName = item.ItemName,
+                                   netCost = item.PurchasePrice,
+                                   currentStock = bMSContext.PurchaseDetail
+                                                   .Where(po => po.ItemName == item.ItemName)
+                                                   .Select(po => po.NetQuantity)
+                                                   .FirstOrDefault()
+                               }).ToList();
+                var result = new
+                {
+                    getItem = getItem
+                };
+
+                yield return JsonConvert.SerializeObject(result);
+            }
+            else if (PartyName == "Manufacture")
+            {
+                var getItem = (from item in bMSContext.Item
+                               where item.ManufacturerId == PartyId
+                               select new
+                               {
+                                   id = item.Id,
+                                   barcode = item.AliasName,
+                                   itemName = item.ItemName,
+                                   netCost = item.PurchasePrice,
+                                   currentStock = bMSContext.PurchaseDetail
+                                                   .Where(po => po.ItemName == item.ItemName)
+                                                   .Select(po => po.NetQuantity)
+                                                   .FirstOrDefault()
+                               }).ToList();
+                var result = new
+                {
+                    getItem = getItem
+                };
+
+                yield return JsonConvert.SerializeObject(result);
+            }
+
+        }
+
     }
 }
