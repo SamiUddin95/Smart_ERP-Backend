@@ -279,7 +279,7 @@ namespace Backend.Controllers
                     if (itemDtl != null)
                     {
                         itemDtl.CurrentStock = Convert.ToInt16(Math.Floor(item.CurrentStock ?? 0));
-                        itemDtl.PurchasePrice = Convert.ToInt16(Math.Floor(item.LastNetCost ?? 0));
+                        itemDtl.PurchasePrice = Convert.ToInt16(Math.Floor(item.PurchasePrice ?? 0));
                         itemDtl.SalePrice = Convert.ToInt16(Math.Floor(item.SalePrice ?? 0));
                         itemDtl.Discflat = Convert.ToInt16(Math.Floor(item.SaleDisc ?? 0));
                         itemDtl.NetSalePrice = Convert.ToInt16(Math.Floor(item.NetSalePrice ?? 0));
