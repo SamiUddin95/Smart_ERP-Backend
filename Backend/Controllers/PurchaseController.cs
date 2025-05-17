@@ -925,7 +925,7 @@ namespace Backend.Controllers
             if (zeroQty == null || zeroQty == "yes")
             {
                 var purchaseOrderDetails = bMSContext.PurchaseOrderDetail
-                .Where(poDtl => poDtl.CreatedAt >= conStartdate && poDtl.CreatedAt <= conEnddate)
+                .Where(poDtl => poDtl.CreatedAt >= conStartdate && poDtl.CreatedAt <= conEnddate && poDtl.NetSaleQty == 0 || poDtl.NetSaleQty == null)
                 .Select(poDtl => new
                 {
                     id = poDtl.Id,

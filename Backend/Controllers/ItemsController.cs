@@ -1045,10 +1045,22 @@ namespace Backend.Controllers
             if (request.FieldName == "aliasName")
             {
                 var duplicateItem = bMSContext.Item.FirstOrDefault(i => i.AliasName == request.Value);
+                var duplicateAlternateItem = bMSContext.AlternateItem.FirstOrDefault(x => x.Barcode == request.Value);
+                var duplicateChildItem = bMSContext.ChildItem.FirstOrDefault(x => x.Barcode == request.Value);
                 if (duplicateItem != null)
                 {
                     isDuplicate = true;
                     duplicateId = duplicateItem.Id; // Assign the Id of the duplicate item
+                }
+                else if (duplicateAlternateItem != null)
+                {
+                    isDuplicate = true;
+                    duplicateId = duplicateAlternateItem.ItemId; // Assign the Id of the duplicate item
+                }
+                else if (duplicateChildItem != null)
+                {
+                    isDuplicate = true;
+                    duplicateId = duplicateChildItem.ItemId; // Assign the Id of the duplicate item
                 }
             }
             else if (request.FieldName == "itemName")
