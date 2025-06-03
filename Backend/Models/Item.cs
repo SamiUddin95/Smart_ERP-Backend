@@ -68,6 +68,8 @@ namespace Backend.Models
         public long? Sno { get; set; }
         [Column("PICTURE")]
         public byte[] Picture { get; set; }
+        [Column("PARTY_ID")]
+        public int PartyId { get; set; }
 
         [ForeignKey("BrandId")]
         [InverseProperty("Item")]
@@ -81,6 +83,9 @@ namespace Backend.Models
         [ForeignKey("ManufacturerId")]
         [InverseProperty("Item")]
         public ItemManufacturer Manufacturer { get; set; }
+        [ForeignKey("PartyId")]
+        [InverseProperty("Item")]
+        public Party Party { get; set; }
         [InverseProperty("Item")]
         public ICollection<ChildItem> ChildItem { get; set; }
     }

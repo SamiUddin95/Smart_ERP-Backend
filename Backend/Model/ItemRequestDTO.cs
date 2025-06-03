@@ -15,6 +15,7 @@ namespace Backend.Model
         public int CategoryId { get; set; }
         public int ClassId { get; set; }
         public int ManufacturerId { get; set; }
+        public int PartyId { get; set; }
         public int? CurrentStock { get; set; }
         public string Remarks { get; set; }
         public int? RecentPurchase { get; set; }

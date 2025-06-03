@@ -8,6 +8,11 @@ namespace Backend.Models
     [Table("PARTY")]
     public partial class Party
     {
+        public Party()
+        {
+            Item = new HashSet<Item>();
+        }
+
         [Column("ID")]
         public int Id { get; set; }
         [Column("PARTY_NAME")]
@@ -65,5 +70,8 @@ namespace Backend.Models
         public string UpdatedBy { get; set; }
         [Column("SNO")]
         public long? Sno { get; set; }
+
+        [InverseProperty("Party")]
+        public ICollection<Item> Item { get; set; }
     }
 }

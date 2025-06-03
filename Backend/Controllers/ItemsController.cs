@@ -504,7 +504,8 @@ namespace Backend.Controllers
         {
             try
             {
-                if (!string.IsNullOrEmpty(Request.Form["alternateItem"]))
+                //if (!string.IsNullOrEmpty(Request.Form["alternateItem"]))
+                if (Items.alternateItem.Count() > 0)
                 {
                     Items.alternateItem = JsonConvert.DeserializeObject<List<AlternateRequestDTO>>(Request.Form["alternateItem"]);
                 }
@@ -531,6 +532,7 @@ namespace Backend.Controllers
                     Itemschk.CategoryId = Items.CategoryId;
                     Itemschk.ClassId = Items.ClassId;
                     Itemschk.ManufacturerId = Items.ManufacturerId;
+                    Itemschk.PartyId = Items.PartyId;
                     Itemschk.Remarks = Items.Remarks;
                     Itemschk.RecentPurchase = Items.RecentPurchase;
                     Itemschk.CurrentStock = Items.CurrentStock;
@@ -590,11 +592,37 @@ namespace Backend.Controllers
                         newSNoNumber = latestSNo.Sno + 1;
                     }
 
-                    Item itemItems = new Item
+                    // for auto alias name
+                    if (string.IsNullOrEmpty(Items.AliasName))
+                    {
+                        // Step 1: Get all non-null AliasName values from the database
+                        var allAliasNames = bMSContext.Item
+                            .Where(x => x.AliasName != null)
+                            .Select(x => x.AliasName)
+                            .ToList(); // materialize to memory
+
+                        // Step 2: Filter to numeric-only alias names
+                        var numericAliases = allAliasNames
+                            .Where(name => name.All(char.IsDigit))
+                            .Select(name => int.Parse(name))
+                            .ToList();
+
+                        // Step 3: Get the max numeric value and add 10
+                        int newAliasValue = 1;
+
+                        if (numericAliases.Any())
+                        {
+                            newAliasValue = numericAliases.Max() + 10;
+                        }
+
+                        // Step 4: Format the value as 3-digit string (e.g., "001", "011", "021")
+                        Items.AliasName = newAliasValue.ToString("D3");
+                    }
+                        Item itemItems = new Item
                     {
                         Sno = newSNoNumber,
                         AliasName = Items.AliasName,
-                        ItemName = Items.ItemName,
+                            ItemName = Items.ItemName,
                         PurchasePrice = Items.PurchasePrice,
                         SalePrice = Items.SalePrice,
                         NetSalePrice = Items.NetSalePrice,
@@ -602,6 +630,7 @@ namespace Backend.Controllers
                         Lockdisc = Items.Lockdisc,
                         ClassId = Items.ClassId,
                         ManufacturerId = Items.ManufacturerId,
+                        PartyId = Items.PartyId,
                         Remarks = Items.Remarks,
                         RecentPurchase = Items.RecentPurchase,
                         CurrentStock = Items.CurrentStock,
