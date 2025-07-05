@@ -22,5 +22,6 @@ namespace Backend.Models
         public string CardNumber { get; set; }
         public decimal? FinalAmount { get; set; }
         public decimal? RemainingCreditAmount { get; set; }
+        public DateTime? CreatedAt { get; set; }
     }
 }
