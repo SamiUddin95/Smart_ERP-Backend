@@ -415,6 +415,28 @@ namespace Backend.Controllers
         }
 
         [HttpGet]
+        [Route("/api/getAllItemsSearching")]
+        public IEnumerable<Item> getAllItemsSearching(string itemName, string searchMode)
+        {
+            var query = bMSContext.Item.AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(itemName) && itemName != "All")
+            {
+                if (searchMode == "start")
+                {
+                    query = query.Where(i => i.ItemName.StartsWith(itemName));
+                }
+                else if (searchMode == "advanced")
+                {
+                    query = query.Where(i => i.ItemName.Contains(itemName));
+                }
+            }
+
+            return query.ToList();
+        }
+
+
+        [HttpGet]
         [Route("/api/getAllBrandsdetailsFilterbased")]
         public IEnumerable<ItemBrand> getAllBrandsdetailsFilterbased(string brandName, long sno, string remarks)
         {
