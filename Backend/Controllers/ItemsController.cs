@@ -554,7 +554,7 @@ namespace Backend.Controllers
                     Itemschk.CategoryId = Items.CategoryId;
                     Itemschk.ClassId = Items.ClassId;
                     Itemschk.ManufacturerId = Items.ManufacturerId;
-                    Itemschk.PartyId = Items.PartyId;
+                    //Itemschk.PartyId = Items.PartyId;
                     Itemschk.Remarks = Items.Remarks;
                     Itemschk.RecentPurchase = Items.RecentPurchase;
                     Itemschk.CurrentStock = Items.CurrentStock;
@@ -652,7 +652,7 @@ namespace Backend.Controllers
                         Lockdisc = Items.Lockdisc,
                         ClassId = Items.ClassId,
                         ManufacturerId = Items.ManufacturerId,
-                        PartyId = Items.PartyId,
+                        //PartyId = Items.PartyId,
                         Remarks = Items.Remarks,
                         RecentPurchase = Items.RecentPurchase,
                         CurrentStock = Items.CurrentStock,

@@ -100,7 +100,7 @@ namespace Backend.Controllers
         {
             var items = bMSContext.Item
                         .Where(u => u.ItemName.Contains(barCode))
-                        .Select(u => new PurchaseItemSearchModel { barCode=u.AliasName,itemName = u.ItemName })
+                        .Select(u => new PurchaseItemSearchModel { barCode=u.AliasName,itemName = u.ItemName,salePrice=Convert.ToDecimal(u.SalePrice),purchasePrice=Convert.ToDecimal(u.PurchasePrice) })
                         .ToList(); 
             var altItems = bMSContext.AlternateItem
                         .Where(u => u.AlternateItemName.Contains(barCode))
