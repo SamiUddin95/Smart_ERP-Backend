@@ -594,13 +594,11 @@ namespace Backend.Controllers
                     totalGst = p.TotalGst,
                     billTotal = p.BillTotal,
                     netQuantity = p.NetQuantity,
-                    totalSalePrice=p.TotalSalePrice
+                    totalSalePrice=p.TotalSalePrice,
+                    postUnPostStatus=p.PostUnpostStatus
 
                 })
-                .Where(x => x.id == id)
-                .ToList();
-
-            // Query to fetch data from PurchaseDetail table
+                .Where(x => x.id == id).ToList();
             var purchaseDetails = bMSContext.PurchaseDetail
                 .Select(pDtl => new
                 {
