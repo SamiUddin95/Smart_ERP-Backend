@@ -552,7 +552,7 @@ namespace Backend.Controllers
                     Itemschk.CategoryId = Items.CategoryId;
                     Itemschk.ClassId = Items.ClassId;
                     Itemschk.ManufacturerId = Items.ManufacturerId;
-                    Itemschk.PartyId = Items.PartyId;
+                    Itemschk.PartyId = 1;//Items.PartyId;
                     Itemschk.Remarks = Items.Remarks;
                     Itemschk.RecentPurchase = Items.RecentPurchase;
                     Itemschk.CurrentStock = Items.CurrentStock;
@@ -638,11 +638,11 @@ namespace Backend.Controllers
                         // Step 4: Format the value as 3-digit string (e.g., "001", "011", "021")
                         Items.AliasName = newAliasValue.ToString("D3");
                     }
-                        Item itemItems = new Item
+                    Item itemItems = new Item
                     {
                         Sno = newSNoNumber,
                         AliasName = Items.AliasName,
-                            ItemName = Items.ItemName,
+                        ItemName = Items.ItemName,
                         PurchasePrice = Items.PurchasePrice,
                         SalePrice = Items.SalePrice,
                         NetSalePrice = Items.NetSalePrice,

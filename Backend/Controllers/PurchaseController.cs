@@ -103,7 +103,7 @@ namespace Backend.Controllers
         {
             var items = bMSContext.Item
                         .Where(u => u.ItemName.Contains(barCode))
-                        .Select(u => new PurchaseItemSearchModel { barCode=u.AliasName,itemName = u.ItemName })
+                        .Select(u => new PurchaseItemSearchModel { barCode=u.AliasName,itemName = u.ItemName,salePrice=Convert.ToDecimal(u.SalePrice),purchasePrice=Convert.ToDecimal(u.PurchasePrice) })
                         .ToList(); 
             var altItems = bMSContext.AlternateItem
                         .Where(u => u.AlternateItemName.Contains(barCode))
@@ -413,32 +413,33 @@ namespace Backend.Controllers
             return JsonConvert.SerializeObject(new { status = "OK", msg = "Items Un Posted successfully" });
         }
 
-        [HttpGet]
+        [HttpPost]
         [Route("/api/postPurchaseReturn")]
         public object postPurchaseReturn(int purchaseId, string postedBy, string barCodes, string currentStock, string lastNetSalePrice,
-    string lastNetCost, string saleDisc, string netSaleePrice)
+            string lastNetCost, string saleDisc, string netSaleePrice)
         {
             try
             {
-                string[] barCodeArray = barCodes.Split(',');
-                string[] currentStockArray = currentStock.Split(',');
-                string[] lastNetSalePriceArray = lastNetSalePrice.Split(',');
-                string[] lastNetCostArray = lastNetCost.Split(',');
-                string[] saleDiscArray = saleDisc.Split(',');
-                string[] netSalePriceArray = netSaleePrice.Split(',');
-                int length = new int[] { barCodeArray.Length,
-                    currentStockArray.Length,lastNetSalePriceArray.Length,lastNetCostArray.Length,
-                    saleDiscArray.Length, netSalePriceArray.Length
-                    }.Min();
+                string[] barCodeArray = (barCodes ?? "").Split(',', StringSplitOptions.RemoveEmptyEntries);
+                string[] currentStockArray = (currentStock ?? "").Split(',', StringSplitOptions.RemoveEmptyEntries);
+                string[] lastNetSalePriceArray = (lastNetSalePrice ?? "").Split(',', StringSplitOptions.RemoveEmptyEntries);
+                string[] lastNetCostArray = (lastNetCost ?? "").Split(',', StringSplitOptions.RemoveEmptyEntries);
+                string[] saleDiscArray = (saleDisc ?? "").Split(',', StringSplitOptions.RemoveEmptyEntries);
+                string[] netSalePriceArray = (netSaleePrice ?? "").Split(',', StringSplitOptions.RemoveEmptyEntries);
+
+                int length = new int[] { barCodeArray.Length, currentStockArray.Length, lastNetSalePriceArray.Length,
+            lastNetCostArray.Length, saleDiscArray.Length, netSalePriceArray.Length }.Min();
+
                 var postedDate = bMSContext.PurchaseReturn.Where(x => x.Id == purchaseId).FirstOrDefault();
                 if (postedDate != null)
                 {
                     postedDate.PostedDate = DateTime.Now.Date;
                     postedDate.PostedBy = postedBy;
-                    postedDate.PostUnpostStatus = "N";
+                    postedDate.PostUnpostStatus = "Y";
                     bMSContext.PurchaseReturn.Update(postedDate);
                     bMSContext.SaveChanges();
                 }
+
                 for (int i = 0; i < length; i++)
                 {
                     var barcode = barCodeArray[i];
@@ -448,52 +449,53 @@ namespace Backend.Controllers
                     var disc = (int)Math.Floor(double.Parse(saleDiscArray[i]));
                     var netSalePrice = (int)Math.Floor(double.Parse(netSalePriceArray[i]));
 
-
-                    var itemDtl = bMSContext.Item.Where(x => x.AliasName == barcode).FirstOrDefault();
+                    var itemDtl = bMSContext.Item.FirstOrDefault(x => x.AliasName == barcode);
                     if (itemDtl != null)
                     {
                         itemDtl.CurrentStock = Convert.ToInt16(stock);
                         itemDtl.PurchasePrice = Convert.ToInt16(cost);
                         itemDtl.SalePrice = Convert.ToInt16(salePrice);
-                        itemDtl.Discflat = Convert.ToInt16(saleDisc);
+                        itemDtl.Discflat = Convert.ToInt16(disc);
                         itemDtl.NetSalePrice = Convert.ToInt16(netSalePrice);
                         bMSContext.Item.Update(itemDtl);
                         bMSContext.SaveChanges();
-
                     }
                 }
             }
             catch (Exception ex)
-            { }
+            {
+            }
+
             return JsonConvert.SerializeObject(new { status = "OK", msg = "Items Posted successfully" });
         }
 
-        [HttpGet]
+        [HttpPost]
         [Route("/api/unPostPurchaseReturn")]
         public object unPostPurchaseReturn(int purchaseId, string postedBy, string barCodes, string currentStock, string lastNetSalePrice,
             string lastNetCost, string saleDisc, string netSaleePrice)
         {
             try
             {
-                string[] barCodeArray = barCodes.Split(',');
-                string[] currentStockArray = currentStock.Split(',');
-                string[] lastNetSalePriceArray = lastNetSalePrice.Split(',');
-                string[] lastNetCostArray = lastNetCost.Split(',');
-                string[] saleDiscArray = saleDisc.Split(',');
-                string[] netSalePriceArray = netSaleePrice.Split(',');
-                int length = new int[] { barCodeArray.Length,
-                    currentStockArray.Length,lastNetSalePriceArray.Length,lastNetCostArray.Length,
-                    saleDiscArray.Length, netSalePriceArray.Length
-                    }.Min();
-                var postedDate = bMSContext.Purchase.Where(x => x.Id == purchaseId).FirstOrDefault();
+                string[] barCodeArray = (barCodes ?? "").Split(',', StringSplitOptions.RemoveEmptyEntries);
+                string[] currentStockArray = (currentStock ?? "").Split(',', StringSplitOptions.RemoveEmptyEntries);
+                string[] lastNetSalePriceArray = (lastNetSalePrice ?? "").Split(',', StringSplitOptions.RemoveEmptyEntries);
+                string[] lastNetCostArray = (lastNetCost ?? "").Split(',', StringSplitOptions.RemoveEmptyEntries);
+                string[] saleDiscArray = (saleDisc ?? "").Split(',', StringSplitOptions.RemoveEmptyEntries);
+                string[] netSalePriceArray = (netSaleePrice ?? "").Split(',', StringSplitOptions.RemoveEmptyEntries);
+
+                int length = new int[] { barCodeArray.Length, currentStockArray.Length, lastNetSalePriceArray.Length,
+            lastNetCostArray.Length, saleDiscArray.Length, netSalePriceArray.Length }.Min();
+
+                var postedDate = bMSContext.PurchaseReturn.FirstOrDefault(x => x.Id == purchaseId);
                 if (postedDate != null)
                 {
                     postedDate.PostedDate = DateTime.Now.Date;
                     postedDate.PostedBy = null;
                     postedDate.PostUnpostStatus = "N";
-                    bMSContext.Purchase.Update(postedDate);
+                    bMSContext.PurchaseReturn.Update(postedDate);
                     bMSContext.SaveChanges();
                 }
+
                 for (int i = 0; i < length; i++)
                 {
                     var barcode = barCodeArray[i];
@@ -503,25 +505,26 @@ namespace Backend.Controllers
                     var disc = (int)Math.Floor(double.Parse(saleDiscArray[i]));
                     var netSalePrice = (int)Math.Floor(double.Parse(netSalePriceArray[i]));
 
-
-                    var itemDtl = bMSContext.Item.Where(x => x.AliasName == barcode).FirstOrDefault();
+                    var itemDtl = bMSContext.Item.FirstOrDefault(x => x.AliasName == barcode);
                     if (itemDtl != null)
                     {
                         itemDtl.CurrentStock = Convert.ToInt16(stock);
                         itemDtl.PurchasePrice = Convert.ToInt16(cost);
                         itemDtl.SalePrice = Convert.ToInt16(salePrice);
-                        itemDtl.Discflat = Convert.ToInt16(saleDisc);
+                        itemDtl.Discflat = Convert.ToInt16(disc);
                         itemDtl.NetSalePrice = Convert.ToInt16(netSalePrice);
                         bMSContext.Item.Update(itemDtl);
                         bMSContext.SaveChanges();
-
                     }
                 }
             }
             catch (Exception ex)
-            { }
-            return JsonConvert.SerializeObject(new { status = "OK", msg = "Items Posted successfully" });
+            {
+            }
+
+            return JsonConvert.SerializeObject(new { status = "OK", msg = "Items Un Posted successfully" });
         }
+
 
         [HttpGet]
         [Route("/api/getAllPurchases")]
@@ -597,13 +600,11 @@ namespace Backend.Controllers
                     totalGst = p.TotalGst,
                     billTotal = p.BillTotal,
                     netQuantity = p.NetQuantity,
-                    totalSalePrice=p.TotalSalePrice
+                    totalSalePrice=p.TotalSalePrice,
+                    postUnPostStatus=p.PostUnpostStatus
 
                 })
-                .Where(x => x.id == id)
-                .ToList();
-
-            // Query to fetch data from PurchaseDetail table
+                .Where(x => x.id == id).ToList();
             var purchaseDetails = bMSContext.PurchaseDetail
                 .Select(pDtl => new
                 {
@@ -1188,7 +1189,7 @@ namespace Backend.Controllers
                     orderReturnId = poDtl.OrderReturnId,
                     barcode = poDtl.Barcode,
                     itemId = poDtl.ItemId,
-                    itemName = poDtl,
+                    itemName = poDtl.ItemName,
                     qty = poDtl.Qty,
                     total = poDtl.Total,
                     fullRate = poDtl.FullRate,
