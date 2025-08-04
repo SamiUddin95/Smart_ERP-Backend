@@ -3,13 +3,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Linq;
 using Backend.Models;
 using Microsoft.AspNetCore.Cors;
 using Newtonsoft.Json;
 using Backend.Model;
 using System.IO;
-using Backend.Model;
 using Microsoft.EntityFrameworkCore;
 
 namespace Backend.Controllers
@@ -652,7 +650,7 @@ namespace Backend.Controllers
                         Lockdisc = Items.Lockdisc,
                         ClassId = Items.ClassId,
                         ManufacturerId = Items.ManufacturerId,
-                        PartyId = Items.PartyId,
+                        PartyId = 1,//Items.PartyId,
                         Remarks = Items.Remarks,
                         RecentPurchase = Items.RecentPurchase,
                         CurrentStock = Items.CurrentStock,

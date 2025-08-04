@@ -1,14 +1,19 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Backend.Model;
+using Backend.Models;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Data.SqlClient;
+using System.Globalization;
 using System.Linq;
-using System.Threading.Tasks;
-using Backend.Models;
-using Microsoft.AspNetCore.Cors;
-using Newtonsoft.Json;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.EntityFrameworkCore;
 using System.Reflection;
+using System.Threading.Tasks;
 
 namespace Backend.Controllers
 {
@@ -17,9 +22,11 @@ namespace Backend.Controllers
     public class PurchaseOrderController : ControllerBase
     {
         private readonly FileLogger _logger;
-        public PurchaseOrderController(FileLogger logger)
+        private readonly IConfiguration _configuration;
+        public PurchaseOrderController(FileLogger logger, IConfiguration configuration)
         {
             _logger = logger;
+            _configuration = configuration;
         }
         ERPContext bMSContext = new ERPContext();
         [HttpGet]
@@ -382,6 +389,85 @@ namespace Backend.Controllers
                 _logger.LogError(MethodBase.GetCurrentMethod()?.Name, ex);
                 return null;
             }
+        }
+
+        [HttpGet]
+        [Route("/api/GetPurchaseOrdersByDateRange")]
+        public IEnumerable<dynamic> GetPurchaseOrdersByDateRange(string startDate, string endDate, string zeroQty, string selectedTable, string partyId)
+        {
+            var conStartdate = DateTime.ParseExact(startDate, "yyyy-MM-dd", CultureInfo.InvariantCulture);
+            var conEnddate = DateTime.ParseExact(endDate, "yyyy-MM-dd", CultureInfo.InvariantCulture);
+
+            var resultList = new List<dynamic>();
+            string connectionString = _configuration.GetConnectionString("DefaultConnection");
+
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                using (SqlCommand cmd = new SqlCommand("GetPurchaseOrdersByDateRange", conn))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+
+                    cmd.Parameters.AddWithValue("@StartDate", conStartdate);
+                    cmd.Parameters.AddWithValue("@EndDate", conEnddate);
+                    cmd.Parameters.AddWithValue("@ZeroQty", string.IsNullOrEmpty(zeroQty) ? "yes" : zeroQty);
+                    cmd.Parameters.AddWithValue("@selectedTable", selectedTable);
+                    cmd.Parameters.AddWithValue("@partyId", partyId);
+                    conn.Open();
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            resultList.Add(new
+                            {
+                                barCode = reader["Barcode"]?.ToString(),
+                                itemName = reader["ITEM_NAME"]?.ToString(),
+                                requiredQty = reader["Required_Qty"] != DBNull.Value ? Convert.ToDecimal(reader["Required_Qty"]) : 0,
+                                currentStock = reader["CURRENT_STOCK"] != DBNull.Value ? Convert.ToDecimal(reader["CURRENT_STOCK"]) : 0,
+                                createdAt = reader["CREATED_AT"] != DBNull.Value ? Convert.ToDateTime(reader["CREATED_AT"]) : (DateTime?)null,
+                                netSaleQty = reader["NetSaleQty"] != DBNull.Value ? Convert.ToDecimal(reader["NetSaleQty"]) : 0,
+                                rate = reader["NET_RATE"] != DBNull.Value ? Convert.ToDecimal(reader["NET_RATE"]) : 0,
+                                soldQty = reader["SoldQty"] != DBNull.Value ? Convert.ToDecimal(reader["SoldQty"]) : 0,
+                                rtnQty = reader["ReturnQty"] != DBNull.Value ? Convert.ToDecimal(reader["ReturnQty"]) : 0,
+                                total = reader["total"] != DBNull.Value ? Convert.ToDecimal(reader["total"]) : 0,
+                            });
+                        }
+                    }
+                }
+            }
+
+            var result = new
+            {
+                purchaseOrderDetails = resultList
+            };
+
+            yield return JsonConvert.SerializeObject(result);
+        }
+
+        [HttpPost]
+        [Route("/api/createPO")]
+        public object createPO([FromBody] List<RequiredQtyDTO> qtyDTOs)
+        {
+            try
+            {
+
+                foreach (var item in qtyDTOs)
+                {
+                    if (item.ItemName != null)
+                    {
+                        var Itemschk = bMSContext.Item.SingleOrDefault(u => u.ItemName == item.ItemName);
+                        Itemschk.RequiredQty = item.RequiredQty;
+                        bMSContext.Item.Update(Itemschk);
+                        bMSContext.SaveChanges();
+                    }
+                }
+            }
+
+            catch (Exception ex)
+            {
+                JsonConvert.SerializeObject(new { msg = ex.Message });
+            }
+            return JsonConvert.SerializeObject(new { msg = "Message" });
+
         }
     }
 }

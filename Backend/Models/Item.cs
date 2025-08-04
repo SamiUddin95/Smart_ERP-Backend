@@ -70,6 +70,8 @@ namespace Backend.Models
         public byte[] Picture { get; set; }
         [Column("PARTY_ID")]
         public int PartyId { get; set; }
+        [Column("REQUIRED_QTY")]
+        public int? RequiredQty { get; set; }
 
         [ForeignKey("BrandId")]
         [InverseProperty("Item")]

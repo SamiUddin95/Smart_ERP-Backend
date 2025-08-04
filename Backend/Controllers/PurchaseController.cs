@@ -1,15 +1,18 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Backend.Model;
+using Backend.Models;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Backend.Models;
-using Microsoft.AspNetCore.Cors;
-using Newtonsoft.Json;
-using Microsoft.AspNetCore.Authentication;
-using Backend.Model;
-using System.Numerics;
+using System.Data;
+using System.Data.SqlClient;
 using System.Globalization;
+using System.Linq;
+using System.Numerics;
+using System.Threading.Tasks;
 using System.Xml.Linq;
 
 namespace Backend.Controllers
@@ -719,132 +722,132 @@ namespace Backend.Controllers
             return result;
         }
 
-        [HttpPost]
-        [Route("/api/createPurchaseOrder")]
-        public object createPurchaseOrder(PurchaseOrderModel purchOrderModel)
-        {
-            try
-            {
+        //[HttpPost]
+        //[Route("/api/createPurchaseOrder")]
+        //public object createPurchaseOrder(PurchaseOrderModel purchOrderModel)
+        //{
+        //    try
+        //    {
 
-                if (purchOrderModel.Id == 0)
-                {
-                    PurchaseOrder pOrder = new PurchaseOrder();
-                    pOrder.PartyId = purchOrderModel.PartyId;
-                    pOrder.PartyType = purchOrderModel.PartyType;
-                    pOrder.Remarks = purchOrderModel.Remarks;
-                    pOrder.Disc = purchOrderModel.Disc;
-                    pOrder.ProjectionDays = purchOrderModel.ProjectionDays;
-                    pOrder.DateOfInvoice = purchOrderModel.DateOfInvoice.ToString();
-                    pOrder.EndDate = purchOrderModel.EndDate.ToString();
-                    pOrder.StartDate = purchOrderModel.StartDate.ToString();
-                    pOrder.InvTotal = purchOrderModel.InvTotal;
-                    pOrder.LocationId = purchOrderModel.Location;
-                    pOrder.CreatedAt = DateTime.Now.Date.ToString();
-                    pOrder.CreatedBy = purchOrderModel.Createdby;
-                    pOrder.Status = "UnPost";
-                    bMSContext.PurchaseOrder.Add(pOrder);
-                    bMSContext.SaveChanges();
-                    if (purchOrderModel.purcOrderDtlModel.Count() > 0)
-                    {
-                        for (int i = 0; i <= purchOrderModel.purcOrderDtlModel.Count(); i++)
-                        {
-                            PurchaseOrderDetail purchOrderDtl = new PurchaseOrderDetail();
-                            purchOrderDtl.RtnQty = purchOrderModel.purcOrderDtlModel[i].RtnQty;
-                            purchOrderDtl.SoldQty = purchOrderModel.purcOrderDtlModel[i].SoldQty;
-                            purchOrderDtl.OrderId = pOrder.Id;
-                            purchOrderDtl.ItemId = purchOrderModel.purcOrderDtlModel[i].ItemId;
-                            purchOrderDtl.ItemName = purchOrderModel.purcOrderDtlModel[i].ItemName;
-                            purchOrderDtl.BarCode = purchOrderModel.purcOrderDtlModel[i].BarCode;
-                            purchOrderDtl.CurrentStock = purchOrderModel.purcOrderDtlModel[i].CurrentStock;
-                            purchOrderDtl.Rate = purchOrderModel.purcOrderDtlModel[i].Rate;
-                            purchOrderDtl.NetSaleQty = purchOrderModel.purcOrderDtlModel[i].NetSaleQty;
-                            purchOrderDtl.Total = purchOrderModel.purcOrderDtlModel[i].Total;
-                            purchOrderDtl.RequiredQty = purchOrderModel.purcOrderDtlModel[i].RequiredQty;
-                            purchOrderDtl.CreatedAt = DateTime.Now;
-                            purchOrderDtl.CreatedBy = purchOrderModel.Createdby;
-                            bMSContext.PurchaseOrderDetail.Add(purchOrderDtl);
-                            bMSContext.SaveChanges();
-                        }
-                    }
-                }
-                else
-                {
-                    var data = bMSContext.PurchaseOrder.Where(x => x.Id == purchOrderModel.Id).ToList();
-                    if (data != null)
-                    {
-                        data[0].PartyId = purchOrderModel.PartyId;
-                        data[0].PartyType = purchOrderModel.PartyType;
-                        data[0].Remarks = purchOrderModel.Remarks;
-                        data[0].Disc = purchOrderModel.Disc;
-                        data[0].ProjectionDays = purchOrderModel.ProjectionDays;
-                        data[0].DateOfInvoice = purchOrderModel.DateOfInvoice.ToString();
-                        data[0].EndDate = purchOrderModel.EndDate.ToString();
-                        data[0].StartDate = purchOrderModel.StartDate.ToString();
-                        data[0].InvTotal = purchOrderModel.InvTotal;
-                        data[0].LocationId = purchOrderModel.Location;
-                        data[0].UpdatedAt = DateTime.Now;
-                        data[0].UpdatedBy = purchOrderModel.Updatedby;
-                        data[0].Status = "UnPost";
-                        bMSContext.PurchaseOrder.Update(data[0]);
-                        bMSContext.SaveChanges();
-                        var dataPurDtl = bMSContext.PurchaseOrderDetail.Where(x => x.OrderId == purchOrderModel.Id).ToList();
-                        bMSContext.PurchaseOrderDetail.RemoveRange(dataPurDtl);
-                        bMSContext.SaveChanges();
-                        if (dataPurDtl != null)
-                        {
-                            for (int i = 0; i <= purchOrderModel.purcOrderDtlModel.Count(); i++)
-                            {
-                                PurchaseOrderDetail purchOrderDtl = new PurchaseOrderDetail();
-                                purchOrderDtl.RtnQty = purchOrderModel.purcOrderDtlModel[i].RtnQty;
-                                purchOrderDtl.SoldQty = purchOrderModel.purcOrderDtlModel[i].SoldQty;
-                                purchOrderDtl.OrderId = data[0].Id;
-                                purchOrderDtl.ItemId = purchOrderModel.purcOrderDtlModel[i].ItemId;
-                                purchOrderDtl.ItemName = purchOrderModel.purcOrderDtlModel[i].ItemName;
-                                purchOrderDtl.BarCode = purchOrderModel.purcOrderDtlModel[i].BarCode;
-                                purchOrderDtl.CurrentStock = purchOrderModel.purcOrderDtlModel[i].CurrentStock;
-                                purchOrderDtl.Rate = purchOrderModel.purcOrderDtlModel[i].Rate;
-                                purchOrderDtl.NetSaleQty = purchOrderModel.purcOrderDtlModel[i].NetSaleQty;
-                                purchOrderDtl.Total = purchOrderModel.purcOrderDtlModel[i].Total;
-                                purchOrderDtl.RequiredQty = purchOrderModel.purcOrderDtlModel[i].RequiredQty;
-                                purchOrderDtl.CreatedAt = DateTime.Now;
-                                purchOrderDtl.CreatedBy = purchOrderModel.Createdby;
-                                bMSContext.PurchaseOrderDetail.Add(purchOrderDtl);
-                                bMSContext.SaveChanges();
-                            }
-                        }
-                        else
-                        {
-                            for (int i = 0; i <= purchOrderModel.purcOrderDtlModel.Count(); i++)
-                            {
-                                PurchaseOrderDetail purchOrderDtl = new PurchaseOrderDetail();
-                                purchOrderDtl.RtnQty = purchOrderModel.purcOrderDtlModel[i].RtnQty;
-                                purchOrderDtl.SoldQty = purchOrderModel.purcOrderDtlModel[i].SoldQty;
-                                purchOrderDtl.OrderId = data[0].Id;
-                                purchOrderDtl.ItemId = purchOrderModel.purcOrderDtlModel[i].ItemId;
-                                purchOrderDtl.ItemName = purchOrderModel.purcOrderDtlModel[i].ItemName;
-                                purchOrderDtl.BarCode = purchOrderModel.purcOrderDtlModel[i].BarCode;
-                                purchOrderDtl.CurrentStock = purchOrderModel.purcOrderDtlModel[i].CurrentStock;
-                                purchOrderDtl.Rate = purchOrderModel.purcOrderDtlModel[i].Rate;
-                                purchOrderDtl.NetSaleQty = purchOrderModel.purcOrderDtlModel[i].NetSaleQty;
-                                purchOrderDtl.Total = purchOrderModel.purcOrderDtlModel[i].Total;
-                                purchOrderDtl.RequiredQty = purchOrderModel.purcOrderDtlModel[i].RequiredQty;
-                                purchOrderDtl.CreatedAt = DateTime.Now;
-                                purchOrderDtl.CreatedBy = purchOrderModel.Createdby;
-                                bMSContext.PurchaseOrderDetail.Add(purchOrderDtl);
-                                bMSContext.SaveChanges();
-                            }
-                        }
-                    }
-                }
-            }
+        //        if (purchOrderModel.Id == 0)
+        //        {
+        //            PurchaseOrder pOrder = new PurchaseOrder();
+        //            pOrder.PartyId = purchOrderModel.PartyId;
+        //            pOrder.PartyType = purchOrderModel.PartyType;
+        //            pOrder.Remarks = purchOrderModel.Remarks;
+        //            pOrder.Disc = purchOrderModel.Disc;
+        //            pOrder.ProjectionDays = purchOrderModel.ProjectionDays;
+        //            pOrder.DateOfInvoice = purchOrderModel.DateOfInvoice.ToString();
+        //            pOrder.EndDate = purchOrderModel.EndDate.ToString();
+        //            pOrder.StartDate = purchOrderModel.StartDate.ToString();
+        //            pOrder.InvTotal = purchOrderModel.InvTotal;
+        //            pOrder.LocationId = purchOrderModel.Location;
+        //            pOrder.CreatedAt = DateTime.Now.Date.ToString();
+        //            pOrder.CreatedBy = purchOrderModel.Createdby;
+        //            pOrder.Status = "UnPost";
+        //            bMSContext.PurchaseOrder.Add(pOrder);
+        //            bMSContext.SaveChanges();
+        //            if (purchOrderModel.purcOrderDtlModel.Count() > 0)
+        //            {
+        //                for (int i = 0; i <= purchOrderModel.purcOrderDtlModel.Count(); i++)
+        //                {
+        //                    PurchaseOrderDetail purchOrderDtl = new PurchaseOrderDetail();
+        //                    purchOrderDtl.RtnQty = purchOrderModel.purcOrderDtlModel[i].RtnQty;
+        //                    purchOrderDtl.SoldQty = purchOrderModel.purcOrderDtlModel[i].SoldQty;
+        //                    purchOrderDtl.OrderId = pOrder.Id;
+        //                    purchOrderDtl.ItemId = purchOrderModel.purcOrderDtlModel[i].ItemId;
+        //                    purchOrderDtl.ItemName = purchOrderModel.purcOrderDtlModel[i].ItemName;
+        //                    purchOrderDtl.BarCode = purchOrderModel.purcOrderDtlModel[i].BarCode;
+        //                    purchOrderDtl.CurrentStock = purchOrderModel.purcOrderDtlModel[i].CurrentStock;
+        //                    purchOrderDtl.Rate = purchOrderModel.purcOrderDtlModel[i].Rate;
+        //                    purchOrderDtl.NetSaleQty = purchOrderModel.purcOrderDtlModel[i].NetSaleQty;
+        //                    purchOrderDtl.Total = purchOrderModel.purcOrderDtlModel[i].Total;
+        //                    purchOrderDtl.RequiredQty = purchOrderModel.purcOrderDtlModel[i].RequiredQty;
+        //                    purchOrderDtl.CreatedAt = DateTime.Now;
+        //                    purchOrderDtl.CreatedBy = purchOrderModel.Createdby;
+        //                    bMSContext.PurchaseOrderDetail.Add(purchOrderDtl);
+        //                    bMSContext.SaveChanges();
+        //                }
+        //            }
+        //        }
+        //        else
+        //        {
+        //            var data = bMSContext.PurchaseOrder.Where(x => x.Id == purchOrderModel.Id).ToList();
+        //            if (data != null)
+        //            {
+        //                data[0].PartyId = purchOrderModel.PartyId;
+        //                data[0].PartyType = purchOrderModel.PartyType;
+        //                data[0].Remarks = purchOrderModel.Remarks;
+        //                data[0].Disc = purchOrderModel.Disc;
+        //                data[0].ProjectionDays = purchOrderModel.ProjectionDays;
+        //                data[0].DateOfInvoice = purchOrderModel.DateOfInvoice.ToString();
+        //                data[0].EndDate = purchOrderModel.EndDate.ToString();
+        //                data[0].StartDate = purchOrderModel.StartDate.ToString();
+        //                data[0].InvTotal = purchOrderModel.InvTotal;
+        //                data[0].LocationId = purchOrderModel.Location;
+        //                data[0].UpdatedAt = DateTime.Now;
+        //                data[0].UpdatedBy = purchOrderModel.Updatedby;
+        //                data[0].Status = "UnPost";
+        //                bMSContext.PurchaseOrder.Update(data[0]);
+        //                bMSContext.SaveChanges();
+        //                var dataPurDtl = bMSContext.PurchaseOrderDetail.Where(x => x.OrderId == purchOrderModel.Id).ToList();
+        //                bMSContext.PurchaseOrderDetail.RemoveRange(dataPurDtl);
+        //                bMSContext.SaveChanges();
+        //                if (dataPurDtl != null)
+        //                {
+        //                    for (int i = 0; i <= purchOrderModel.purcOrderDtlModel.Count(); i++)
+        //                    {
+        //                        PurchaseOrderDetail purchOrderDtl = new PurchaseOrderDetail();
+        //                        purchOrderDtl.RtnQty = purchOrderModel.purcOrderDtlModel[i].RtnQty;
+        //                        purchOrderDtl.SoldQty = purchOrderModel.purcOrderDtlModel[i].SoldQty;
+        //                        purchOrderDtl.OrderId = data[0].Id;
+        //                        purchOrderDtl.ItemId = purchOrderModel.purcOrderDtlModel[i].ItemId;
+        //                        purchOrderDtl.ItemName = purchOrderModel.purcOrderDtlModel[i].ItemName;
+        //                        purchOrderDtl.BarCode = purchOrderModel.purcOrderDtlModel[i].BarCode;
+        //                        purchOrderDtl.CurrentStock = purchOrderModel.purcOrderDtlModel[i].CurrentStock;
+        //                        purchOrderDtl.Rate = purchOrderModel.purcOrderDtlModel[i].Rate;
+        //                        purchOrderDtl.NetSaleQty = purchOrderModel.purcOrderDtlModel[i].NetSaleQty;
+        //                        purchOrderDtl.Total = purchOrderModel.purcOrderDtlModel[i].Total;
+        //                        purchOrderDtl.RequiredQty = purchOrderModel.purcOrderDtlModel[i].RequiredQty;
+        //                        purchOrderDtl.CreatedAt = DateTime.Now;
+        //                        purchOrderDtl.CreatedBy = purchOrderModel.Createdby;
+        //                        bMSContext.PurchaseOrderDetail.Add(purchOrderDtl);
+        //                        bMSContext.SaveChanges();
+        //                    }
+        //                }
+        //                else
+        //                {
+        //                    for (int i = 0; i <= purchOrderModel.purcOrderDtlModel.Count(); i++)
+        //                    {
+        //                        PurchaseOrderDetail purchOrderDtl = new PurchaseOrderDetail();
+        //                        purchOrderDtl.RtnQty = purchOrderModel.purcOrderDtlModel[i].RtnQty;
+        //                        purchOrderDtl.SoldQty = purchOrderModel.purcOrderDtlModel[i].SoldQty;
+        //                        purchOrderDtl.OrderId = data[0].Id;
+        //                        purchOrderDtl.ItemId = purchOrderModel.purcOrderDtlModel[i].ItemId;
+        //                        purchOrderDtl.ItemName = purchOrderModel.purcOrderDtlModel[i].ItemName;
+        //                        purchOrderDtl.BarCode = purchOrderModel.purcOrderDtlModel[i].BarCode;
+        //                        purchOrderDtl.CurrentStock = purchOrderModel.purcOrderDtlModel[i].CurrentStock;
+        //                        purchOrderDtl.Rate = purchOrderModel.purcOrderDtlModel[i].Rate;
+        //                        purchOrderDtl.NetSaleQty = purchOrderModel.purcOrderDtlModel[i].NetSaleQty;
+        //                        purchOrderDtl.Total = purchOrderModel.purcOrderDtlModel[i].Total;
+        //                        purchOrderDtl.RequiredQty = purchOrderModel.purcOrderDtlModel[i].RequiredQty;
+        //                        purchOrderDtl.CreatedAt = DateTime.Now;
+        //                        purchOrderDtl.CreatedBy = purchOrderModel.Createdby;
+        //                        bMSContext.PurchaseOrderDetail.Add(purchOrderDtl);
+        //                        bMSContext.SaveChanges();
+        //                    }
+        //                }
+        //            }
+        //        }
+        //    }
 
-            catch (Exception ex)
-            {
-                JsonConvert.SerializeObject(new { msg = ex.Message });
-            }
-            return JsonConvert.SerializeObject(new { msg = "Message" });
+        //    catch (Exception ex)
+        //    {
+        //        JsonConvert.SerializeObject(new { msg = ex.Message });
+        //    }
+        //    return JsonConvert.SerializeObject(new { msg = "Message" });
 
-        }
+        //}
 
         [HttpGet]
         [Route("/api/deletePurchaseOrderById")]
@@ -911,75 +914,75 @@ namespace Backend.Controllers
             yield return JsonConvert.SerializeObject(result);
         }
 
-        [HttpGet]
-        [Route("/api/GetPurchaseOrdersByDateRange")]
-        public IEnumerable<dynamic> GetPurchaseOrdersByDateRange(string startDate, string endDate, string zeroQty)
-        {
+        //[HttpGet]
+        //[Route("/api/GetPurchaseOrdersByDateRange")]
+        //public IEnumerable<dynamic> GetPurchaseOrdersByDateRange(string startDate, string endDate, string zeroQty)
+        //{
 
-            //var conStartdate = Convert.ToDateTime(startDate);
-            //var conEnddate = Convert.ToDateTime(endDate);
-            var conStartdate = DateTime.ParseExact(startDate, "yyyy-MM-dd", CultureInfo.InvariantCulture);
-            var conEnddate = DateTime.ParseExact(endDate, "yyyy-MM-dd", CultureInfo.InvariantCulture)
-                                      .AddDays(1)
-                                      .AddTicks(-1);
-            if (zeroQty == null || zeroQty == "yes")
-            {
-                var purchaseOrderDetails = bMSContext.PurchaseOrderDetail
-                .Where(poDtl => poDtl.CreatedAt >= conStartdate && poDtl.CreatedAt <= conEnddate)
-                .Select(poDtl => new
-                {
-                    id = poDtl.Id,
-                    orderId = poDtl.OrderId,
-                    barCode = poDtl.BarCode,
-                    itemId = poDtl.ItemId,
-                    itemName = poDtl.ItemName,
-                    soldQty = poDtl.SoldQty,
-                    rtnQty = poDtl.RtnQty,
-                    netSaleQty = poDtl.NetSaleQty,
-                    currentStock = poDtl.CurrentStock,
-                    requiredQty = poDtl.RequiredQty,
-                    rate = poDtl.Rate,
-                    total = poDtl.Total
-                }).ToList();
-                var result = new
-                {
-                    //purchaseOrders = purchaseOrders,
-                    purchaseOrderDetails = purchaseOrderDetails
-                };
+        //    //var conStartdate = Convert.ToDateTime(startDate);
+        //    //var conEnddate = Convert.ToDateTime(endDate);
+        //    var conStartdate = DateTime.ParseExact(startDate, "yyyy-MM-dd", CultureInfo.InvariantCulture);
+        //    var conEnddate = DateTime.ParseExact(endDate, "yyyy-MM-dd", CultureInfo.InvariantCulture)
+        //                              .AddDays(1)
+        //                              .AddTicks(-1);
+        //    if (zeroQty == null || zeroQty == "yes")
+        //    {
+        //        var purchaseOrderDetails = bMSContext.PurchaseOrderDetail
+        //        .Where(poDtl => poDtl.CreatedAt >= conStartdate && poDtl.CreatedAt <= conEnddate)
+        //        .Select(poDtl => new
+        //        {
+        //            id = poDtl.Id,
+        //            orderId = poDtl.OrderId,
+        //            barCode = poDtl.BarCode,
+        //            itemId = poDtl.ItemId,
+        //            itemName = poDtl.ItemName,
+        //            soldQty = poDtl.SoldQty,
+        //            rtnQty = poDtl.RtnQty,
+        //            netSaleQty = poDtl.NetSaleQty,
+        //            currentStock = poDtl.CurrentStock,
+        //            requiredQty = poDtl.RequiredQty,
+        //            rate = poDtl.Rate,
+        //            total = poDtl.Total
+        //        }).ToList();
+        //        var result = new
+        //        {
+        //            //purchaseOrders = purchaseOrders,
+        //            purchaseOrderDetails = purchaseOrderDetails
+        //        };
 
-                yield return JsonConvert.SerializeObject(result);
-            }
-            else if (zeroQty == "no")
-            {
-                var purchaseOrderDetails = bMSContext.PurchaseOrderDetail
-                .Where(poDtl => poDtl.CreatedAt >= conStartdate && poDtl.CreatedAt <= conEnddate && poDtl.NetSaleQty != 0 && poDtl.NetSaleQty != null)
-                .Select(poDtl => new
-                {
-                    id = poDtl.Id,
-                    orderId = poDtl.OrderId,
-                    barCode = poDtl.BarCode,
-                    itemId = poDtl.ItemId,
-                    itemName = poDtl.ItemName,
-                    soldQty = poDtl.SoldQty,
-                    rtnQty = poDtl.RtnQty,
-                    netSaleQty = poDtl.NetSaleQty,
-                    currentStock = poDtl.CurrentStock,
-                    requiredQty = poDtl.RequiredQty,
-                    rate = poDtl.Rate,
-                    total = poDtl.Total
-                }).ToList();
-                var result = new
-                {
-                    //purchaseOrders = purchaseOrders,
-                    purchaseOrderDetails = purchaseOrderDetails
-                };
+        //        yield return JsonConvert.SerializeObject(result);
+        //    }
+        //    else if (zeroQty == "no")
+        //    {
+        //        var purchaseOrderDetails = bMSContext.PurchaseOrderDetail
+        //        .Where(poDtl => poDtl.CreatedAt >= conStartdate && poDtl.CreatedAt <= conEnddate && poDtl.NetSaleQty != 0 && poDtl.NetSaleQty != null)
+        //        .Select(poDtl => new
+        //        {
+        //            id = poDtl.Id,
+        //            orderId = poDtl.OrderId,
+        //            barCode = poDtl.BarCode,
+        //            itemId = poDtl.ItemId,
+        //            itemName = poDtl.ItemName,
+        //            soldQty = poDtl.SoldQty,
+        //            rtnQty = poDtl.RtnQty,
+        //            netSaleQty = poDtl.NetSaleQty,
+        //            currentStock = poDtl.CurrentStock,
+        //            requiredQty = poDtl.RequiredQty,
+        //            rate = poDtl.Rate,
+        //            total = poDtl.Total
+        //        }).ToList();
+        //        var result = new
+        //        {
+        //            //purchaseOrders = purchaseOrders,
+        //            purchaseOrderDetails = purchaseOrderDetails
+        //        };
 
-                yield return JsonConvert.SerializeObject(result);
-            }
+        //        yield return JsonConvert.SerializeObject(result);
+        //    }
 
 
-        }
-
+        //}
+        
 
         [HttpGet]
         [Route("/api/getAllPurchaseReturn")]
