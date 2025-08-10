@@ -469,5 +469,50 @@ namespace Backend.Controllers
             return JsonConvert.SerializeObject(new { msg = "Message" });
 
         }
+
+        [HttpGet]
+        [Route("/api/getAllPOSearching")]
+        public IEnumerable<dynamic> getAllPOSearching(string itemName)
+        {
+         
+            var resultList = new List<dynamic>();
+            string connectionString = _configuration.GetConnectionString("DefaultConnection");
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                using (SqlCommand cmd = new SqlCommand("GetPurchaseOrdersByItemName", conn))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+
+                    // Only parameter is ItemName
+                    cmd.Parameters.AddWithValue("@ItemName", string.IsNullOrWhiteSpace(itemName) ? (object)DBNull.Value : itemName);
+
+                    conn.Open();
+
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            resultList.Add(new
+                            {
+                                barCode = reader["Barcode"]?.ToString(),
+                                itemName = reader["ITEM_NAME"]?.ToString(),
+                                requiredQty = reader["Required_Qty"] != DBNull.Value ? Convert.ToDecimal(reader["Required_Qty"]) : 0,
+                                currentStock = reader["CURRENT_STOCK"] != DBNull.Value ? Convert.ToDecimal(reader["CURRENT_STOCK"]) : 0,
+                                createdAt = reader["CREATED_AT"] != DBNull.Value ? Convert.ToDateTime(reader["CREATED_AT"]) : (DateTime?)null,
+                                netSaleQty = reader["NetSaleQty"] != DBNull.Value ? Convert.ToDecimal(reader["NetSaleQty"]) : 0,
+                                rate = reader["NET_RATE"] != DBNull.Value ? Convert.ToDecimal(reader["NET_RATE"]) : 0,
+                                soldQty = reader["SoldQty"] != DBNull.Value ? Convert.ToDecimal(reader["SoldQty"]) : 0,
+                                rtnQty = reader["ReturnQty"] != DBNull.Value ? Convert.ToDecimal(reader["ReturnQty"]) : 0,
+                                total = reader["Total"] != DBNull.Value ? Convert.ToDecimal(reader["Total"]) : 0,
+                            });
+                        }
+                    }
+                }
+            }
+
+            return resultList;
+        }
+
+
     }
 }
