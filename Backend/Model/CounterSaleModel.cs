@@ -8,6 +8,7 @@ namespace Backend.Model
         public long Id { get; set; }
         public decimal? GrossSale { get; set; }
         public decimal? CashCharged { get; set; }
+        public decimal? CreditAmount { get; set; }
         public decimal? CashBack { get; set; }
         public decimal? CashReceived { get; set; }
         public decimal? Discount { get; set; }
