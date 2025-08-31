@@ -43,6 +43,7 @@ namespace Backend.Controllers
                         usrCheck.Gender = user.Gender;
                         usrCheck.IsActive = user.IsActive;
                         usrCheck.JoiningDate = user.JoiningDate;
+                        usrCheck.LocationId = user.LocationId;
                         usrCheck.UpdatedAt = DateTime.Now;
                         usrCheck.UpdatedBy = user.UpdatedBy;
                         bMSContext.User.Update(usrCheck);
@@ -62,6 +63,7 @@ namespace Backend.Controllers
                         usr.Gender = user.Gender;
                         usr.IsActive = user.IsActive;
                         usr.JoiningDate = user.JoiningDate;
+                        usr.LocationId = user.LocationId;
                         usr.CreatedAt = DateTime.Now;
                         usr.CreatedBy = user.CreatedBy;
                         bMSContext.User.Add(usr);
@@ -169,6 +171,13 @@ namespace Backend.Controllers
 
                 return null;
             }
+        }
+
+        [HttpGet]
+        [Route("/api/getAllLocation")]
+        public IEnumerable<Location> getAllLocation()
+        {
+            return bMSContext.Location.ToList();
         }
     }
 }

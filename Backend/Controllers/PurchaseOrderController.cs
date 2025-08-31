@@ -510,7 +510,12 @@ namespace Backend.Controllers
                 }
             }
 
-            return resultList;
+            var result = new
+            {
+                purchaseOrderDetails = resultList
+            };
+
+            yield return JsonConvert.SerializeObject(result);
         }
 
 
