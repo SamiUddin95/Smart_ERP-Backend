@@ -13,6 +13,7 @@
         public decimal CashOut { get; set; }
         public decimal NetCash { get; set; }
         public decimal Shortage { get; set; }
-        public decimal Netsale { get; set; }
+        public decimal NetSale { get; set; }
+        public decimal CashSaleReturn { get; set; }
     }
 }

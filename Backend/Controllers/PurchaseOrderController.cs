@@ -366,6 +366,36 @@ namespace Backend.Controllers
         }
 
 
+        [HttpGet]
+        [Route("/api/getCallForPO")]
+        public IEnumerable<dynamic> getCallForPO()
+        {
+            var statuses = new[] { "Send", "Delivered" };
+            var purchaseOrder = (
+                from po in bMSContext.PurchaseOrder
+                join p in bMSContext.Party on po.PartyId equals p.Id
+                join l in bMSContext.Location on po.LocationId equals l.Id
+                where statuses.Contains(po.DeliveryStatus)
+                select new
+                {
+                    Id = po.Id,
+                    Location = l.Name,
+                    DeliveryDate = po.DeliveryDate,
+                    Party = p.PartyName,
+                    InvoiceTotal = po.InvTotal,
+                    DeliveryStatus = po.DeliveryStatus,
+                    createdAt = po.CreatedAt,
+                    serialNumber =l.Serialnumber
+                }
+            )
+            .ToList()
+            .OrderByDescending(x => x.DeliveryDate);
+
+
+            return purchaseOrder;
+
+        }
+
 
         [HttpGet]
         [Route("/api/changeDeliveryStatus")]

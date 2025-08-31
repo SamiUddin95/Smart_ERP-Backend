@@ -20,5 +20,6 @@ namespace Backend.Models
         public string CreatedBy { get; set; }
         public string UpdatedBy { get; set; }
         public decimal? Salary { get; set; }
+        public int? LocationId { get; set; }
     }
 }

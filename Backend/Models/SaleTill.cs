@@ -22,5 +22,6 @@ namespace Backend.Models
         public int? SaleTillId { get; set; }
         public DateTime? CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
+        public int? LocationId { get; set; }
     }
 }
