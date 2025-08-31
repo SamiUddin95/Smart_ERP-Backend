@@ -98,26 +98,28 @@ namespace Backend.Controllers
 
 
         [HttpGet]
-        [Route("/api/getAllItemDetailbyBarCode")]
-        public IEnumerable<dynamic> getAllItemDetailbyBarCode(string barCode)
+        [Route("/api/getAllItemDetailbyItemName")]
+        public IEnumerable<dynamic> getAllItemDetailbyItemName(string name)
         {
             var items = bMSContext.Item
-                        .Where(u => u.ItemName.Contains(barCode))
+                        .Where(u => u.ItemName.Contains(name))
                         .Select(u => new PurchaseItemSearchModel { barCode=u.AliasName,itemName = u.ItemName,salePrice=Convert.ToDecimal(u.SalePrice),purchasePrice=Convert.ToDecimal(u.PurchasePrice) })
                         .ToList(); 
             var altItems = bMSContext.AlternateItem
-                        .Where(u => u.AlternateItemName.Contains(barCode))
+                        .Where(u => u.AlternateItemName.Contains(name))
                         .Select(u => new PurchaseItemSearchModel { barCode = u.Barcode, itemName = u.AlternateItemName })
                         .ToList(); 
             var childItems = bMSContext.ChildItem
-                        .Where(u => u.ChildName.Contains(barCode))
+                        .Where(u => u.ChildName.Contains(name))
                         .Select(u => new PurchaseItemSearchModel { barCode = u.Barcode, itemName = u.ChildName})
-                        .ToList(); 
-            var allItems = items
-                .Concat(altItems)
-                .Concat(childItems)
-                .ToList();
-            return allItems;
+                        .ToList();
+            var result = new
+            {
+                item = items,
+                altItems = altItems,
+                childItems = childItems
+            };
+            yield return JsonConvert.SerializeObject(result);
 
 
         }
@@ -915,6 +917,14 @@ namespace Backend.Controllers
             yield return JsonConvert.SerializeObject(result);
         }
 
+        [HttpGet]
+        [Route("/api/getPurchaseOrderDetailById")]
+        public IEnumerable<dynamic> getPurchaseOrderDetailById(int id)
+        {
+
+            return bMSContext.PurchaseOrderDetail.Where(x=>x.OrderId==id).ToList();
+        }
+
         //[HttpGet]
         //[Route("/api/GetPurchaseOrdersByDateRange")]
         //public IEnumerable<dynamic> GetPurchaseOrdersByDateRange(string startDate, string endDate, string zeroQty)
@@ -983,7 +993,7 @@ namespace Backend.Controllers
 
 
         //}
-        
+
 
         [HttpGet]
         [Route("/api/getAllPurchaseReturn")]

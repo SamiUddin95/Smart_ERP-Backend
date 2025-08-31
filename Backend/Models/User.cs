@@ -46,7 +46,5 @@ namespace Backend.Models
         public string UpdatedBy { get; set; }
         [Column("SALARY")]
         public decimal? Salary { get; set; }
-        [Column("LOCATION_ID")]
-        public int? LocationId { get; set; }
     }
 }

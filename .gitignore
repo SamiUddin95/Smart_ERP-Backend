@@ -147,3 +147,5 @@ Backend/Models/ERPContext.cs
 /.vs/Backend/CopilotIndices/17.14.995.13737/SemanticSymbols.db
 /.vs/Backend/CopilotIndices/17.14.995.13737/SemanticSymbols.db-shm
 /.vs/Backend/CopilotIndices/17.14.995.13737/SemanticSymbols.db-wal
+/Backend.dll
+/.gitignore
