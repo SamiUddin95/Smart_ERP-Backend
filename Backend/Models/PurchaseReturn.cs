@@ -70,5 +70,7 @@ namespace Backend.Models
         [Column("POSTED_BY")]
         [StringLength(50)]
         public string PostedBy { get; set; }
+        [Column("LOCATION_ID")]
+        public int? LocationId { get; set; }
     }
 }

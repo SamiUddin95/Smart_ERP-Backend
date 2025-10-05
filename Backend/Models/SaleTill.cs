@@ -47,5 +47,7 @@ namespace Backend.Models
         public DateTime? CreatedAt { get; set; }
         [Column("UPDATED_AT", TypeName = "datetime")]
         public DateTime? UpdatedAt { get; set; }
+        [Column("LOCATION_ID")]
+        public int? LocationId { get; set; }
     }
 }

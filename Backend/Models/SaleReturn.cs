@@ -34,5 +34,7 @@ namespace Backend.Models
         public int? UserId { get; set; }
         [Column("DEDUCTION", TypeName = "decimal(19, 2)")]
         public decimal? Deduction { get; set; }
+        [Column("LOCATION_ID")]
+        public int? LocationId { get; set; }
     }
 }

@@ -60,5 +60,7 @@ namespace Backend.Models
         [Column("POST_UNPOST_STATUS")]
         [StringLength(50)]
         public string PostUnpostStatus { get; set; }
+        [Column("LOCATION_ID")]
+        public int? LocationId { get; set; }
     }
 }

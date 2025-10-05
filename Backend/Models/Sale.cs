@@ -49,5 +49,7 @@ namespace Backend.Models
         [Column("INVOICE_TYPE")]
         [StringLength(50)]
         public string InvoiceType { get; set; }
+        [Column("LOCATION_ID")]
+        public int? LocationId { get; set; }
     }
 }
