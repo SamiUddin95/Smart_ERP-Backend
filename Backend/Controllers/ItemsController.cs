@@ -520,7 +520,7 @@ namespace Backend.Controllers
 
         [HttpPost]
         [Route("/api/createItems")]
-        public object createItems([FromForm]  ItemRequestDTO Items)
+        public object createItems([FromForm] ItemRequestDTO Items)
         {
             try
             {
@@ -535,7 +535,7 @@ namespace Backend.Controllers
                 {
                     return JsonConvert.SerializeObject(new { msg = "An Item with this name already exists." });
                 }
-                
+
                 if (existingAliasName != null)
                 {
                     return JsonConvert.SerializeObject(new { msg = "An Alias name with this name already exists." });
