@@ -122,11 +122,11 @@ namespace Backend.Controllers
             //            .ToList();
             var altItems = bMSContext.AlternateItem
                         .Where(u => u.ItemId==id)
-                        .Select(u => new PurchaseItemSearchModel { barCode = u.Barcode, itemName = u.AlternateItemName })
+                        .Select(u => new PurchaseItemSearchModel { barCode = u.Barcode, itemName = u.AlternateItemName,salePrice=Convert.ToDecimal(u.Saleprice),saleDisc= Convert.ToDecimal(u.Saledisc) })
                         .ToList();
             var childItems = bMSContext.ChildItem
                         .Where(u => u.ItemId == id)
-                        .Select(u => new PurchaseItemSearchModel { barCode = u.Barcode, itemName = u.ChildName })
+                        .Select(u => new PurchaseItemSearchModel { barCode = u.Barcode, itemName = u.ChildName, salePrice = Convert.ToDecimal(u.SalePrice), saleDisc = Convert.ToDecimal(u.DiscValue) })
                         .ToList();
             var result = new
             {
