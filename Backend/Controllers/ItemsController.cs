@@ -524,11 +524,12 @@ namespace Backend.Controllers
         {
             try
             {
-                //if (!string.IsNullOrEmpty(Request.Form["alternateItem"]))
-                if (Items.alternateItem.Count() > 0)
+                var alternateItemJson = Request.Form["alternateItem"];
+                if (!string.IsNullOrEmpty(alternateItemJson))
                 {
-                    Items.alternateItem = JsonConvert.DeserializeObject<List<AlternateRequestDTO>>(Request.Form["alternateItem"]);
+                    Items.alternateItem = JsonConvert.DeserializeObject<List<AlternateRequestDTO>>(alternateItemJson);
                 }
+
                 var existingItem = bMSContext.Item.SingleOrDefault(i => i.ItemName == Items.ItemName && i.Id != Items.Id);
                 var existingAliasName = bMSContext.Item.SingleOrDefault(i => i.AliasName == Items.AliasName && i.Id != Items.Id);
                 if (existingItem != null)
@@ -536,7 +537,7 @@ namespace Backend.Controllers
                     return JsonConvert.SerializeObject(new { msg = "An Item with this name already exists." });
                 }
 
-                if (existingAliasName != null)
+                if (existingAliasName != null && Items.AliasName != null)
                 {
                     return JsonConvert.SerializeObject(new { msg = "An Alias name with this name already exists." });
                 }
@@ -622,13 +623,24 @@ namespace Backend.Controllers
                             .ToList(); // materialize to memory
 
                         // Step 2: Filter to numeric-only alias names
+                        //var numericAliases = allAliasNames
+                        //    .Where(name => name.All(char.IsDigit))
+                        //    .Select(name => int.Parse(name))
+                        //    .ToList();
+
+                        // Step 2: Filter to numeric-only alias names and safely parse to long
                         var numericAliases = allAliasNames
                             .Where(name => name.All(char.IsDigit))
-                            .Select(name => int.Parse(name))
+                            .Select(name =>
+                            {
+                                if (long.TryParse(name, out long value))
+                                    return value;
+                                return 0; // ignore invalid or overflow values
+                            })
                             .ToList();
 
                         // Step 3: Get the max numeric value and add 10
-                        int newAliasValue = 1;
+                        long newAliasValue = 1;
 
                         if (numericAliases.Any())
                         {

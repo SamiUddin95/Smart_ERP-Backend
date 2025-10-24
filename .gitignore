@@ -149,3 +149,13 @@ Backend/Models/ERPContext.cs
 /.vs/Backend/CopilotIndices/17.14.995.13737/SemanticSymbols.db-wal
 /Backend.dll
 /.gitignore
+/Backend/bin/Release/net5.0/win-x64/Backend.exe
+/Backend/bin/Release/net5.0/win-x64/Microsoft.OpenApi.dll
+/Backend/bin/Release/net5.0/win-x64/Swashbuckle.AspNetCore.Swagger.dll
+/Backend/bin/Release/net5.0/win-x64/Swashbuckle.AspNetCore.SwaggerGen.dll
+/Backend/bin/Release/net5.0/win-x64/Swashbuckle.AspNetCore.SwaggerUI.dll
+/Backend/bin/Release/net5.0/Backend.exe
+/Backend/bin/Release/net5.0/Microsoft.OpenApi.dll
+/Backend/bin/Release/net5.0/Swashbuckle.AspNetCore.Swagger.dll
+/Backend/bin/Release/net5.0/Swashbuckle.AspNetCore.SwaggerGen.dll
+/Backend/bin/Release/net5.0/Swashbuckle.AspNetCore.SwaggerUI.dll
