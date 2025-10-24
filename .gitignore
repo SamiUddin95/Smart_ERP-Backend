@@ -149,3 +149,8 @@ Backend/Models/ERPContext.cs
 /.vs/Backend/CopilotIndices/17.14.995.13737/SemanticSymbols.db-wal
 /Backend.dll
 /.gitignore
+Backend/obj/Debug/net5.0/staticwebassets/Backend.StaticWebAssets.xml
+Backend/obj/Debug/net5.0/staticwebassets/Backend.StaticWebAssets.Pack.cache
+Backend/bin/Debug/net5.0/ref/Backend.dll
+Backend/obj/Debug/net5.0/staticwebassets/Backend.StaticWebAssets.Pack.cache
+Backend/obj/Debug/net5.0/staticwebassets/Backend.StaticWebAssets.Pack.cache

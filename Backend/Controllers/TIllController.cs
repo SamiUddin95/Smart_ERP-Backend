@@ -41,7 +41,8 @@ namespace Backend.Controllers
         [Route("/api/getAllTodaysCreditSale")]
         public IEnumerable<dynamic> getAllTodaysCreditSale()
         {
-            return bMSContext.Sale.ToList().OrderByDescending(x => x.Id);
+            return bMSContext.PaymentDetail.ToList().Where(x => x.CreatedAt == DateTime.Now.Date && x.CreditAmount>0).OrderByDescending(x => x.Id);
+
         }
     }
 }
